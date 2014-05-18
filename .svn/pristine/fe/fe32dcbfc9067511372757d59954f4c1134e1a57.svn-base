@@ -1,0 +1,26 @@
+/*
+ * Category :- ToolTip Main
+ * Developer:- Vikalp Patel
+ * Aim      :- ToolTip Helper
+ * Description :- Use to Create ToolTip around View
+ * S - START E- END  C- COMMENTED  U -EDITED A -ADDED
+ * --------------------------------------------------------------------------------------------------------------------
+ * INDEX       DEVELOPER		DATE			DESCRIPTION
+ * --------------------------------------------------------------------------------------------------------------------
+ */
+package com.netdoers.com;
+
+import android.content.Context;
+import android.view.View;
+
+public class ToolTip {
+
+	public ToolTip(String str ,Context c, View v)
+	{
+		ActionItem addAction = new ActionItem();
+		addAction.setTitle(str);
+		final QuickAction mQuickAction  = new QuickAction(c);
+		mQuickAction.addActionItem(addAction);
+		mQuickAction.show(v);
+	}
+}

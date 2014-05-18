@@ -1,0 +1,164 @@
+package com.netdoers.com.ui;
+
+import org.json.JSONObject;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.smarthumanoid.com.R;
+import com.netdoers.com.SmartConsultant;
+import com.netdoers.com.dto.UserLoginDTO;
+import com.netdoers.com.service.RequestBuilder;
+import com.netdoers.com.service.ResponseParser;
+import com.netdoers.com.service.ServiceDelegate;
+import com.netdoers.com.utils.AppConstants;
+
+public class LoginScreen extends Activity {
+    /** Called when the activity is first created. */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        /*if(SmartConsultant.getPreferences().getUserLoginDTO().getSign_id() == null && SmartConsultant.getPreferences().getUserLoginDTO().getUserName() == null)
+		{
+        	setContentView(R.layout.login_screen);
+		}
+		else
+		{
+			Intent i = new Intent(this, HomeActivity.class);
+			startActivity(i);
+			finish();
+		}*/
+        /*
+         * 
+         */
+        //setContentView(R.layout.login_screen); VIKALP
+        setContentView(R.layout.login_screen_updated);
+       
+    }
+    public void onLoginClick(View v)
+    {
+    	String userName = ((EditText) findViewById(R.id.edtUserName)).getText().toString();
+		String password = ((EditText) findViewById(R.id.edtPassword)).getText().toString();
+		
+    	LoginTask loginTask = new LoginTask();
+		loginTask.execute(new String[]{userName, password});		
+    	/*Intent i = new Intent(this, HomeActivity.class);
+    	startActivity(i);
+    	finish();*/
+    }
+    
+    public void onForgetPassword(View v)
+    {
+    	Toast.makeText(this, "Forgot Password", Toast.LENGTH_SHORT).show();
+    }
+    
+    public static final int LOADING = 100;
+	public static final int MESSAGE = 101;
+	public static final int ERROR_MESSAGE = 102;
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		// TODO Auto-generated method stub
+		switch (id)
+		{
+		case LOADING:
+			ProgressDialog loadingDialog = new ProgressDialog(this);
+			loadingDialog.setMessage("Loading...");
+			loadingDialog.setCancelable(false);
+			return loadingDialog;
+		case ERROR_MESSAGE:
+			AlertDialog.Builder builder = new Builder(this);
+			builder.setTitle(R.string.app_name);
+			builder.setMessage("Problem in Login. \nPlease try again later.");
+			builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					removeDialog(ERROR_MESSAGE);
+				}
+			});
+			return builder.create();
+		case MESSAGE:
+			AlertDialog.Builder builder1 = new Builder(this);
+			builder1.setTitle(R.string.app_name);
+			builder1.setMessage("Problem in Login. \nPlease try again later.");
+			builder1.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					removeDialog(ERROR_MESSAGE);
+				}
+			});
+			return builder1.create();
+		}
+		return super.onCreateDialog(id);
+	}	
+    private class LoginTask extends AsyncTask<String, Void, UserLoginDTO>
+	{
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+			showDialog(LOADING);
+		}
+		@Override
+		protected UserLoginDTO doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			JSONObject dataToSend = RequestBuilder.getLoginData(params[0], params[1]);
+			UserLoginDTO res = null;
+			String url = RequestBuilder.getLoginUrl(params[0], params[1]);
+			try {
+				url = AppConstants.URLS.BASE_URL;
+				String str = ServiceDelegate.postData(url, dataToSend);
+				if(AppConstants.DEBUG)
+				{
+					res = ResponseParser.getLoginResponse("{\"status\":true,\"uid\":\"1746\",\"username\":\"dheeraj.kanhai@gmail.com\"}");
+				}
+				else
+				{
+					res = ResponseParser.getLoginResponse(str);
+				}
+				
+				SmartConsultant.getPreferences().setUserLoginDTO(res);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return res;
+		}
+		@Override
+		protected void onPostExecute(UserLoginDTO result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			removeDialog(LOADING);
+			if(result!=null && result.isStatus())
+			{
+				/*Intent i = new Intent(LoginScreen.this, HomeActivity.class);
+		    	startActivity(i);
+		    	finish();*/
+				
+				setResult(RESULT_OK);
+				finish();
+			}
+			else
+			{
+				//showDialog(ERROR_MESSAGE);
+				//Toast.makeText(LoginScreen.this, "Invalid login credentials", Toast.LENGTH_LONG).show();
+				
+				setResult(RESULT_CANCELED);
+				finish();
+			}
+		}
+	}
+}

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** /res/layout/add_payment.xml
+**
+** Author: VIKALP PATEL
+** Purpose: Add Payment Screen
+***************************************************************************************************
+* INDEX 		DEVELOPER			DATE      		 FUNCTION				DESCRIPTION
+***************************************************************************************************
+* 10001       VIKALP PATEL       14/01/2014								    Give better look to EditBoxes		
+***************************************************************************************************
+*/ 
+-->
+
+
+<!-- 
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false" 
+    	android:state_focused="true"
+        android:state_window_focused="true"
+        android:drawable="@drawable/inputbox_blueborder" />
+    <item android:state_enabled="false" android:drawable="@drawable/inputbox" />
+    <item android:state_pressed="true" android:drawable="@drawable/inputbox_blueborder" />
+    <item android:state_focused="true" android:state_window_focused="true"
+        android:drawable="@drawable/inputbox_blueborder" />
+    <item android:drawable="@drawable/inputbox" />
+</selector>
+ -->
+ <!-- SA 10001 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false" 
+    	android:state_focused="true"
+        android:state_window_focused="true"
+        android:drawable="@drawable/shape_inputbox_blueborder_app" 
+        />
+    <item android:state_enabled="false" android:drawable="@drawable/shape_inputbox_app" />
+    <item android:state_pressed="true" android:drawable="@drawable/shape_inputbox_blueborder_app" />
+    <item android:state_focused="true" android:state_window_focused="true"
+        android:drawable="@drawable/shape_inputbox_blueborder_app" />
+    <item 
+        android:state_focused="false" android:state_pressed="false" android:state_window_focused="true"
+        android:drawable="@drawable/shape_inputbox_app" />
+</selector> 
+<!-- EA 10001 -->

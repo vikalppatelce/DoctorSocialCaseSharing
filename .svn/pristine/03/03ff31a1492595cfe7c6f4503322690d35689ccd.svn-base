@@ -1,0 +1,33 @@
+/* HISTORY
+ * CATEGORY 		:- ACTIVITY
+ * DEVELOPER		:- VIKALP PATEL
+ * AIM			    :- ADD IPD ACTIVITY
+ * DESCRIPTION 		:- SAVE IPD
+ * 
+ * S - START E- END  C- COMMENTED  U -EDITED A -ADDED
+ * --------------------------------------------------------------------------------------------------------------------
+ * INDEX       DEVELOPER		DATE			FUNCTION		DESCRIPTION
+ * --------------------------------------------------------------------------------------------------------------------
+ * --------------------------------------------------------------------------------------------------------------------
+ */
+package com.netdoers.com.ui;
+
+import android.content.Context;
+import android.util.AttributeSet;
+import android.widget.LinearLayout;
+
+public class SquareLayout extends LinearLayout {
+    public SquareLayout(Context context) {
+        super(context);
+    }
+
+    public SquareLayout(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        setMeasuredDimension(getMeasuredWidth(), getMeasuredWidth()); //Snap to width
+    }
+}

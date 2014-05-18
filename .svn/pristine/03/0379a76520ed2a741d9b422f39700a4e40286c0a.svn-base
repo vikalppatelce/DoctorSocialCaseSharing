@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+* /res/xml/settings.xml
+*
+* Author: VIKALP PATEL
+* Purpose: Preference Screen
+* S - START E- END C- COMMENTED U -EDITED A -ADDED
+* **********************************************************************************************************************
+* INDEX 	DEVELOPER 		DATE 		DESCRIPTION
+* **********************************************************************************************************************
+* 10001 	VIKALP PATEL 10/01/2014 	CREATED PREFERENCE SCREEN
+**
+*/
+
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:title="@string/dashboard" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="prefIsSX"
+            android:summary="@string/dashboard_summary"
+            android:title="@string/sx" >
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="prefIsIPD"
+            android:summary="@string/dashboard_summary"
+            android:title="@string/ipd" >
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="prefIsOPD"
+            android:summary="@string/dashboard_summary"
+            android:title="@string/opd" >
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="prefIsRSX"
+            android:summary="@string/dashboard_summary"
+            android:title="@string/rsx" >
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="prefIsRIPD"
+            android:summary="@string/dashboard_summary"
+            android:title="@string/ripd" >
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="prefIsROPD"
+            android:summary="@string/dashboard_summary"
+            android:title="@string/ropd" >
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="prefIsPayment"
+            android:summary="@string/dashboard_summary"
+            android:title="@string/payment" >
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="prefIsExpense"
+            android:summary="@string/dashboard_summary"
+            android:title="@string/expense" >
+        </CheckBoxPreference>
+    </PreferenceCategory>
+</PreferenceScreen>

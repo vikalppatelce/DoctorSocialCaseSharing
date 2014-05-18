@@ -1,0 +1,298 @@
+/* HISTORY
+ * CATEGORY 		:- ACTIVITY
+ * DEVELOPER		:- VIKALP PATEL
+ * AIM			    :- ADD IPD ACTIVITY
+ * DESCRIPTION 		:- SAVE IPD
+ * 
+ * S - START E- END  C- COMMENTED  U -EDITED A -ADDED
+ * --------------------------------------------------------------------------------------------------------------------
+ * INDEX       DEVELOPER		DATE			FUNCTION		DESCRIPTION
+ * --------------------------------------------------------------------------------------------------------------------
+ * --------------------------------------------------------------------------------------------------------------------
+ */
+package com.netdoers.com.service;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.netdoers.com.dto.MediaUploadResponse;
+import com.netdoers.com.dto.UploadDataResponseDTO;
+import com.netdoers.com.dto.UserLoginDTO;
+import com.netdoers.com.utils.AppConstants;
+
+
+
+public class ResponseParser 
+{
+	public static UserLoginDTO getLoginResponse(String params)
+	{
+		UserLoginDTO loginDTO = null;
+		JSONObject object;
+		String username = null;
+		boolean status;
+		String userid = null;
+		try 
+		{
+			object = new JSONObject(new String(params));
+			status = object.getBoolean(AppConstants.RESPONSES.LoginResponse.STATUS);
+			
+			JSONObject childObject = object.getJSONObject("data");
+			if(childObject.has(AppConstants.RESPONSES.LoginResponse.USERNAME))
+			{
+				username = childObject.getString(AppConstants.RESPONSES.LoginResponse.USERNAME);
+			}
+			if(childObject.has(AppConstants.RESPONSES.LoginResponse.VID))
+			{
+				userid = childObject.getString(AppConstants.RESPONSES.LoginResponse.VID);
+			}
+			
+			loginDTO = new UserLoginDTO(status, username, userid);
+			
+		} 
+		catch (JSONException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return loginDTO;
+	}
+	
+	public static UploadDataResponseDTO getUploadDataResponse(String s)
+	{
+		UploadDataResponseDTO responseDTO = new UploadDataResponseDTO();
+		
+		try
+		{
+			if(s != null && s.length() > 0 )
+			{
+				s = org.apache.commons.lang3.StringEscapeUtils.unescapeJava(s);
+			}
+			
+			JSONObject jsonObject = new JSONObject(new String(s));
+			if(jsonObject.has("tables"))
+			{
+				JSONObject temp = jsonObject.getJSONObject("tables");
+				if(temp.has("service"))
+				{
+					responseDTO.setServive(temp.getString("service"));
+				}
+				if(temp.has("expense"))
+				{
+					responseDTO.setExpense(temp.getString("expense"));
+				}
+				if(temp.has("expense_image"))
+				{
+					responseDTO.setExpense_image(temp.getString("expense_image"));
+				}
+				if(temp.has("service_audio"))
+				{
+					responseDTO.setService_audio(temp.getString("service_audio"));
+				}
+			}
+			if(jsonObject.has("lov"))
+			{
+				JSONObject temp = jsonObject.getJSONObject("lov");
+				if(temp.has("location"))
+				{
+					s = temp.getString("location");
+					if(s != null)
+					{
+						s = org.apache.commons.lang3.StringEscapeUtils.unescapeJava(s);
+					}
+					responseDTO.setLocation(s);
+				}
+				if(temp.has("expense_category"))
+				{
+					String cat = temp.getString("expense_category");
+					if(cat != null)
+						cat = org.apache.commons.lang3.StringEscapeUtils.unescapeJava(cat);
+					responseDTO.setExpense_category(cat);
+				}
+				if(temp.has("patient_type"))
+				{
+					String cat = temp.getString("patient_type");
+					if(cat != null)
+						cat = org.apache.commons.lang3.StringEscapeUtils.unescapeJava(cat);
+					responseDTO.setPatient_type(cat);
+				}
+				if(temp.has("payment_mode"))
+				{
+					String cat = temp.getString("payment_mode");
+					if(cat != null)
+						cat = org.apache.commons.lang3.StringEscapeUtils.unescapeJava(cat);
+					responseDTO.setPayment_mode(cat);
+				}
+				if(temp.has("diagnose_procedure"))
+				{
+					String cat = temp.getString("diagnose_procedure");
+					if(cat != null)
+						cat = org.apache.commons.lang3.StringEscapeUtils.unescapeJava(cat);
+					responseDTO.setProcedure(cat);
+				}
+				if(temp.has("referred_by"))
+				{
+					String cat = temp.getString("referred_by");
+					if(cat != null)
+						cat = org.apache.commons.lang3.StringEscapeUtils.unescapeJava(cat);
+					responseDTO.setReferred_by(cat);
+				}
+				if(temp.has("start_time"))
+				{
+					String cat = temp.getString("start_time");
+					if(cat != null)
+						cat = org.apache.commons.lang3.StringEscapeUtils.unescapeJava(cat);
+					responseDTO.setStart_time(cat);
+				}
+				if(temp.has("surgery_level"))
+				{
+					String cat = temp.getString("surgery_level");
+					if(cat != null)
+						cat = org.apache.commons.lang3.StringEscapeUtils.unescapeJava(cat);
+					responseDTO.setSurgery_level(cat);
+				}
+				if(temp.has("team_member"))
+				{
+					String cat = temp.getString("team_member");
+					if(cat != null)
+						cat = org.apache.commons.lang3.StringEscapeUtils.unescapeJava(cat);
+					responseDTO.setTeam_member(cat);
+				}
+				if(temp.has("ward"))
+				{
+					String cat = temp.getString("ward");
+					if(cat != null)
+						cat = org.apache.commons.lang3.StringEscapeUtils.unescapeJava(cat);
+					responseDTO.setWard(cat);
+				}
+			}
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return responseDTO;
+	}
+	
+	public static UploadDataResponseDTO getDefaultDataResponse(String s, String key)
+	{
+		UploadDataResponseDTO responseDTO = new UploadDataResponseDTO();
+		
+		
+		if(s != null && s.length() > 0 )
+		{
+			s = org.apache.commons.lang3.StringEscapeUtils.unescapeJava(s);
+		}
+		try
+		{
+			JSONObject jsonObject = new JSONObject(new String(s));
+			if(jsonObject.has(key))
+			{
+				JSONObject temp = jsonObject.getJSONObject(key);
+				if(temp.has("location"))
+				{
+					s = temp.getString("location");
+					if(s != null)
+					{
+						s = org.apache.commons.lang3.StringEscapeUtils.unescapeJava(s);
+					}
+					responseDTO.setLocation(s);
+				}
+				if(temp.has("expense_category"))
+				{
+					String cat = temp.getString("expense_category");
+					if(cat != null)
+						cat = org.apache.commons.lang3.StringEscapeUtils.unescapeJava(cat);
+					responseDTO.setExpense_category(cat);
+				}
+				if(temp.has("patient_type"))
+				{
+					String cat = temp.getString("patient_type");
+					if(cat != null)
+						cat = org.apache.commons.lang3.StringEscapeUtils.unescapeJava(cat);
+					responseDTO.setPatient_type(cat);
+				}
+				if(temp.has("payment_mode"))
+				{
+					String cat = temp.getString("payment_mode");
+					if(cat != null)
+						cat = org.apache.commons.lang3.StringEscapeUtils.unescapeJava(cat);
+					responseDTO.setPayment_mode(cat);
+				}
+				if(temp.has("diagnose_procedure"))
+				{
+					String cat = temp.getString("diagnose_procedure");
+					if(cat != null)
+						cat = org.apache.commons.lang3.StringEscapeUtils.unescapeJava(cat);
+					responseDTO.setProcedure(cat);
+				}
+				if(temp.has("referred_by"))
+				{
+					String cat = temp.getString("referred_by");
+					if(cat != null)
+						cat = org.apache.commons.lang3.StringEscapeUtils.unescapeJava(cat);
+					responseDTO.setReferred_by(cat);
+				}
+				if(temp.has("start_time"))
+				{
+					String cat = temp.getString("start_time");
+					if(cat != null)
+						cat = org.apache.commons.lang3.StringEscapeUtils.unescapeJava(cat);
+					responseDTO.setStart_time(cat);
+				}
+				if(temp.has("surgery_level"))
+				{
+					String cat = temp.getString("surgery_level");
+					if(cat != null)
+						cat = org.apache.commons.lang3.StringEscapeUtils.unescapeJava(cat);
+					responseDTO.setSurgery_level(cat);
+				}
+				if(temp.has("team_member"))
+				{
+					String cat = temp.getString("team_member");
+					if(cat != null)
+						cat = org.apache.commons.lang3.StringEscapeUtils.unescapeJava(cat);
+					responseDTO.setTeam_member(cat);
+				}
+				if(temp.has("ward"))
+				{
+					String cat = temp.getString("ward");
+					if(cat != null)
+						cat = org.apache.commons.lang3.StringEscapeUtils.unescapeJava(cat);
+					responseDTO.setWard(cat);
+				}
+			}
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return responseDTO;
+	}
+	
+	public static MediaUploadResponse getMediaUploadResponse(String s)
+	{
+		MediaUploadResponse uploadResponse = new MediaUploadResponse();
+		try {
+			JSONObject jsonObject = new JSONObject(new String(s));
+			
+			if(jsonObject.has("success"))
+			{
+				uploadResponse.setSuccess(jsonObject.getBoolean("success"));
+			}
+			if(jsonObject.has("user_id"))
+			{
+				uploadResponse.setUser_id(jsonObject.getString("user_id"));
+			}
+			if(jsonObject.has("file_name"))
+			{
+				uploadResponse.setFile_name(jsonObject.getString("file_name"));
+			}
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return uploadResponse;
+	}
+}

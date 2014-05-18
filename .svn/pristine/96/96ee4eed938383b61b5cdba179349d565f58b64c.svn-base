@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:accordion="http://schemas.android.com/apk/res-auto/com.smarthumanoid.com"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    tools:ignore="ResAuto" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dip"
+        android:background="@color/blue_btn_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/btn_header_first"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:onClick="onFirst"
+            android:padding="15dip"
+            android:scaleType="fitCenter"
+            android:src="@drawable/btn_first" >
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/btn_header_prev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/btn_header_first"
+            android:onClick="onPrev"
+            android:padding="15dip"
+            android:scaleType="fitCenter"
+            android:src="@drawable/btn_prev" >
+        </ImageView>
+
+        <TextView
+            android:id="@+id/add_sx_location_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/btn_header_next"
+            android:layout_toRightOf="@+id/btn_header_prev"
+            android:gravity="center_horizontal"
+            android:text="Expenses"
+            android:textColor="#ffffff"
+            android:textSize="15dip" >
+        </TextView>
+
+        <ImageView
+            android:id="@+id/btn_header_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/btn_header_last"
+            android:onClick="onNext"
+            android:padding="15dip"
+            android:src="@drawable/btn_next" >
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/btn_header_last"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:onClick="onLast"
+            android:padding="15dip"
+            android:src="@drawable/btn_last" >
+        </ImageView>
+    </RelativeLayout>
+
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/bg"
+        tools:ignore="MissingPrefix" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <com.netdoers.com.utils.AccordionView
+                android:id="@+id/accordion_view"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                accordion:header_layout_fold_button_id="@id/foldButton"
+                accordion:header_layout_id="@layout/accordion_header"
+                accordion:header_layout_label_id="@id/foldText"
+                accordion:section_bottom="@layout/accordion_footer"
+                accordion:section_container="@layout/accordion_section"
+                accordion:section_container_parent="@id/section_content"
+                accordion:section_headers="@array/accordion_expense_sections"
+                accordion:section_visibility="@array/accordion_other_visibility"
+                android:background="#fff5f5f5"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <EditText
+                        android:id="@+id/expenses_date"
+                        android:layout_width="fill_parent"
+                        android:layout_height="50dip"
+                        android:layout_marginTop="10dip"
+                        android:background="@drawable/edt_bg"
+                        android:editable="false"
+                        android:hint="Date"
+                        android:onClick="onTime"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp" />
+
+                    <EditText
+                        android:id="@+id/expenses_amount"
+                        android:layout_width="fill_parent"
+                        android:layout_height="50dip"
+                        android:layout_marginTop="10dip"
+                        android:background="@drawable/edt_bg"
+                        android:hint="Amount"
+                        android:inputType="numberDecimal|textCapWords"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp" />
+
+                    <EditText
+                        android:id="@+id/expenses_description"
+                        android:layout_width="fill_parent"
+                        android:layout_height="55dip"
+                        android:layout_marginTop="10dip"
+                        android:background="@drawable/edt_bg"
+                        android:hint="Description"
+                        android:inputType="textCapWords"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp" >
+                    </EditText>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/add_sx_location_text"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dip"
+                        android:paddingLeft="6dip"
+                        android:text="Mode e.g Bank transfer, Cash"
+                        android:textColor="@color/blue_btn_bg"
+                        android:textSize="15dip" >
+                    </TextView>
+
+                    <AutoCompleteTextView
+                        android:id="@+id/expenses_mode_of_payment"
+                        android:layout_width="fill_parent"
+                        android:layout_height="50dip"
+                        android:layout_weight="0.15"
+                        android:background="@drawable/edt_bg"
+                        android:drawSelectorOnTop="true"
+                        android:inputType="textCapWords"
+                        android:paddingLeft="10dp" />
+
+                    <TextView
+                        android:id="@+id/add_sx_location_text"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dip"
+                        android:paddingLeft="6dip"
+                        android:text="Expense category"
+                        android:textColor="@color/blue_btn_bg"
+                        android:textSize="15dip" >
+                    </TextView>
+
+                    <AutoCompleteTextView
+                        android:id="@+id/expense_category"
+                        android:layout_width="fill_parent"
+                        android:layout_height="50dip"
+                        android:layout_weight="0.15"
+                        android:background="@drawable/edt_bg"
+                        android:drawSelectorOnTop="true"
+                        android:inputType="textCapWords"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="50dip"
+                        android:layout_marginTop="10dip"
+                        android:background="@drawable/rect_shape"
+                        android:gravity="center_vertical"
+                        android:onClick="onTakePicture"
+                        android:orientation="horizontal" >
+
+                        <Button
+                            android:id="@+id/take_picture"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dip"
+                            android:background="#00000000"
+                            android:drawableLeft="@drawable/camera_icon"
+                            android:drawablePadding="20dip"
+                            android:text="Take picture"
+                            android:textColor="#ffffff"
+                            android:textSize="15dip" >
+                        </Button>
+                    </LinearLayout>
+
+                    <Gallery
+                        android:id="@+id/imagePreview"
+                        android:layout_width="fill_parent"
+                        android:layout_height="100dip"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="10dip"
+                        android:layout_marginTop="10dip"
+                        android:scaleType="fitXY"
+                        android:spacing="10dip"
+                        android:src="@drawable/manage" >
+                    </Gallery>
+                </LinearLayout>
+            </com.netdoers.com.utils.AccordionView>
+
+            <Button
+                android:id="@+id/add_sx_save"
+                android:layout_width="fill_parent"
+                android:layout_height="50dip"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:background="@drawable/rect_shape"
+                android:onClick="onSave"
+                android:text="Save"
+                android:textColor="#ffffff"
+                android:textSize="20dip" >
+            </Button>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

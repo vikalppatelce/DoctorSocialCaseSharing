@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <style name="Animations" />
+
+	<!-- PopDownMenu -->
+	<style name="Animations.PopDownMenu" />
+	
+	<style name="FullScreen" parent="@android:style/Theme.Black.NoTitleBar.Fullscreen"/>
+	
+	<style name="boldText">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/blue_btn_bg</item>
+    </style>
+    
+	<style name="Theme.SherlockDrawer" parent="@style/Theme.Sherlock.Light.DarkActionBar">
+    <item name="homeAsUpIndicator">@drawable/selector_drawer</item>
+    <item name="spbStyle">@style/SmoothProgressBar</item>
+    </style>
+    
+	<style name="Theme.SherlockDrawer" parent="@style/Theme.Sherlock.Light.DarkActionBar">
+    <item name="android:homeAsUpIndicator">@drawable/selector_drawer</item>
+    <item name="spbStyle">@style/SmoothProgressBar</item>
+    </style>
+	
+	<style name="IgBlueButtonStyle">
+        <item name="android:textSize">12.0sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:background">@drawable/button_large_blue_bg</item>
+        <item name="android:paddingLeft">10.0dip</item>
+        <item name="android:paddingTop">2.0dip</item>
+        <item name="android:paddingRight">10.0dip</item>
+        <item name="android:paddingBottom">2.0dip</item>
+    </style>
+	
+	
+    <style name="IgGreyButtonStyleLarge">
+        <item name="android:textSize">@dimen/text_size_large_button</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:background">@drawable/button_large_grey_bg</item>
+        <item name="android:shadowColor">@color/text_shadow_green_button</item>
+        <item name="android:shadowDx">0.0</item>
+        <item name="android:shadowDy">1.0</item>
+        <item name="android:shadowRadius">0.1</item>
+    </style>
+    <style name="IgGrayButtonStyle">
+        <item name="android:textSize">12.0sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:background">@drawable/button_large_gray_bg</item>
+        <item name="android:paddingLeft">10.0dip</item>
+        <item name="android:paddingTop">2.0dip</item>
+        <item name="android:paddingRight">10.0dip</item>
+        <item name="android:paddingBottom">2.0dip</item>
+    </style>
+    
+    <style name="AppThemeLight">
+		<item name="switchStyle">@style/switch_light</item>
+		<item name="android:windowActionBar">false</item>
+		<item name="android:windowNoTitle">true</item>
+		<item name="textAppearance">@style/TextAppearance</item>
+	</style>
+	<style name="AppThemeLight">
+		<item name="switchStyle">@style/switch_light</item>
+		<item name="windowActionBar">false</item>
+		<item name="windowNoTitle">true</item>
+		<item name="textAppearance">@style/TextAppearance</item>
+	</style>
+    
+    <style name="Theme.SmoothProgressBarDefaults" parent="android:Theme">
+        <item name="spbStyle">@style/SmoothProgressBar</item>
+    </style>
+
+    <style name="SmoothProgressBar" parent="android:Widget.ProgressBar.Horizontal">
+        <item name="spb_color">@color/spb_default_color</item>
+        <item name="spb_sections_count">@integer/spb_default_sections_count</item>
+        <item name="spb_speed">@string/spb_default_speed</item>
+        <item name="spb_stroke_width">@dimen/spb_default_stroke_width</item>
+        <item name="spb_stroke_separator_length">@dimen/spb_default_stroke_separator_length</item>
+        <item name="spb_reversed">@bool/spb_default_reversed</item>
+        <item name="spb_mirror_mode">@bool/spb_default_mirror_mode</item>
+        <item name="spb_progressiveStart_activated">@bool/spb_default_progressiveStart_activated</item>
+        <item name="spb_background">@null</item>
+        <item name="spb_generate_background_with_colors">false</item>
+    </style>
+    
+</resources>

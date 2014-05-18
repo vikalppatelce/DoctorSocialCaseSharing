@@ -1,0 +1,802 @@
+/*
+ * Category :- UI | Payment
+ * Developer:- Vikalp Patel
+ * Aim      :- Add Payment
+ * Description :- Add Payment in the application
+ * S - START E- END  C- COMMENTED  U -EDITED A -ADDED
+ * --------------------------------------------------------------------------------------------------------------------
+ * INDEX       DEVELOPER		DATE			DESCRIPTION
+ * --------------------------------------------------------------------------------------------------------------------
+ * 10001       VIKALP PATEL   07/01/2014        ADD PAYMENT
+ * 10002       VIKALP PATEL   09/01/2014		ADD AUTO SUGGEST ON LOCATION FIELD
+ * 10003       VIKALP PATEL   09/01/2014        ADD AUTO SUGGEST ON DEPOSITED FIELD
+ * 10004       VIKALP PATEL   09/01/2014        INIT CAP
+ * 10005       VIKALP PATEL   10/01/2014        ADD FULLSCREEN ON APPLICATION FROM PREFERENCES
+ * 10006       VIKALP PATEL   13/01/2014        TOOLTIP FEATURE
+ */
+
+package com.netdoers.com.ui;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AutoCompleteTextView;
+import android.widget.CheckBox;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.FilterQueryProvider;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.SimpleCursorAdapter;
+import android.widget.SimpleCursorAdapter.CursorToStringConverter;
+import android.widget.Toast;
+
+import com.netdoers.com.CustomToast;
+import com.netdoers.com.SmartConsultant;
+import com.netdoers.com.dto.DBConstant;
+import com.netdoers.com.utils.InitCap;
+import com.smarthumanoid.com.R;
+
+@SuppressLint({ "ValidFragment", "NewApi" })
+public class AddPaymentActivity extends FragmentActivity {
+
+	EditText recDate, serDate;
+	EditText chqNo, inHand;
+	EditText tdsPer, tdsAmt, amount;
+	EditText strCheque;//,location,bank;//COMMENETED 10002
+	AutoCompleteTextView location,bank;//SA10002
+	final static int[] to = new int[] { R.id.txtText};//
+	ArrayList<String> strLocation = new ArrayList<String>();//EA10002
+	ArrayList<String> strDepositedBank = new ArrayList<String>();//ADDED 10003
+	RadioGroup radioPaySrc,radioPayMode;
+	CheckBox isReconcileChk;
+	SimpleCursorAdapter locationAdapter;//ADDED 10002
+	SimpleCursorAdapter depositedBankAdapter;//ADDED 10003
+	InitCap initCap;//Added 10004
+	SharedPreferences pref;//Added 10005
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		//SA 10005
+		pref = PreferenceManager.getDefaultSharedPreferences(SmartConsultant.getApplication());
+		if(pref.getBoolean("prefIsFullScreen", false))
+		{
+			setTheme(R.style.FullScreen);
+		}
+		//EA 10005
+		setContentView(R.layout.add_payment);
+		initCap = new InitCap();//Added 10004
+		initializeData();
+
+		recDate = (EditText) findViewById(R.id.receive_date);
+		serDate = (EditText) findViewById(R.id.service_date);
+		radioPaySrc = (RadioGroup)findViewById(R.id.radioPaySrc);
+		radioPayMode = (RadioGroup)findViewById(R.id.radioPayMode);
+		isReconcileChk = (CheckBox)findViewById(R.id.add_pay_reconcile);
+		tdsPer=(EditText)findViewById(R.id.add_pay_tds_per);
+		inHand = (EditText)findViewById(R.id.add_pay_tds_in_hand);
+		tdsAmt = (EditText)findViewById(R.id.add_pay_tds_amt);
+		amount = (EditText)findViewById(R.id.add_pay_amt);
+		strCheque= (EditText)findViewById(R.id.add_pay_chq);
+		//location = (EditText)findViewById(R.id.add_pay_location); //SC10002
+		//bank=(EditText)findViewById(R.id.add_pay_bank); //EC10002
+		location = (AutoCompleteTextView)findViewById(R.id.add_pay_location); //SA10002
+		bank=(AutoCompleteTextView)findViewById(R.id.add_pay_bank);//EA10002
+		
+		tdsPer.setText("10");
+		setLocationAdapter();//ADDED 10002
+		setDepositedBankAdapter();//ADDED 10003
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		String date = sdf.format(new Date(System.currentTimeMillis()));
+		if (date.contains("/")) {
+			date = date.replace("/", "-");
+		}
+		recDate.setText(date);
+		inHand.addTextChangedListener(textWatcher);
+		tdsPer.addTextChangedListener(textWatcher);
+		//tdsAmt.addTextChangedListener(watcher);
+		//SA 10006
+		if(pref.getBoolean("prefIsToolTip", false))
+		{
+			onToolTipOn();
+		}
+		//EA 10006
+	}
+
+	public void onReceiveTime(View v) {
+		DialogFragment newFragment = new ReceivedDatePickerFragment();
+		newFragment.show(getSupportFragmentManager(), "Received Date");
+	}
+	
+	public void onServiceTime(View v) {
+		DialogFragment newFragment = new ServiceDatePickerFragment();
+		newFragment.show(getSupportFragmentManager(), "Service Date");
+	}
+	
+	//SA10002
+	public void initializeData()
+	{
+		strLocation = SmartConsultant.getApplication().loadLocation();
+		strDepositedBank = SmartConsultant.getApplication().loadDepositedBank();//ADDED 10003
+	}
+	public void addContent(Uri uri, String str)
+	{
+		ContentValues values = new ContentValues();
+		str = initCap.toTitleCase(str);//ADDED 10004
+		values.put(DBConstant.Location_Columns.COLUMN_NAME, str);
+		values.put(DBConstant.Location_Columns.COLUMN_SYNC_STATUS, 0);
+		getContentResolver().insert(uri, values);
+	}
+	public void addLocation()
+	{
+		String s = initCap.toTitleCase(location.getText().toString());//EDITED 10004
+		if(s!= null && s.length() > 0 && !strLocation.contains(new String(s)))
+		{
+			addContent(DBConstant.Location_Columns.CONTENT_URI, s);
+		}
+	}
+	//EA10002
+	
+	//SA 10003
+	public void addDepositedBank()
+	{
+		String s = initCap.toTitleCase(bank.getText().toString());//EDITED 10004
+		if(s!= null && s.length() > 0 && !strDepositedBank.contains(new String(s)))
+		{
+			addContent(DBConstant.Deposited_Bank_Columns.CONTENT_URI, s);
+		}
+	}
+	//EA 10003
+	
+	public void onRadioPaySrc(View v)
+	{
+		boolean checked = ((RadioButton)v).isChecked();
+		
+		switch(v.getId())
+		{
+		case R.id.radioPrf:
+			if(checked)
+			{
+				isReconcileChk.setChecked(true);
+			}
+			break;
+		case R.id.radioOther:
+			if(checked)
+			{
+				isReconcileChk.setChecked(false);
+			}
+			break;
+		}
+		
+	}
+	
+	
+	public void onRadioPayMode(View v)
+	{
+		boolean checked = ((RadioButton)v).isChecked();
+		
+		switch(v.getId())
+		{
+		case R.id.radioCheque:
+			if(checked)
+			{
+				tdsPer.setText("10");
+			}
+			break;
+		case R.id.radioCash:
+			if(checked)
+			{
+				tdsPer.setText("0");
+			}
+			break;
+		}
+		
+	}
+	
+	//SA10002
+	public void setLocationAdapter()
+	{
+		//int[] to = new int[] { android.R.id.text1 };
+	    String[] from = new String[] { DBConstant.Location_Columns.COLUMN_NAME };
+	    
+		locationAdapter = 
+            /*new SimpleCursorAdapter(this, 
+                    android.R.layout.simple_dropdown_item_1line, null,
+                    from, to);*/
+				new MyCursorAdapter(this, R.layout.edt_item, null, from, to);
+        location.setAdapter(locationAdapter);
+
+        // Set an OnItemClickListener, to update dependent fields when
+        // a choice is made in the AutoCompleteTextView.
+        location.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+			public void onItemClick(AdapterView<?> listView, View view,
+                        int position, long id) {
+                // Get the cursor, positioned to the corresponding row in the
+                // result set
+                /*Cursor cursor = (Cursor) listView.getItemAtPosition(position);
+
+                // Get the state's capital from this row in the database.
+                String name = cursor.getString(1);
+                String _id = cursor.getString(0);
+                String type = cursor.getString(2);
+                startNextActivity(_id, name, type);*/
+                // Update the parent class's TextView
+            }
+        });
+
+        // Set the CursorToStringConverter, to provide the labels for the
+        // choices to be displayed in the AutoCompleteTextView.
+        locationAdapter.setCursorToStringConverter(new CursorToStringConverter() {
+            @Override
+			public String convertToString(android.database.Cursor cursor) {
+                // Get the label for this row out of the "state" column
+                //final int columnIndex = cursor.getColumnIndexOrThrow("state");
+                final String str = cursor.getString(cursor.getColumnIndex(DBConstant.Location_Columns.COLUMN_NAME));
+                return str;
+            }
+        });
+      // Set the FilterQueryProvider, to run queries for choices
+        // that match the specified input.
+        locationAdapter.setFilterQueryProvider(new FilterQueryProvider() {
+            @Override
+			public Cursor runQuery(CharSequence constraint) {
+                // Search for states whose names begin with the specified letters.
+                //Cursor cursor = getContentResolver().query(DBConstant.Patient_Columns.CONTENT_URI, projection, DBConstant.Patient_Columns.COLUMN_NAME + "=%" + constraint.toString()+"%", new String[]{constraint.toString()}, null);
+            	//Cursor cursor = getContentResolver().query(DBConstant.Patient_Columns.CONTENT_URI, projection, DBConstant.Patient_Columns.COLUMN_NAME + " like '%" + constraint.toString()+"%'", null, null);
+            	
+            	Cursor cursor = getContentResolver().query(DBConstant.Location_Columns.CONTENT_URI, null, DBConstant.Location_Columns.COLUMN_NAME + " like '%" + constraint.toString()+"%'", null, null);
+            	
+                return cursor;
+            }
+        });
+	}
+	//EA10002
+	
+	//SA10003
+		public void setDepositedBankAdapter()
+		{
+			//int[] to = new int[] { android.R.id.text1 };
+		    String[] from = new String[] { DBConstant.Deposited_Bank_Columns.COLUMN_NAME };
+		    
+			depositedBankAdapter = 
+	            /*new SimpleCursorAdapter(this, 
+	                    android.R.layout.simple_dropdown_item_1line, null,
+	                    from, to);*/
+					new MyCursorAdapter(this, R.layout.edt_item, null, from, to);
+	        bank.setAdapter(depositedBankAdapter);
+
+	        // Set an OnItemClickListener, to update dependent fields when
+	        // a choice is made in the AutoCompleteTextView.
+	        bank.setOnItemClickListener(new OnItemClickListener() {
+	            @Override
+				public void onItemClick(AdapterView<?> listView, View view,
+	                        int position, long id) {
+	                // Get the cursor, positioned to the corresponding row in the
+	                // result set
+	                /*Cursor cursor = (Cursor) listView.getItemAtPosition(position);
+
+	                // Get the state's capital from this row in the database.
+	                String name = cursor.getString(1);
+	                String _id = cursor.getString(0);
+	                String type = cursor.getString(2);
+	                startNextActivity(_id, name, type);*/
+	                // Update the parent class's TextView
+	            }
+	        });
+
+	        // Set the CursorToStringConverter, to provide the labels for the
+	        // choices to be displayed in the AutoCompleteTextView.
+	        depositedBankAdapter.setCursorToStringConverter(new CursorToStringConverter() {
+	            @Override
+				public String convertToString(android.database.Cursor cursor) {
+	                // Get the label for this row out of the "state" column
+	                //final int columnIndex = cursor.getColumnIndexOrThrow("state");
+	                final String str = cursor.getString(cursor.getColumnIndex(DBConstant.Deposited_Bank_Columns.COLUMN_NAME));
+	                return str;
+	            }
+	        });
+	      // Set the FilterQueryProvider, to run queries for choices
+	        // that match the specified input.
+	        depositedBankAdapter.setFilterQueryProvider(new FilterQueryProvider() {
+	            @Override
+				public Cursor runQuery(CharSequence constraint) {
+	                // Search for states whose names begin with the specified letters.
+	                //Cursor cursor = getContentResolver().query(DBConstant.Patient_Columns.CONTENT_URI, projection, DBConstant.Patient_Columns.COLUMN_NAME + "=%" + constraint.toString()+"%", new String[]{constraint.toString()}, null);
+	            	//Cursor cursor = getContentResolver().query(DBConstant.Patient_Columns.CONTENT_URI, projection, DBConstant.Patient_Columns.COLUMN_NAME + " like '%" + constraint.toString()+"%'", null, null);
+	            	
+	            	Cursor cursor = getContentResolver().query(DBConstant.Deposited_Bank_Columns.CONTENT_URI, null, DBConstant.Deposited_Bank_Columns.COLUMN_NAME + " like '%" + constraint.toString()+"%'", null, null);
+	            	
+	                return cursor;
+	            }
+	        });
+		}
+		//EA10003
+
+	
+	
+	
+	public void onSave(View v)
+	{
+		if(true/*(addSxName.getText() != null && addSxName.getText().toString().length() > 0) 
+				&& (addSxLocation.getText() != null && addSxLocation.getText().toString().length() > 0)*/)
+		{
+			save();
+		}
+		else
+		{
+			Toast.makeText(this, "Make sure you have enter proper values in Name and Location fields.", Toast.LENGTH_LONG).show();
+		}
+		//Toast.makeText(this, "Data saved", Toast.LENGTH_LONG).show();
+	}
+	
+	public void onSaveMain(View v)
+	{
+		if(true/*(addSxName.getText() != null && addSxName.getText().toString().length() > 0) 
+				&& (addSxLocation.getText() != null && addSxLocation.getText().toString().length() > 0)*/)
+		{
+			save();
+			finish();
+		}
+		else
+		{
+			Toast.makeText(this, "Make sure you have enter proper values in Name and Location fields.", Toast.LENGTH_LONG).show();
+		}
+		finish();
+	}
+	
+	public void onCancel(View v)
+	{
+		finish();
+	}
+	
+	
+	
+	public void save()
+	{
+		//Toast.makeText(this, "Data saved", Toast.LENGTH_LONG).show();
+		Bundle b = new Bundle();
+		b.putString("message", "Saving IPD");
+		showDialog(LOADING, b);
+		ContentValues contentValues = new ContentValues();
+		ContentValues contentValuesTemp = new ContentValues();
+		
+		String svRecvDate = recDate.getText().toString().trim();
+		String svServDate = serDate.getText().toString().trim();
+		String svPaySrc="";
+		String svReconcile="";
+		String svPayType="";
+		String svCheque="", svInHand="",svTdsPer="",svTdsAmt="",svAmt="",svLocation="",svBank="";
+		RadioButton paySrc = (RadioButton)findViewById(radioPaySrc.getCheckedRadioButtonId());
+		RadioButton payType = (RadioButton)findViewById(radioPayMode.getCheckedRadioButtonId());
+		svPaySrc=initCap.toTitleCase(paySrc.getText().toString().trim());// EDITED 10004	
+		if(isReconcileChk.isChecked())
+		{
+			svReconcile="True";
+		}
+		else
+		{
+			svReconcile="False";
+		}
+			svPayType=payType.getText().toString().trim();
+
+		svCheque = strCheque.getText().toString().trim();
+		svInHand = inHand.getText().toString().trim();
+		svTdsPer = tdsPer.getText().toString().trim();
+		svTdsAmt = tdsAmt.getText().toString().trim();
+		svAmt = amount.getText().toString().trim();
+		svLocation = initCap.toTitleCase(location.getText().toString().trim());//EDITED 10004
+		svBank = initCap.toTitleCase(bank.getText().toString().trim());//EDITED 10004
+		addLocation();//ADDED 10002
+		addDepositedBank();//ADDED 10003
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_CUSTOM_ID, SmartConsultant.getPreferences().getIMEINo());
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_CUSTOM_ID, SmartConsultant.getPreferences().getIMEINo());
+		
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_RECEIVED_DATE, svRecvDate);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_RECEIVED_DATE, svRecvDate);
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_SERVICED_DATE, svServDate);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_SERVICED_DATE, svServDate);
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_PAYMENT_SOURCE, svPaySrc);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_PAYMENT_SOURCE, svPaySrc);
+
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_PAYMENT_MODE, svPayType);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_PAYMENT_MODE, svPayType);
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_RECONCILE, svReconcile);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_RECONCILE, svReconcile);
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_CHEQUE, svCheque);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_CHEQUE, svCheque);
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_IN_HAND, svInHand);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_IN_HAND, svInHand);
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_TDS_PER, svTdsPer);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_TDS_PER, svTdsPer);
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_TDS_AMT, svTdsAmt);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_TDS_AMT, svTdsAmt);
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_AMOUNT, svAmt);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_AMOUNT, svAmt);
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_LOCATION, svLocation);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_LOCATION, svLocation);
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_BANK, svBank);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_BANK, svBank);
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_PY_WATCH,  "");
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_SYNC_STATUS, 0);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_SYNC_STATUS, 0);
+		
+
+		getContentResolver().insert(DBConstant.Payment_Columns.CONTENT_URI, contentValues);
+		
+		Uri uri = getContentResolver().insert(DBConstant.Payment_Temp_Columns.CONTENT_URI, contentValuesTemp);
+		
+		
+	//	String myId = uri.toString().substring(uri.toString().lastIndexOf("/") + 1);
+		//name.put(DBConstant.Patient_Name_Columns.COLUMN_RED_ID, myId);
+		//getContentResolver().insert(DBConstant.Patient_Name_Columns.CONTENT_URI, name);
+		removeDialog(LOADING);
+		
+		Toast.makeText(this, "Payment saved.", Toast.LENGTH_LONG).show();
+//		clearField();
+	}
+	//SA 10006
+	public void onToolTipOn()
+	{
+		final Context c = getApplicationContext();
+		
+		strCheque.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				CustomToast.showToastMessage(c, "Cheque no used for payment");
+			}
+		});
+		
+		inHand.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				CustomToast.showToastMessage(c, "In Hand Amount after deducting TDS");
+			}
+		});
+		
+		tdsPer.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				CustomToast.showToastMessage(c, "TDS percentage");
+			}
+		});
+		
+		tdsAmt.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				CustomToast.showToastMessage(c, "Amount of In Hand acc. to TDS %");
+			}
+		});
+		
+		amount.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				CustomToast.showToastMessage(c, "Total Amount before TDS%");
+			}
+		});
+		
+		location.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				CustomToast.showToastMessage(c, "Amount for particular hospital or location");
+			}
+		});
+		
+		bank.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				CustomToast.showToastMessage(c, "Bank name where amount is deposited");
+			}
+		});
+	}
+
+	//EA 10006
+
+	public void clearField() {
+		strCheque.setText("");
+		//inHand.setText("");
+		// if(lstLocation != null && lstLocation.size() > 0)
+
+		location.setText("");// addSxLocation.setSelection(0);
+		bank.setText("");
+		//tdsPer.setText("");
+
+		// addSxDate.setText("Date : DD-MM-YYYY");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		String date = sdf.format(new Date(System.currentTimeMillis()));
+		if (date.contains("/")) {
+			date = date.replace("/", "-");
+		}
+		recDate.setText(date);
+		serDate.setText("");// addSxWard.setSelection(0);
+		isReconcileChk.setChecked(false);
+		radioPaySrc.check(0);
+		radioPayMode.check(0);
+	}
+
+	public static final int LOADING = 101;
+	@Override
+	protected Dialog onCreateDialog(int id, Bundle b) {
+		String msg = b.getString("message");
+		switch(id)
+		{
+			case LOADING:
+				ProgressDialog loadingDialog = new ProgressDialog(this);
+				loadingDialog.setMessage(msg);
+				loadingDialog.setCancelable(false);
+				return loadingDialog;
+		}
+		return super.onCreateDialog(id);
+	}
+	
+		TextWatcher textWatcher = new TextWatcher() {
+		 
+	    @Override
+	    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+	 
+	    }
+	 
+	    @Override
+	    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+	  
+	    }
+	 
+	    @Override
+	    public void afterTextChanged(Editable editable) {
+	    
+	    	String strHand = inHand.getText().toString().trim();
+	    	String strTdsPer = tdsPer.getText().toString().trim();
+	    	String strTdsAmt = tdsAmt.getText().toString().trim();
+	    	int intInHand, intInTdsPer, intTdsAmt;
+	    	if((!strHand.isEmpty()))
+	    	{
+		    	intInHand = Integer.parseInt(strHand);
+	    	}
+	    	else 
+	    	{
+	    		intInHand = 0;
+	    	}
+	    	
+	    	if((!strTdsPer.isEmpty()))
+	    	{
+	    		intInTdsPer = Integer.parseInt(strTdsPer);
+	    	}
+	    	else
+	    	{
+	    		intInTdsPer= 0;
+	    	}
+	    	intTdsAmt = calculate(intInHand,intInTdsPer);
+	    	amount.setText(String.valueOf(intInHand + intTdsAmt));
+	    	tdsAmt.setText(String.valueOf(intTdsAmt));
+	    	tdsAmt.addTextChangedListener(watcher);
+	    }
+	};
+	
+	public int calculate(int inHand, int tdsPer)
+	{
+		int amount = 0;
+		amount = (inHand * tdsPer)/100;
+		return amount;
+	}
+	
+	TextWatcher watcher = new TextWatcher() {
+		 
+	    @Override
+	    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+	 
+	    }
+	 
+	    @Override
+	    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+	  
+	    }
+	 
+	    @Override
+	    public void afterTextChanged(Editable editable) {
+	    
+	    	String strHand = inHand.getText().toString().trim();
+	    	String strTdsPer = tdsPer.getText().toString().trim();
+	    	String strTdsAmt = tdsAmt.getText().toString().trim();
+	    	int intInHand, intInTdsAmt, intTdsPer;
+	    	if((!strHand.isEmpty()))
+	    	{
+		    	intInHand = Integer.parseInt(strHand);
+	    	}
+	    	else 
+	    	{
+	    		intInHand = 0;
+	    	}
+	    	
+	    	if((!strTdsAmt.isEmpty()))
+	    	{
+	    		intInTdsAmt = Integer.parseInt(strTdsPer);
+	    	}
+	    	else
+	    	{
+	    		intInTdsAmt= 0;
+	    	}
+	    	intTdsPer = calculateTdsPer(intInHand,intInTdsAmt);
+	    	//amount.setText(String.valueOf(intInHand - intTdsAmt));
+	    	//tdsPer.setText(String.valueOf(intTdsPer));
+	    	//Toast.makeText(getApplicationContext(), ""+String.valueOf(intTdsPer), Toast.LENGTH_SHORT).show();
+	    }
+	};
+	
+	public int calculateTdsPer(int intInHand,int intInTdsAmt)
+	{
+		int tdsPercentage = 0;
+		if(intInTdsAmt > intInHand)
+		{
+			//Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
+			intInTdsAmt = intInHand;
+			tdsPercentage = 100;
+		}
+		else
+		{
+			try
+			{
+			tdsPercentage = (intInTdsAmt*100)/intInHand;
+			}
+			catch(ArithmeticException e)
+			{
+				tdsPercentage =0;
+			}
+		}
+		return tdsPercentage;
+	}
+	
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater menuInflater = getMenuInflater();
+		menuInflater.inflate(R.menu.menu, menu);
+		return true;
+	}
+
+	/**
+	 * Event Handling for Individual menu item selected Identify single menu
+	 * item by it's id
+	 * */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		switch (item.getItemId()) {
+		case com.smarthumanoid.com.R.id.mnuHelp:
+			Intent i = new Intent(this, HelpActivity.class);
+			i.putExtra("caller", "payment");
+			startActivity(i);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+	
+	class ServiceDatePickerFragment extends DialogFragment implements
+			OnDateSetListener {
+
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			// Use the current time as the default values for the picker
+			final Calendar c = Calendar.getInstance();
+			int yr = c.get(Calendar.YEAR);
+			int mnth = c.get(Calendar.MONTH);
+			int day = c.get(Calendar.DAY_OF_MONTH);
+			// Create a new instance of TimePickerDialog and return it
+			return new DatePickerDialog(getActivity(), this, yr, mnth, day);
+		}
+
+		@Override
+		public void onDateSet(DatePicker view, int year, int monthOfYear,
+				int dayOfMonth) {
+			// TODO Auto-generated method stub
+			String date;
+			monthOfYear++;
+			if (dayOfMonth < 10) {
+				date = "0" + dayOfMonth + "-";
+			} else {
+				date = dayOfMonth + "-";
+			}
+			if (monthOfYear < 10) {
+				date += "0" + monthOfYear + "-";
+			} else {
+				date += monthOfYear + "-";
+			}
+
+			date += year;
+			// addSxDate.setText(dayOfMonth+"-"+monthOfYear+"-"+year);
+			serDate.setText(date);
+		}
+	}
+	
+	
+	class ReceivedDatePickerFragment extends DialogFragment implements
+			OnDateSetListener {
+
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			// Use the current time as the default values for the picker
+			final Calendar c = Calendar.getInstance();
+			int yr = c.get(Calendar.YEAR);
+			int mnth = c.get(Calendar.MONTH);
+			int day = c.get(Calendar.DAY_OF_MONTH);
+			// Create a new instance of TimePickerDialog and return it
+			return new DatePickerDialog(getActivity(), this, yr, mnth, day);
+		}
+
+		@Override
+		public void onDateSet(DatePicker view, int year, int monthOfYear,
+				int dayOfMonth) {
+			// TODO Auto-generated method stub
+			String date;
+			monthOfYear++;
+			if (dayOfMonth < 10) {
+				date = "0" + dayOfMonth + "-";
+			} else {
+				date = dayOfMonth + "-";
+			}
+			if (monthOfYear < 10) {
+				date += "0" + monthOfYear + "-";
+			} else {
+				date += monthOfYear + "-";
+			}
+
+			date += year;
+			// addSxDate.setText(dayOfMonth+"-"+monthOfYear+"-"+year);
+			recDate.setText(date);
+		}
+	}
+}

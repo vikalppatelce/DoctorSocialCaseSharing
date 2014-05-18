@@ -1,0 +1,194 @@
+/*HISTORY
+* CATEGORY			 :- DATABASE
+* DEVELOPER			 :- VIKALP PATEL
+* AIM			     :- GETTER & SETTER FOR ADD PAYMENT
+* DESCRIPTION 		 :- DTO OPERATION
+* 
+* S - START E- END C- COMMENTED U -EDITED A -ADDED
+* --------------------------------------------------------------------------------------------------------------------
+* INDEX 	DEVELOPER 		DATE 			FUNCTION		DESCRIPTION
+* --------------------------------------------------------------------------------------------------------------------
+* 10001	   VIKALP PATEL   07/01/2014 		GETTER AND SETTER FOR PAYMENT OPTION
+* --------------------------------------------------------------------------------------------------------------------
+*/
+package com.netdoers.com.dto;
+
+public class PaymentDTO {
+	
+	public String _id;
+	public String _newId;
+	public String received_date;
+	public String serviced_date;
+	public String payment_src;
+	public String reconcile;
+	public String payment_mode;
+	public String cheque;
+	public String inhand;
+	public String getInhand() {
+		return inhand;
+	}
+
+	public void setInhand(String inhand) {
+		this.inhand = inhand;
+	}
+	public String tds_per;
+	public String tds_amt;
+	public String amount;
+	public String location;
+	public String bank;
+	public String totalCount;
+	public String status;
+	public String py_watch;
+
+	public PaymentDTO() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public PaymentDTO(String id, String newId, String received_date,
+			String serviced_date, String payment_src, String reconcile,
+			String payment_mode, String cheque, String inhand, String tds_per,
+			String tds_amt, String amount, String location, String bank,
+			String totalCount, String status, String py_watch) {
+		_id = id;
+		_newId = newId;
+		this.received_date = received_date;
+		this.serviced_date = serviced_date;
+		this.payment_src = payment_src;
+		this.reconcile = reconcile;
+		this.payment_mode = payment_mode;
+		this.cheque = cheque;
+		this.inhand = inhand;
+		this.tds_per = tds_per;
+		this.tds_amt= tds_amt;
+		this.amount = amount;
+		this.location = location;
+		this.bank = bank;
+		this.totalCount = totalCount;
+		this.status = status;
+		this.py_watch = py_watch;
+	}
+	public String get_id() {
+		return _id;
+	}
+	public void set_id(String id) {
+		_id = id;
+	}
+	public String get_newId() {
+		return _newId;
+	}
+	public void set_newId(String newId) {
+		_newId = newId;
+	}
+	public String get_receivedDate()
+	{
+		return received_date;
+	}
+	public void set_receivedDate(String received_date)
+	{
+		this.received_date = received_date;
+	}
+	public String get_servicedDate()
+	{
+		return serviced_date;
+	}
+	public void set_servicedDate(String serviced_date)
+	{
+		this.serviced_date = serviced_date;
+	}
+	public String get_paymentSrc()
+	{
+		return payment_src;
+	}
+	public void set_paymentSrc(String payment_src)
+	{
+		this.payment_src = payment_src;
+	}
+	public String get_reconcile()
+	{
+		return reconcile;
+	}
+	public void set_reconcile(String reconcile)
+	{
+		this.reconcile =reconcile;
+	}
+	public String get_paymenMode()
+	{
+		return payment_mode;
+	}
+	public void set_PaymentMode(String payment_mode)
+	{
+		this.payment_mode =payment_mode;
+	}
+	public String get_cheque()
+	{
+		return cheque;
+	}
+	public void set_cheque(String cheque)
+	{
+		this.cheque = cheque;
+	}
+	public String get_tdsPer()
+	{
+		return tds_per;
+	}
+	public void set_tdsPer(String tds_per)
+	{
+		this.tds_per=tds_per;
+	}
+	public String get_tdsAmount()
+	{
+		return tds_amt;
+	}
+	public void set_tdsAmount(String tds_amt)
+	{
+		this.tds_amt=tds_amt;
+	}
+	public String get_Amount()
+	{
+		return amount;
+	}
+	public void set_Amount(String amount)
+	{
+		this.amount = amount;
+	}
+	public String get_location()
+	{
+		return location;
+	}
+	public void set_location(String location)
+	{
+		this.location= location;
+	}
+	public String get_bank()
+	{
+		return bank;
+	}
+	public void set_bank(String bank)
+	{
+		this.bank=bank;
+	}
+	public String get_totalCount()
+	{
+		return totalCount;
+	}
+	public void set_totalCount(String totalCount)
+	{
+		this.totalCount = totalCount;
+	}
+	public String get_status()
+	{
+		return status;
+	}
+	public void set_status(String status)
+	{
+		this.status= status;
+	}
+	public String get_pyWatch()
+	{
+		return py_watch;
+	}
+	public void set_pyWatch(String py_watch)
+	{
+		this.py_watch=py_watch;
+	}
+}

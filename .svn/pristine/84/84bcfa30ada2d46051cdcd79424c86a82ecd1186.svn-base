@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Add Expense</title>
+<style type="text/css">
+.underline{
+	text-decoration: underline;
+}
+</style>
+</head>
+<body>
+<div>
+	<b>Fields on <span class="underline">Expense Screen</span></b><br/>
+	<b>Date:</b> Auto populated to today’s date but you can change. <br/>
+	<b>Amount:</b>  Numeric value of the money spent<br/>
+	<b>Description:</b> Free text field to enter your notes<br/>
+	<b>Mode*:</b>  Enter which credit card, bank transfer, cash<br/>
+	<b>Expense Category*:</b>  Broad categorization like Office Supplies, Cell phone bills, Petrol and so on
+	<br/><br/>
+	<b>Buttons</b><br/>
+	<b>Take Picture:</b> This button invokes onboard camera app. Click the image and hit Save at the bottom to come back to the Expense Screen.<br/>
+	<b>Save</b> to save the record you  just entered.<br/>
+	<b>After Saving</b> you can enter new expense or review the previous expense records through the navigation buttons on the<br/> 
+	Go back to go to Home screen.<br/><br/>
+	
+	*Fields that have memory. If you enter data once, it will remember that entry for future records so that you don’t have to enter the entire term next time.
+	<br/>
+</div>
+</body>
+</html>

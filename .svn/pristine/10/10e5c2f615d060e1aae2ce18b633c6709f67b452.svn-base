@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Set Up</title>
+<style type="text/css">
+.underline{
+	text-decoration: underline;
+}
+</style>
+</head>
+<body>
+<div>
+
+    <b><span class="underline">Full Screen </span></b><br/>
+Get a bigger screen for the app by removing the top notification bar.
+<br/><br/>
+  
+    <b><span class="underline">Tutorial Mode </span></b><br/>
+Turn on/off the messages that are displayed while entering data on any field.
+<br/><br/>
+
+	<b><span class="underline">Manage Lists</span></b><br/>
+LOV stands for List of values
+All the values in the fields that auto-complete can be added and deleted here.
+<br/><br/>
+
+	<b><span class="underline">Start Syncing</span></b><br/>
+The app syncs all the records, voice and images when you are in the wi-fi zone but if you want to sync before that, you can click the start syncing button to sync data over the 3G network.
+<br/><br/>
+
+    <b><span class="underline">Sync Frequency</span></b><br/>
+Adjust the behavior of your app to automatically sync as much as possible or to optimize network utilization.
+<br/><br/>
+
+	<b><span class="underline">Flash Always On</span></b><br/>
+Will keep the flash always on when using the camera.
+<br/><br/>
+
+	<b><span class="underline">Resize images</span></b><br/>
+will automatically resize images before transmitting to your cloud account.
+<br/><br/>
+
+	<b><span class="underline">Feedback</span></b><br/>
+For questions and feedback please write to <a href="feedback@smarthumanoid.com">feedback@smarthumanoid.com</a>.
+<br/><br/>
+
+	
+ 
+</div>
+</body>
+</html>

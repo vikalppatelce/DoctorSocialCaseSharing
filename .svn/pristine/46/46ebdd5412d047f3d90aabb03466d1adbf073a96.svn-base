@@ -1,0 +1,642 @@
+/* HISTORY
+ * CATEGORY 		:- ACTIVITY
+ * DEVELOPER		:- VIKALP PATEL
+ * AIM			    :- ADD IPD ACTIVITY
+ * DESCRIPTION 		:- SAVE IPD
+ * 
+ * S - START E- END  C- COMMENTED  U -EDITED A -ADDED
+ * --------------------------------------------------------------------------------------------------------------------
+ * INDEX       DEVELOPER		DATE			FUNCTION		DESCRIPTION
+ * --------------------------------------------------------------------------------------------------------------------
+ * 1000A      VIKALP PATEL     04/02/14         RELEASE         ADDED IMAGES SX, IPD & OPD.
+ * 1000B-3    VIKALP PATEL     10/02/14         RELEASE         ADDED PAYMENT
+ * S0001      VIKALP PATEL     27/02/14         SECURITY        ADDED PASSHAS IN JSON.
+ * S0002      VIKALP PATEL     27/02/14         SECURITY        VALID USER CHECK [PASSWORD - ACCOUNT EXPIRED - DEVICE ALLOWED]
+ * --------------------------------------------------------------------------------------------------------------------
+ */
+package com.netdoers.com.service;
+
+import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.netdoers.com.SmartConsultant;
+import com.netdoers.com.dto.ExpenseDTO;
+import com.netdoers.com.dto.ExpenseDetailsDTO;
+import com.netdoers.com.dto.PatientDTO;
+import com.netdoers.com.dto.PatientDetailsDTO;
+import com.netdoers.com.dto.PaymentDTO;
+import com.netdoers.com.dto.RecordingDTO;
+import com.netdoers.com.dto.lovDTO;
+import com.netdoers.com.utils.AppConstants;
+
+
+public class RequestBuilder {
+
+	public static String getLoginUrl(String username, String password)
+	{
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append(AppConstants.URLS.BASE_URL);
+		return stringBuffer.toString();
+	}
+	public static JSONObject getLoginData(String username, String password,String device_id, String device_name, String myVersion)//EDITED X0001
+	{
+		JSONObject stringBuffer = new JSONObject();
+		
+		//JSONObject ParentBuffer = new JSONObject();
+		try
+		{
+			stringBuffer.put("act", "loginvalidate");
+			stringBuffer.put("email", username);
+			stringBuffer.put("user_password", password);
+			stringBuffer.put("device_name", device_name);//SA S0002
+			stringBuffer.put("os_version", myVersion);
+			stringBuffer.put("device_id", device_id);//EA S0002
+			
+			//ParentBuffer.put("data", stringBuffer.toString());
+		}
+		catch(Exception e)
+		{
+			
+		}
+		return stringBuffer;//ParentBuffer;
+	}
+	public static JSONObject getLOvData(String username)
+	{
+		JSONObject stringBuffer = new JSONObject();		
+		try
+		{
+			stringBuffer.put("act", "default_lov");
+			stringBuffer.put("speciality", username);
+		}
+		catch(Exception e)
+		{
+			
+		}
+		return stringBuffer;
+	}
+	public static JSONObject getServicesData(String imei, JSONObject jsonObject, JSONObject tables)
+	{
+		JSONObject stringBuffer = new JSONObject();
+		
+		//JSONObject ParentBuffer = new JSONObject();
+		try
+		{
+			stringBuffer.put("user_id", SmartConsultant.getPreferences().getUserLoginDTO().getSign_id());
+			stringBuffer.put("device_id", imei);
+			stringBuffer.put("hash", SmartConsultant.getPreferences().getUserLoginDTO().getPassHash());//ADDED S0001
+			stringBuffer.put("act", "data_upload");
+			stringBuffer.put("tables", tables.toString());
+			stringBuffer.put("lovs", jsonObject.toString());
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return stringBuffer;//ParentBuffer;
+	}
+	
+	public static JSONObject getUploadData()
+	{
+		JSONObject stringBuffer = new JSONObject();
+		
+		try
+		{
+			stringBuffer.put("user_id", SmartConsultant.getPreferences().getUserLoginDTO().getSign_id());
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return stringBuffer;//ParentBuffer;
+	}
+	
+	public static JSONArray getsxJSON(ArrayList<PatientDTO> sxPatient,
+			ArrayList<PatientDTO> ipdPatient,
+			ArrayList<PatientDTO> opdPatient) throws JSONException
+	{
+		JSONArray services = new JSONArray();
+		if(sxPatient != null && sxPatient.size() > 0)
+		{
+			for(int i=0;i<sxPatient.size();i++)
+			{
+				services.put(getSxData(sxPatient.get(i)));
+			}
+		}
+		if(ipdPatient != null && ipdPatient.size() > 0)
+		{
+			for(int i=0;i<ipdPatient.size();i++)
+			{
+				services.put(getSxData(ipdPatient.get(i)));
+			}
+		}
+		if(opdPatient != null && opdPatient.size() > 0)
+		{
+			for(int i=0;i<opdPatient.size();i++)
+			{
+					services.put(getSxData(opdPatient.get(i)));
+			}
+		}
+		return services;
+	}
+	
+	
+	public static String getLOVJSON(ArrayList<lovDTO> ldt)
+	{
+		StringBuffer buffer = new StringBuffer();
+		for(int i = 0 ; i < ldt.size(); i++)
+		{
+			buffer.append(ldt.get(i));
+			buffer.append(",");
+		}
+		return buffer.toString().substring(0, buffer.toString().lastIndexOf(","));
+	}
+	
+	public static JSONArray getLocationJSON(ArrayList<lovDTO> lov)
+	{
+		JSONArray jsonArra = new JSONArray();
+		//JSONObject jsonObject = new JSONObject();
+		try
+		{
+			for(int i = 0 ; i < lov.size(); i++)
+			{
+				JSONObject temp = new JSONObject();
+				temp.put("location_id", lov.get(i).getResourceId());
+				temp.put("location", lov.get(i).getText());
+				
+				jsonArra.put(temp);
+			}
+			//jsonObject.put("location", jsonArra);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return jsonArra;//jsonObject;//buffer.toString().substring(0, buffer.toString().lastIndexOf(","));
+	}
+	
+	public static JSONArray getBankJSON(ArrayList<lovDTO> lov)
+	{
+		JSONArray jsonArra = new JSONArray();
+		//JSONObject jsonObject = new JSONObject();
+		try
+		{
+			for(int i = 0 ; i < lov.size(); i++)
+			{
+				JSONObject temp = new JSONObject();
+				temp.put("bank_id", lov.get(i).getResourceId());
+				temp.put("bank", lov.get(i).getText());
+				
+				jsonArra.put(temp);
+			}
+			//jsonObject.put("bank", jsonArra);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return jsonArra;//buffer.toString().substring(0, buffer.toString().lastIndexOf(","));
+	}
+	
+	public static JSONArray getExpense_CategoryJSON(ArrayList<lovDTO> lov)
+	{
+		JSONArray jsonArra = new JSONArray();
+	//	JSONObject jsonObject = new JSONObject();
+		try
+		{
+			for(int i = 0 ; i < lov.size(); i++)
+			{
+				JSONObject temp = new JSONObject();
+				temp.put("expense_category_id", lov.get(i).getResourceId());
+				temp.put("expense_category", lov.get(i).getText());
+				
+				jsonArra.put(temp);
+			}
+		//	jsonObject.put("expense_category", jsonArra);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return jsonArra;//buffer.toString().substring(0, buffer.toString().lastIndexOf(","));
+	}
+	public static JSONArray getPatient_TypeJSON(ArrayList<lovDTO> lov)
+	{
+		JSONArray jsonArra = new JSONArray();
+		//JSONObject jsonObject = new JSONObject();
+		try
+		{
+			for(int i = 0 ; i < lov.size(); i++)
+			{
+				JSONObject temp = new JSONObject();
+				temp.put("patient_type_id", lov.get(i).getResourceId());
+				temp.put("patient_type", lov.get(i).getText());
+				
+				jsonArra.put(temp);
+			}
+			//jsonObject.put("patient_type", jsonArra);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return jsonArra;//buffer.toString().substring(0, buffer.toString().lastIndexOf(","));
+	}
+	public static JSONArray getPayment_ModeJSON(ArrayList<lovDTO> lov)
+	{
+		JSONArray jsonArra = new JSONArray();
+		//JSONObject jsonObject = new JSONObject();
+		try
+		{
+			for(int i = 0 ; i < lov.size(); i++)
+			{
+				JSONObject temp = new JSONObject();
+				temp.put("payment_mode_id", lov.get(i).getResourceId());
+				temp.put("payment_mode", lov.get(i).getText());
+				
+				jsonArra.put(temp);
+			}
+		//	jsonObject.put("payment_mode", jsonArra);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return jsonArra;//buffer.toString().substring(0, buffer.toString().lastIndexOf(","));
+	}
+	public static JSONArray getProcedureJSON(ArrayList<lovDTO> lov)
+	{
+		JSONArray jsonArra = new JSONArray();
+		//JSONObject jsonObject = new JSONObject();
+		try
+		{
+			for(int i = 0 ; i < lov.size(); i++)
+			{
+				JSONObject temp = new JSONObject();
+				temp.put("diagnose_procedure_id", lov.get(i).getResourceId());
+				temp.put("diagnose_procedure", lov.get(i).getText());
+				
+				jsonArra.put(temp);
+			}
+		//	jsonObject.put("procedure", jsonArra);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return jsonArra;//buffer.toString().substring(0, buffer.toString().lastIndexOf(","));
+	}
+	public static JSONArray getReferred_ByJSON(ArrayList<lovDTO> lov)
+	{
+		JSONArray jsonArra = new JSONArray();
+		//JSONObject jsonObject = new JSONObject();
+		try
+		{
+			for(int i = 0 ; i < lov.size(); i++)
+			{
+				JSONObject temp = new JSONObject();
+				temp.put("referred_by_id",lov.get(i).getResourceId());
+				temp.put("referred_by", lov.get(i).getText());
+				
+				jsonArra.put(temp);
+			}
+			//jsonObject.put("referred_by", jsonArra);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return jsonArra;//buffer.toString().substring(0, buffer.toString().lastIndexOf(","));
+	}
+	public static JSONArray getStart_TimeJSON(ArrayList<lovDTO> lov)
+	{
+		JSONArray jsonArra = new JSONArray();
+	//	JSONObject jsonObject = new JSONObject();
+		try
+		{
+			for(int i = 0 ; i < lov.size(); i++)
+			{
+				JSONObject temp = new JSONObject();
+				temp.put("start_time_id", lov.get(i).getResourceId());
+				temp.put("start_time", lov.get(i).getText());
+				
+				jsonArra.put(temp);
+			}
+		//	jsonObject.put("start_time", jsonArra);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return jsonArra;//buffer.toString().substring(0, buffer.toString().lastIndexOf(","));
+	}
+	
+
+	public static JSONArray getSurgery_LevelJSON(ArrayList<lovDTO> lov)
+	{
+		JSONArray jsonArra = new JSONArray();
+		//JSONObject jsonObject = new JSONObject();
+		try
+		{
+			for(int i = 0 ; i < lov.size(); i++)
+			{
+				JSONObject temp = new JSONObject();
+				temp.put("surgery_level_id",lov.get(i).getResourceId());
+				temp.put("surgery_level", lov.get(i).getText());
+				
+				jsonArra.put(temp);
+			}
+			//jsonObject.put("surgery_level", jsonArra);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return jsonArra;//buffer.toString().substring(0, buffer.toString().lastIndexOf(","));
+	}
+	public static JSONArray getTeam_MemberJSON(ArrayList<lovDTO> lov)
+	{
+		JSONArray jsonArra = new JSONArray();
+		//JSONObject jsonObject = new JSONObject();
+		try
+		{
+			for(int i = 0 ; i < lov.size(); i++)
+			{
+				JSONObject temp = new JSONObject();
+				temp.put("team_member_id",lov.get(i).getResourceId());
+				temp.put("team_member", lov.get(i).getText());
+				
+				jsonArra.put(temp);
+			}
+		//	jsonObject.put("team_member", jsonArra);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return jsonArra;//buffer.toString().substring(0, buffer.toString().lastIndexOf(","));
+	}
+	public static JSONArray getWardJSON(ArrayList<lovDTO> lov)
+	{
+		JSONArray jsonArra = new JSONArray();
+	//	JSONObject jsonObject = new JSONObject();
+		try
+		{
+			for(int i = 0 ; i < lov.size(); i++)
+			{
+				JSONObject temp = new JSONObject();
+				temp.put("ward_id", lov.get(i).getResourceId());
+				temp.put("ward", lov.get(i).getText());
+				
+				jsonArra.put(temp);
+			}
+		//	jsonObject.put("ward", jsonArra);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return jsonArra;//buffer.toString().substring(0, buffer.toString().lastIndexOf(","));
+	}
+	public static JSONArray getExpensesData(ArrayList<ExpenseDTO> expenseDTOs)
+	{
+		JSONArray jsonArray = new JSONArray();
+		if(expenseDTOs != null && expenseDTOs.size() > 0)
+		{
+			for(int i = 0 ; i < expenseDTOs.size();i++)
+			{
+				JSONObject jsonObject = new JSONObject();
+				try
+				{
+					jsonObject.put("expense_id", expenseDTOs.get(i).get_id());
+					jsonObject.put("expense_date", expenseDTOs.get(i).getDate());
+					jsonObject.put("amount", expenseDTOs.get(i).getAmount());
+					jsonObject.put("mode", expenseDTOs.get(i).getPaument_mode());
+					jsonObject.put("category", expenseDTOs.get(i).getCategory());
+					jsonObject.put("details", expenseDTOs.get(i).getDescription());
+					jsonArray.put(jsonObject);
+				}
+				catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+			}
+		}
+		return jsonArray;
+	}
+	
+	//SA 1000B-3
+	public static JSONArray getPaymentData(ArrayList<PaymentDTO> paymentDTOs)
+	{
+		JSONArray jsonArray = new JSONArray();
+		if(paymentDTOs != null && paymentDTOs.size() > 0)
+		{
+			for(int i = 0 ; i < paymentDTOs.size();i++)
+			{
+				JSONObject jsonObject = new JSONObject();
+				try
+				{
+					jsonObject.put("payment_id", paymentDTOs.get(i).get_id());
+					jsonObject.put("received_date", paymentDTOs.get(i).get_receivedDate());
+					jsonObject.put("service_date", paymentDTOs.get(i).get_servicedDate());
+					jsonObject.put("payment_source", paymentDTOs.get(i).get_paymentSrc());
+					jsonObject.put("reconcile", paymentDTOs.get(i).get_reconcile());
+					jsonObject.put("payment_type", paymentDTOs.get(i).get_paymenMode());
+					jsonObject.put("cheque_no", paymentDTOs.get(i).get_cheque());
+					//jsonObject.put("inhand", paymentDTOs.get(i).getInhand());
+					jsonObject.put("tds_percent", paymentDTOs.get(i).get_tdsPer());
+					jsonObject.put("tds", paymentDTOs.get(i).get_tdsAmount());
+					jsonObject.put("amount", paymentDTOs.get(i).get_Amount());
+					jsonObject.put("location", paymentDTOs.get(i).get_location());
+					jsonObject.put("bank", paymentDTOs.get(i).get_bank());
+					jsonArray.put(jsonObject);
+				}
+				catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+			}
+		}
+		return jsonArray;
+	}
+	//EA 1000B-3
+	public static JSONObject getImageDetails(ExpenseDetailsDTO dto)
+	{
+		try
+		{
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("expense_image_id", dto.get_id());
+			jsonObject.put("expense_id", dto.getExp_id());
+			jsonObject.put("file_name", dto.getName());
+			return jsonObject;
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return null;
+	}
+	//SA 1000A
+	public static JSONObject getPatientImageDetails(PatientDetailsDTO dto)
+	{
+		try
+		{
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("service_image_id", dto.get_id());
+			jsonObject.put("service_id", dto.getPatient_id());
+			jsonObject.put("file_name", dto.getName());
+			return jsonObject;
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return null;
+	}
+	//EA 1000A
+	public static JSONArray getRecordingData(ArrayList<RecordingDTO> expenseDTOs)
+	{
+		JSONArray jsonArray = new JSONArray();
+		if(expenseDTOs != null && expenseDTOs.size() > 0)
+		{
+			for(int i = 0 ; i < expenseDTOs.size();i++)
+			{
+				JSONObject jsonObject = new JSONObject();
+				try
+				{
+					String nm = expenseDTOs.get(i).getUrl().substring(expenseDTOs.get(i).getUrl().lastIndexOf("/")+ 1);
+					jsonObject.put("service_audio_id", expenseDTOs.get(i).get_id());
+					jsonObject.put("service_type", expenseDTOs.get(i).getType());
+					jsonObject.put("location", expenseDTOs.get(i).getLocation());
+					jsonObject.put("service_date", expenseDTOs.get(i).getDate());
+					jsonObject.put("file_name", nm);
+					jsonArray.put(jsonObject);
+				}
+				catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+			}
+		}
+		return jsonArray;
+	}
+	
+	public static JSONObject getSxData(PatientDTO expenseDTOs)
+	{
+		JSONObject jsonObject = new JSONObject();
+		try
+		{
+			jsonObject.put("service_id", expenseDTOs.get_id());
+			jsonObject.put("service_type", expenseDTOs.getServiceType());
+			jsonObject.put("name", expenseDTOs.getName());
+			jsonObject.put("location", expenseDTOs.getLocation());
+			jsonObject.put("age", expenseDTOs.getAge());
+			jsonObject.put("diagnose", expenseDTOs.getDiagnosis());
+			jsonObject.put("service_date", expenseDTOs.getDate());
+			jsonObject.put("patient_type", expenseDTOs.getType());
+			jsonObject.put("team_member", expenseDTOs.getTeamMember());
+			jsonObject.put("referred_by", expenseDTOs.getRef());
+			jsonObject.put("duration", expenseDTOs.getTime_spent());
+			jsonObject.put("total_count", expenseDTOs.getTotalCount());
+			jsonObject.put("ward_name", expenseDTOs.getWard());
+			jsonObject.put("procedure", expenseDTOs.getProcedure());
+			jsonObject.put("start_time", expenseDTOs.getStartTime());
+			jsonObject.put("level", expenseDTOs.getLevel());
+			jsonObject.put("sx_watch", expenseDTOs.getSx_watch());
+			jsonObject.put("emergency", expenseDTOs.getEmergency());
+			jsonObject.put("note", expenseDTOs.getNote());
+			jsonObject.put("sex", expenseDTOs.getSex());
+			
+		}
+				catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+		return jsonObject;
+	}
+	
+	
+	public static JSONArray getIPDData(ArrayList<PatientDTO> expenseDTOs)
+	{
+		JSONArray jsonArray = new JSONArray();
+		if(expenseDTOs != null && expenseDTOs.size() > 0)
+		{
+			for(int i = 0 ; i < expenseDTOs.size();i++)
+			{
+				JSONObject jsonObject = new JSONObject();
+				try
+				{
+					jsonObject.put("_id", expenseDTOs.get(i).get_id());
+					jsonObject.put("_custId", expenseDTOs.get(i).get_newId());
+					jsonObject.put("name", expenseDTOs.get(i).getName());
+					jsonObject.put("age", expenseDTOs.get(i).getAge());
+					jsonObject.put("totalCount", expenseDTOs.get(i).getTotalCount());
+					jsonObject.put("diagnosis", expenseDTOs.get(i).getDiagnosis());
+					jsonObject.put("type", expenseDTOs.get(i).getType());
+					jsonObject.put("ref", expenseDTOs.get(i).getRef());
+					jsonObject.put("location", expenseDTOs.get(i).getLocation());
+					jsonObject.put("startTime", expenseDTOs.get(i).getStartTime());
+					jsonObject.put("time_spent", expenseDTOs.get(i).getTime_spent());
+					jsonObject.put("date", expenseDTOs.get(i).getDate());
+					jsonObject.put("ward", expenseDTOs.get(i).getWard());
+					jsonObject.put("emergency", expenseDTOs.get(i).getEmergency());
+					jsonObject.put("teamMember", expenseDTOs.get(i).getTeamMember());
+					jsonObject.put("procedure", expenseDTOs.get(i).getProcedure());
+					jsonObject.put("level", expenseDTOs.get(i).getLevel());
+					jsonObject.put("note", expenseDTOs.get(i).getNote());
+					jsonObject.put("sex", expenseDTOs.get(i).getSex());					
+					jsonArray.put(jsonObject);
+				}
+				catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+			}
+		}
+		return jsonArray;
+	}
+	
+	public static JSONArray getOPDData(ArrayList<PatientDTO> expenseDTOs)
+	{
+		JSONArray jsonArray = new JSONArray();
+		if(expenseDTOs != null && expenseDTOs.size() > 0)
+		{
+			for(int i = 0 ; i < expenseDTOs.size();i++)
+			{
+				JSONObject jsonObject = new JSONObject();
+				try
+				{
+					jsonObject.put("service_id", expenseDTOs.get(i).get_id());
+					jsonObject.put("service_type", expenseDTOs.get(i).get_id());
+					
+					jsonObject.put("_custId", expenseDTOs.get(i).get_newId());
+					jsonObject.put("name", expenseDTOs.get(i).getName());
+					jsonObject.put("age", expenseDTOs.get(i).getAge());
+					jsonObject.put("totalCount", expenseDTOs.get(i).getTotalCount());
+					jsonObject.put("diagnosis", expenseDTOs.get(i).getDiagnosis());
+					jsonObject.put("type", expenseDTOs.get(i).getType());
+					jsonObject.put("ref", expenseDTOs.get(i).getRef());
+					jsonObject.put("location", expenseDTOs.get(i).getLocation());
+					jsonObject.put("startTime", expenseDTOs.get(i).getStartTime());
+					jsonObject.put("time_spent", expenseDTOs.get(i).getTime_spent());
+					jsonObject.put("date", expenseDTOs.get(i).getDate());
+					jsonObject.put("ward", expenseDTOs.get(i).getWard());
+					jsonObject.put("emergency", expenseDTOs.get(i).getEmergency());
+					jsonObject.put("teamMember", expenseDTOs.get(i).getTeamMember());
+					jsonObject.put("procedure", expenseDTOs.get(i).getProcedure());
+					jsonObject.put("level", expenseDTOs.get(i).getLevel());
+					jsonObject.put("note", expenseDTOs.get(i).getNote());
+					jsonObject.put("sex", expenseDTOs.get(i).getSex());					
+					jsonArray.put(jsonObject);
+				}
+				catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+			}
+		}
+		return jsonArray;
+	}
+}

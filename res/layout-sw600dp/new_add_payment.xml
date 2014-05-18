@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:accordion="http://schemas.android.com/apk/res-auto/com.smarthumanoid.com"
+    xmlns:switch="http://schemas.android.com/apk/res-auto/com.smarthumanoid.com"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bg"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    tools:ignore="ResAuto" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dip"
+        android:background="@color/blue_btn_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/btn_header_first"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:onClick="onFirst"
+            android:padding="15dip"
+            android:scaleType="fitCenter"
+            android:src="@drawable/btn_first" >
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/btn_header_prev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/btn_header_first"
+            android:onClick="onPrev"
+            android:padding="15dip"
+            android:scaleType="fitCenter"
+            android:src="@drawable/btn_prev" >
+        </ImageView>
+
+        <TextView
+            android:id="@+id/add_sx_location_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/btn_header_next"
+            android:layout_toRightOf="@+id/btn_header_prev"
+            android:gravity="center_horizontal"
+            android:text="Add Payment"
+            android:textColor="#ffffff"
+            android:textSize="22sp" >
+        </TextView>
+
+        <ImageView
+            android:id="@+id/btn_header_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/btn_header_last"
+            android:onClick="onNext"
+            android:padding="15dip"
+            android:src="@drawable/btn_next" >
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/btn_header_last"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:onClick="onLast"
+            android:padding="15dip"
+            android:src="@drawable/btn_last" >
+        </ImageView>
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <LinearLayout
+            android:id="@+id/flingLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/lbl_add_pay_receive_dt"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dip"
+                        android:layout_weight="1"
+                        android:paddingLeft="6dip"
+                        android:text="@string/received_date"
+                        android:textColor="@color/blue_btn_bg"
+                        android:textSize="15sp" >
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/lbl_add_pay_service_dt"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dip"
+                        android:layout_weight="1"
+                        android:paddingLeft="6dip"
+                        android:text="@string/service_date"
+                        android:textColor="@color/blue_btn_bg"
+                        android:textSize="15sp" >
+                    </TextView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <EditText
+                        android:id="@+id/receive_date"
+                        android:layout_width="0dp"
+                        android:layout_height="50dip"
+                        android:layout_marginRight="10dip"
+                        android:layout_marginTop="10dip"
+                        android:layout_weight="1"
+                        android:background="@drawable/edt_bg"
+                        android:editable="false"
+                        android:focusable="false"
+                        android:hint="@string/received_date"
+                        android:inputType="date"
+                        android:onClick="onReceiveTime"
+                        android:paddingLeft="10dip"
+                        android:paddingRight="10dp" >
+                    </EditText>
+
+                    <EditText
+                        android:id="@+id/service_date"
+                        android:layout_width="0dp"
+                        android:layout_height="50dip"
+                        android:layout_marginTop="10dip"
+                        android:layout_weight="1"
+                        android:background="@drawable/edt_bg"
+                        android:editable="false"
+                        android:focusable="false"
+                        android:hint="@string/service_date"
+                        android:inputType="date"
+                        android:onClick="onServiceTime"
+                        android:paddingLeft="10dip"
+                        android:paddingRight="10dp" >
+                    </EditText>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="55dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/lbl_add_pay_src"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.3"
+                        android:paddingLeft="6dip"
+                        android:text="@string/payment_source"
+                        android:textColor="@color/blue_btn_bg"
+                        android:textSize="15sp" >
+                    </TextView>
+
+                    <com.netdoers.com.utils.Switch
+                        android:id="@+id/radioPaySrc"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|center_vertical"
+                        android:layout_weight="0.7"
+                        android:checked="true"
+                        android:padding="3dp"
+                        android:text=""
+                        android:textColor="#5e5e5e"
+                        android:textSize="18sp"
+                        switch:textOff="@string/other"
+                        switch:textOn="@string/professional" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="55dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/lbl_add_pay_reconcile"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingLeft="6dip"
+                        android:text="@string/reconcile"
+                        android:textColor="@color/blue_btn_bg"
+                        android:textSize="15sp" >
+                    </TextView>
+
+                    <com.netdoers.com.utils.Switch
+                        android:id="@+id/add_pay_reconcile"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|center_vertical"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:text=""
+                        android:textColor="#5e5e5e"
+                        android:textSize="18sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="55dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/lbl_add_pay_mode"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.3"
+                        android:paddingLeft="6dip"
+                        android:text="@string/payment_type"
+                        android:textColor="@color/blue_btn_bg"
+                        android:textSize="15sp" >
+                    </TextView>
+
+                    <com.netdoers.com.utils.Switch
+                        android:id="@+id/radioPayMode"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|center_vertical"
+                        android:layout_weight="0.7"
+                        android:checked="false"
+                        android:padding="3dp"
+                        android:text=""
+                        android:textColor="#5e5e5e"
+                        android:textSize="18sp"
+                        switch:textOff="@string/cheque"
+                        switch:textOn="@string/cash" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <EditText
+                        android:id="@+id/add_pay_chq"
+                        android:layout_width="fill_parent"
+                        android:layout_height="50dip"
+                        android:layout_marginRight="10dip"
+                        android:layout_marginTop="10dip"
+                        android:layout_weight="1"
+                        android:background="@drawable/edt_bg"
+                        android:hint="@string/cheque_no"
+                        android:imeOptions="actionNext"
+                        android:inputType="number"
+                        android:nextFocusDown="@+id/add_pay_tds_in_hand"
+                        android:paddingLeft="10dip"
+                        android:paddingRight="10dp" >
+                    </EditText>
+
+                    <EditText
+                        android:id="@id/add_pay_tds_in_hand"
+                        android:layout_width="fill_parent"
+                        android:layout_height="50dip"
+                        android:layout_marginTop="10dip"
+                        android:layout_weight="1"
+                        android:background="@drawable/edt_bg"
+                        android:hint="In Hand"
+                        android:imeOptions="actionNext"
+                        android:inputType="number"
+                        android:nextFocusDown="@+id/add_pay_tds_per"
+                        android:paddingLeft="10dip"
+                        android:paddingRight="10dp" >
+                    </EditText>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical" >
+
+                        <TextView
+                            android:id="@+id/lbl_add_pay_tds"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dip"
+                            android:paddingLeft="6dip"
+                            android:text="@string/tds_"
+                            android:textColor="@color/blue_btn_bg"
+                            android:textSize="15sp" >
+                        </TextView>
+
+                        <EditText
+                            android:id="@id/add_pay_tds_per"
+                            android:layout_width="fill_parent"
+                            android:layout_height="50dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/edt_bg"
+                            android:editable="false"
+                            android:inputType="number"
+                            android:nextFocusDown="@+id/add_pay_tds_amt"
+                            android:paddingLeft="10dip"
+                            android:paddingRight="10dp" >
+                        </EditText>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical" >
+
+                        <TextView
+                            android:id="@id/lbl_add_pay_tds"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dip"
+                            android:paddingLeft="6dip"
+                            android:text="@string/tds_amount"
+                            android:textColor="@color/blue_btn_bg"
+                            android:textSize="15sp" >
+                        </TextView>
+
+                        <EditText
+                            android:id="@id/add_pay_tds_amt"
+                            android:layout_width="fill_parent"
+                            android:layout_height="50dip"
+                            android:layout_marginTop="10dip"
+                            android:background="@drawable/edt_bg"
+                            android:inputType="number"
+                            android:nextFocusDown="@+id/add_pay_location"
+                            android:paddingLeft="10dip"
+                            android:paddingRight="10dp" >
+                        </EditText>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@id/lbl_add_pay_tds"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dip"
+                        android:layout_weight="1"
+                        android:paddingLeft="6dip"
+                        android:text="@string/amount"
+                        android:textColor="@color/blue_btn_bg"
+                        android:textSize="15sp" >
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/lbl_add_pay_loc"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dip"
+                        android:layout_weight="1"
+                        android:paddingLeft="6dip"
+                        android:text="Hospital/Clinic"
+                        android:textColor="@color/blue_btn_bg"
+                        android:textSize="15sp" >
+                    </TextView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <EditText
+                        android:id="@+id/add_pay_amt"
+                        android:layout_width="fill_parent"
+                        android:layout_height="50dip"
+                        android:layout_marginRight="10dip"
+                        android:layout_marginTop="10dip"
+                        android:layout_weight="1"
+                        android:background="@drawable/edt_bg"
+                        android:editable="false"
+                        android:focusable="false"
+                        android:inputType="number"
+                        android:paddingLeft="10dip"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/blue_btn_bg"
+                        android:textSize="20sp"
+                        android:textStyle="italic|bold" >
+                    </EditText>
+
+                    <AutoCompleteTextView
+                        android:id="@id/add_pay_location"
+                        android:layout_width="fill_parent"
+                        android:layout_height="50dip"
+                        android:layout_marginTop="10dip"
+                        android:layout_weight="1"
+                        android:background="@drawable/edt_bg"
+                        android:drawSelectorOnTop="true"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapWords"
+                        android:nextFocusDown="@+id/add_pay_bank"
+                        android:paddingLeft="10dip"
+                        android:paddingRight="10dp"
+                        android:scrollHorizontally="true" >
+                    </AutoCompleteTextView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/lbl_add_pay_bank"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dip"
+                        android:paddingLeft="6dip"
+                        android:text="@string/deposited_in"
+                        android:textColor="@color/blue_btn_bg"
+                        android:textSize="15sp" >
+                    </TextView>
+
+                    <AutoCompleteTextView
+                        android:id="@id/add_pay_bank"
+                        android:layout_width="fill_parent"
+                        android:layout_height="50dip"
+                        android:layout_weight="0.15"
+                        android:background="@drawable/edt_bg"
+                        android:drawSelectorOnTop="true"
+                        android:imeOptions="actionDone"
+                        android:inputType="textCapWords"
+                        android:paddingLeft="10dip"
+                        android:paddingRight="10dp" >
+                    </AutoCompleteTextView>
+                </LinearLayout>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/add_sx_save_main"
+                style="@style/IgBlueButtonStyle"
+                android:layout_width="fill_parent"
+                android:layout_height="50dip"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:onClick="onSaveMain"
+                android:text="Save and Main"
+                android:textColor="#ffffff"
+                android:textSize="20sp" >
+            </Button>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="50dip"
+                android:layout_marginTop="7dip"
+                android:orientation="horizontal"
+                android:paddingLeft="10dip"
+                android:paddingRight="10dip" >
+
+                <Button
+                    android:id="@+id/add_sx_save"
+                    style="@style/IgBlueButtonStyle"
+                    android:layout_width="fill_parent"
+                    android:layout_height="50dip"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="6dip"
+                    android:layout_weight="1"
+                    android:onClick="onSave"
+                    android:text="Save"
+                    android:textColor="#ffffff"
+                    android:textSize="20sp" >
+                </Button>
+
+                <Button
+                    android:id="@+id/add_sx_cancel"
+                    style="@style/IgBlueButtonStyle"
+                    android:layout_width="fill_parent"
+                    android:layout_height="50dip"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="6dip"
+                    android:layout_weight="1"
+                    android:onClick="onCancel"
+                    android:text="Cancel"
+                    android:textColor="#ffffff"
+                    android:textSize="20sp" >
+                </Button>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

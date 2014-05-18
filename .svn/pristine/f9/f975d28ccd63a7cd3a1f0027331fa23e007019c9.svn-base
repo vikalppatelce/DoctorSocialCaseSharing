@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<changelog>
+    <release version="2.0" versioncode="4" summary="Summary" date="03/15/2014">
+        <change>Record Traversal </change>
+        <change>Record Traversal  - Swipe with Gesture</change>
+        <change>Added Payment Screen </change>
+        <change>Edit Services </change>
+        <change>UIx Changes </change>
+        <change>Settings </change>
+        <change>Individual Settings </change>
+        <change>Tool Tip </change>
+        <change>Auto Sync with Wifi/3G </change>
+        <change>Sync Frequency </change>
+        <change>Full Screen Mode </change>
+        <change>SmartHumanoid Camera </change>
+        <change>More small layout changes</change>
+        <change>Minor tweaks</change>
+        <change>Fixed: A bug fix</change>
+    </release>
+    <release version="1.3" versioncode="4" summary="Summary" date="02/19/2014">
+        <change>UIx Changes - Categorization</change>
+        <change>Delete records directly</change>
+        <change>Surgical Notes added in SX -IPD - OPD</change>
+        <change>Button appearance changed</change>
+        <change>More small layout changes</change>
+        <change>Minor tweaks</change>
+        <change>Fixed: A bug fix</change>
+    </release>
+    <release version="1.2" versioncode="3" summary="Summary" date="12/21/2013">
+        <change>Fixed: A bug fix</change>
+        <change>Button appearance changed</change>
+        <change>More small layout changes</change>
+    </release>    
+    <release version="1.1" versioncode="2" date="12/25/2012">
+        <change>Small layout change</change>
+        <change>Minor tweaks</change>
+    </release> 
+</changelog>

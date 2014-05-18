@@ -1,0 +1,575 @@
+/*HISTORY
+* CATEGORY			 :- CAMERA
+* DEVELOPER			 :- VIKALP PATEL
+* AIM 				 :- CAPTURE IMAGE
+* DESCRIPTION 		 :- TAKING PICTURE WITH THE ACTIVITY
+* 
+* S - START E- END C- COMMENTED U -EDITED A -ADDED
+* --------------------------------------------------------------------------------------------------------------------
+* INDEX 		DEVELOPER 			DATE 			FUNCTION 		DESCRIPTION
+* --------------------------------------------------------------------------------------------------------------------
+* 10001 	  VIKALP PATEL		 07/01/2014						    ADD FULLSCREEN THEME TO APPLICATION THROUGH PREFERENCES
+* P2MA1      VIKALP PATEL		 14/03/2014						    INITIAL LOV VALUES ADDED
+* P2B01      VIKALP PATEL		 14/04/2014						    INITIAL LOV VALUES ADDED ON NET CONNECTED
+* --------------------------------------------------------------------------------------------------------------------
+*/
+package com.netdoers.com.ui;
+
+import org.json.JSONObject;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Spinner;
+
+import com.netdoers.com.SmartConsultant;
+import com.netdoers.com.dto.DBConstant;
+import com.netdoers.com.dto.UploadDataResponseDTO;
+import com.netdoers.com.service.RequestBuilder;
+import com.netdoers.com.service.ResponseParser;
+import com.netdoers.com.service.ServiceDelegate;
+import com.netdoers.com.utils.AppConstants;
+import com.smarthumanoid.com.R;
+
+public class SelectSpecialityActivity extends Activity{
+
+	Spinner spinner;
+	SharedPreferences pref;//Added 10001
+	
+	boolean isFirst = false;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		
+		isFirst = true;
+		if(SmartConsultant.getPreferences().getSpeciality() == null)
+		{
+		    //SA 10001
+      		pref = PreferenceManager.getDefaultSharedPreferences(SmartConsultant.getApplication());
+      		if(pref.getBoolean("prefIsFullScreen", false))
+      		{
+      			setTheme(R.style.FullScreen);
+      		}
+      		//EA 10001
+  
+        	setContentView(R.layout.speciality);
+        	
+        	/*spinner = (Spinner) findViewById(R.id.planets_spinner);
+        	
+        	final String[] data = getResources().getStringArray(R.array.specialities);
+        	// Create an ArrayAdapter using the string array and a default spinner layout
+        	ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+        	        R.array.specialities, android.R.layout.simple_spinner_item);
+        	// Specify the layout to use when the list of choices appears
+        	adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        	// Apply the adapter to the spinner
+        	spinner.setAdapter(adapter);
+        	spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+				@Override
+				public void onItemSelected(AdapterView<?> arg0, View arg1,
+						int arg2, long arg3) {
+					// TODO Auto-generated method stub
+					
+					if(!isFirst)
+					{
+						SmartConsultant.getPreferences().setSpeciality(data[arg2]);
+						
+						if(!SmartConsultant.getPreferences().getIsLOVInserted())
+						{
+							if(SmartConsultant.getApplication().isNetworkAvailable())
+							{
+								insertLOVs(data[arg2]);
+							}
+							else
+							{
+								SmartConsultant.getApplication().checkForInitialValues();
+							}
+						}
+						
+						Intent i = new Intent(SelectSpecialityActivity.this, HomeActivity.class);
+						startActivity(i);
+						finish();
+					}
+					isFirst = false;
+				}
+
+				@Override
+				public void onNothingSelected(AdapterView<?> arg0) {
+					// TODO Auto-generated method stub
+				}
+			});*/
+        	
+        	//SA10002
+			/*TelephonyManager telephonyManager = (TelephonyManager) getSystemService(getApplicationContext().TELEPHONY_SERVICE);
+			SmartConsultant.getPreferences().setIMEINo(
+					telephonyManager.getDeviceId());
+			SmartConsultant.getPreferences().setDeviceId(
+					Secure.getString(getApplicationContext()
+							.getContentResolver(), Secure.ANDROID_ID));
+			Log.i("IMEI No:",telephonyManager.getDeviceId());
+			Log.i("DEVICE ID:",Secure.getString(getApplicationContext()
+					.getContentResolver(), Secure.ANDROID_ID));*/
+			//EA10002
+			try {
+				calculateDeviceSize();
+			} catch (Exception e) {
+				Log.e("calculateDeviceSize()", e.toString());	
+			}
+		}
+		else
+		{
+			Log.i("SELECTSPECIALITY", "Intent -> HomeActivity.class");
+			Intent i = new Intent(this, HomeActivity.class);
+			startActivity(i);
+			finish();
+		}
+	}
+	
+	
+	public void onSaveMain(final View v)
+	{
+		final String[] data = getResources().getStringArray(R.array.specialities);
+		new AlertDialog.Builder(this)
+        .setSingleChoiceItems(data, -1, null)
+        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+			public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.dismiss();
+                int selectedPosition = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
+                // Do something useful withe the position of the selected radio button
+                if(selectedPosition != -1)
+                {
+	                ((Button)v).setText(data[selectedPosition]);
+	                SmartConsultant.getPreferences().setSpeciality(data[selectedPosition]);
+					
+					if(!SmartConsultant.getPreferences().getIsLOVInserted())
+					{
+						if(SmartConsultant.getApplication().isNetworkAvailable())
+						{
+							insertLOVs(data[selectedPosition]);
+							//ADDED P2MA1
+//							DefaultTask d = new DefaultTask();//COMMENTED P3B01
+//							d.execute();//COMMENTED P3B01
+							//ADDED P2MA1
+						}
+						else
+						{
+							DefaultTask d = new DefaultTask();
+							d.execute();
+						}
+					}
+                }
+            }
+        })
+        .show();
+	}
+	public static final int LOADING = 100;
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		// TODO Auto-generated method stub
+		switch (id)
+		{
+		case LOADING:
+			ProgressDialog loadingDialog = new ProgressDialog(this);
+			loadingDialog.setMessage("Loading...");
+			loadingDialog.setCancelable(false);
+			return loadingDialog;
+		}
+		return super.onCreateDialog(id);
+	}	
+	public void insertLOVs(String selection)
+	{
+		LoginTask loginTask = new LoginTask();
+		loginTask.execute(new String[]{selection});
+	}
+	
+	
+	private class LoginTask extends AsyncTask<String, Void, Boolean>
+	{
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+			showDialog(LOADING);
+		}
+		@Override
+		protected Boolean doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			JSONObject dataToSend = RequestBuilder.getLOvData(params[0]);
+			UploadDataResponseDTO res = null;
+			String url;
+			try {
+				url = AppConstants.URLS.BASE_URL;
+					  
+				String str = ServiceDelegate.postData(url, dataToSend);
+				if(AppConstants.DEBUG)
+				{
+					res = ResponseParser.getDefaultDataResponse("{\"ORTHOPAEDICS\":{\"diagnose_procedure\":[\"AMPUTATION\",\"Close Reduction (CMR)\",\"CMR WITH K - WIRING\",\"CRUSH INJURY\",\"DEBRIDEMENT\",\"Implant Removal \",\"Patella fixation TBW\",\"Radius \\/ Ulna nailing\",\"Radius \\/ Ulna Plating\",\"Tibia Interlock nailing or plating\"],\"location\":[],\"expense_category\":[\"ACCOMODATION AND FOOD\",\"ACCOUNTING AND TAX AUDIT FEES OF CA\",\"Car - FUEL\",\"CAR INSURANCE \",\"CAR MAINTAINANCE SERVICING\",\"CME \\/ CONFERENCE \\/WORKSHOP FEES\",\"DEPRECIATION \",\"ELECTRICITY EXPENSES\",\"FESTIVAL CELEBRATION EXPENSES \",\"JUNIOR  PRACTITIONER FEES \\/ PROFFESSIONAL FEES TO COLLEAGUE\",\"MEMBERSHIP FEES OF ASSOCIATIONS\",\"PROFESSIONAL INDEMNITY INSURANCE \",\"Purchases - DRUGS AND MISC ITEMS\",\"Purchases - EQUIPMENTS \\/ INSTRUMENTS\",\"Purchases - LAPTOP\\/DESKTOP\\/MOBILES\\/TABLETS\\/PRINTERS\",\"Purchases - STATIONARY\",\"REPAIRS \\/ AMC \\/ CMC OF INSTRUMENTS AND EQUIPMENTS \",\"SALARY - ACCOUNTANT \",\"SALARY - ADMINISTRATIVE STAFF \",\"SALARY - ASSISTANT  \",\"SALARY - CLERK \",\"SALARY - TECHNICIAN \",\"SALES PROMOTION EXPENSES \",\"TELEPHONE EXPENSES \\/ MOBILE \",\"TOLL TAX\",\"TRAVELLING & CONVEYANCE \"],\"patient_type\":[\"Cashless - Bajaj\",\"Corporate - RCF\",\"General\",\"Insurance - New India\"],\"payment_mode\":[\"Bank Transfer - HDFC\",\"Cash\",\"Credit Card - Kotak\",\"eWallet - Paytm\"],\"referred_by\":[],\"start_time\":[\"Afternoon\",\"Evening\",\"Morning\",\"Night\"],\"surgery_level\":[\"1 minor\",\"2 medium\",\"3 major\",\"4 Supra Major\",\"5 Supra Major +\",\"6 Supra Major ++\",\"7 Special Level\"],\"team_member\":[],\"ward\":[\"AC - 1\",\"AC - 2\",\"Delux\",\"General\",\"Individual\",\"Share\"]}}", "ORTHOPAEDICS");
+				}
+				else
+				{
+					res = ResponseParser.getDefaultDataResponse(str,params[0]);
+					saveData(res);
+				}
+				
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return Boolean.FALSE;
+			}
+			return Boolean.TRUE;
+		}
+		@Override
+		protected void onPostExecute(Boolean bool) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(bool);
+			removeDialog(LOADING);
+			if(bool.booleanValue() == true)
+			{
+				Log.i("SELECTSPECIALITY", "Intent -> HomeActivity.class");
+				Intent i = new Intent(SelectSpecialityActivity.this, HomeActivity.class);
+				startActivity(i);
+				finish();
+			}
+			else
+			{
+				Log.i("SELECTSPECIALITY", "Intent -> HomeActivity.class");
+				SmartConsultant.getApplication().checkForInitialValues();
+				Intent i = new Intent(SelectSpecialityActivity.this, HomeActivity.class);
+				startActivity(i);
+				finish();
+			}
+		}
+	}
+
+	
+	private class DefaultTask extends AsyncTask<String, Void, Boolean>
+	{
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+			showDialog(LOADING);
+		}
+		@Override
+		protected Boolean doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			SmartConsultant.getApplication().checkForInitialValues();
+			return Boolean.TRUE;
+		}
+		@Override
+		protected void onPostExecute(Boolean bool) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(bool);
+			removeDialog(LOADING);
+			Log.i("SELECTSPECIALITY", "Intent -> HomeActivity.class");
+			Intent i = new Intent(SelectSpecialityActivity.this, HomeActivity.class);
+			startActivity(i);
+			finish();
+		}
+	}
+	public void saveData(UploadDataResponseDTO responseDTO)
+	{
+		if(responseDTO != null)
+		{
+			// location
+			String service = responseDTO.getLocation();
+			if(service!= null && !service.equals("[]") && !service.equals(""))
+			{
+				service = service.substring(1, service.length() - 1);
+				{
+					ContentValues contentValues = new ContentValues();
+					contentValues.put(DBConstant.Location_Columns.COLUMN_SYNC_STATUS, 1);
+					String[] data =  service.split(",");					
+					if(data.length > 0)
+					{
+						for(int i = 0; i < data.length; i++)
+						{
+							String s = data[i];
+							if(data[i].startsWith("\"") && data[i].endsWith("\""))
+							{
+								s = data[i].substring(1, data[i].length() - 1);
+							}
+							addContent(DBConstant.Location_Columns.CONTENT_URI, s);
+						}
+					}
+				}
+			}	
+			
+			// expense_category
+			service = responseDTO.getExpense_category();
+			if(service!= null && !service.equals("[]") && !service.equals(""))
+			{
+				service = service.substring(1, service.length() - 1);
+				{
+					ContentValues contentValues = new ContentValues();
+					contentValues.put(DBConstant.Bank_Columns.COLUMN_SYNC_STATUS, 1);
+					String[] data =  service.split(",");					
+					if(data.length > 0)
+					{
+						for(int i = 0; i < data.length; i++)
+						{
+							String s = data[i];
+							if(data[i].startsWith("\"") && data[i].endsWith("\""))
+							{
+								s = data[i].substring(1, data[i].length() - 1);
+							}
+							addContent(DBConstant.Bank_Columns.CONTENT_URI, s);
+						}
+					}
+				}
+			}	
+			
+			// patient_type
+			service = responseDTO.getPatient_type();
+			if(service!= null && !service.equals("[]") && !service.equals(""))
+			{
+				service = service.substring(1, service.length() - 1);
+				{
+					ContentValues contentValues = new ContentValues();
+					contentValues.put(DBConstant.Types_Columns.COLUMN_SYNC_STATUS, String.valueOf(1));
+					
+					String[] data =  service.split(",");
+					if(data.length > 0)
+					{
+						for(int i = 0; i < data.length; i++)
+						{
+							String s = data[i];
+							if(data[i].startsWith("\"") && data[i].endsWith("\""))
+							{
+								s = data[i].substring(1, data[i].length() - 1);
+							}
+							addContent(DBConstant.Types_Columns.CONTENT_URI, s);
+						}
+					}
+				}
+			}	
+			
+			// payment_mode
+			service = responseDTO.getPayment_mode();
+			if(service!= null && !service.equals("[]") && !service.equals(""))
+			{
+				service = service.substring(1, service.length() - 1);
+				{
+					
+					ContentValues contentValues = new ContentValues();
+					contentValues.put(DBConstant.ModeOfPayment_Columns.COLUMN_SYNC_STATUS, 1);
+					String[] data =  service.split(",");
+					//int col = getContentResolver().update(DBConstant.ModeOfPayment_Columns.CONTENT_URI, contentValues, DBConstant.ModeOfPayment_Columns.COLUMN_NAME+" LIKE ?",data);
+					//int col = getContentResolver().update(DBConstant.ModeOfPayment_Columns.CONTENT_URI, contentValues, null, null);
+					//Log.e("ROWS UPDATED : payment_mode : ", col +"");
+					
+					if(data.length > 0)
+					{
+						for(int i = 0; i < data.length; i++)
+						{
+							String s = data[i];
+							if(data[i].startsWith("\"") && data[i].endsWith("\""))
+							{
+								s = data[i].substring(1, data[i].length() - 1);
+							}
+							addContent(DBConstant.ModeOfPayment_Columns.CONTENT_URI, s);
+						}
+					}
+				}
+			}	
+			
+			// procedure
+			service = responseDTO.getProcedure();
+			if(service!= null && !service.equals("[]") && !service.equals(""))
+			{
+				service = service.substring(1, service.length() - 1);
+				{
+					ContentValues contentValues = new ContentValues();
+					contentValues.put(DBConstant.Procedure_Columns.COLUMN_SYNC_STATUS, 1);
+					String[] data =  service.split(",");
+					
+					if(data.length > 0)
+					{
+						for(int i = 0; i < data.length; i++)
+						{
+							String s = data[i];
+							if(data[i].startsWith("\"") && data[i].endsWith("\""))
+							{
+								s = data[i].substring(1, data[i].length() - 1);
+							}
+							addContent(DBConstant.Procedure_Columns.CONTENT_URI, s);
+						}
+					}
+				}
+			}	
+			
+			// referred_by
+			service = responseDTO.getReferred_by();
+			if(service!= null && !service.equals("[]") && !service.equals(""))
+			{
+				service = service.substring(1, service.length() - 1);
+				{
+					ContentValues contentValues = new ContentValues();
+					contentValues.put(DBConstant.Ref_Columns.COLUMN_SYNC_STATUS, 1);
+					String[] data =  service.split(",");
+					if(data.length > 0)
+					{
+						for(int i = 0; i < data.length; i++)
+						{
+							String s = data[i];
+							if(data[i].startsWith("\"") && data[i].endsWith("\""))
+							{
+								s = data[i].substring(1, data[i].length() - 1);
+							}
+							addContent(DBConstant.Ref_Columns.CONTENT_URI, s);
+						}
+					}
+				}
+			}	
+			
+			// start_time
+			service = responseDTO.getStart_time();
+			if(service!= null && !service.equals("[]") && !service.equals(""))
+			{
+				service = service.substring(1, service.length() - 1);
+				{
+					ContentValues contentValues = new ContentValues();
+					contentValues.put(DBConstant.StartTime_Columns.COLUMN_SYNC_STATUS, 1);
+					String[] data =  service.split(",");					
+					if(data.length > 0)
+					{
+						for(int i = 0; i < data.length; i++)
+						{
+							String s = data[i];
+							if(data[i].startsWith("\"") && data[i].endsWith("\""))
+							{
+								s = data[i].substring(1, data[i].length() - 1);
+							}
+							addContent(DBConstant.StartTime_Columns.CONTENT_URI, s);
+						}
+					}
+				}
+			}	
+			
+			// surgery_level
+			service = responseDTO.getSurgery_level();
+			if(service!= null && !service.equals("[]") && !service.equals(""))
+			{
+				service = service.substring(1, service.length() - 1);
+				{
+					ContentValues contentValues = new ContentValues();
+					contentValues.put(DBConstant.Level_Columns.COLUMN_SYNC_STATUS, 1);
+					String[] data =  service.split(",");
+					if(data.length > 0)
+					{
+						for(int i = 0; i < data.length; i++)
+						{
+							String s = data[i];
+							if(data[i].startsWith("\"") && data[i].endsWith("\""))
+							{
+								s = data[i].substring(1, data[i].length() - 1);
+							}
+							addContent(DBConstant.Level_Columns.CONTENT_URI, s);
+						}
+					}
+				}
+			}	
+			
+			// team_member
+			service = responseDTO.getTeam_member();
+			if(service!= null && !service.equals("[]") && !service.equals(""))
+			{
+				service = service.substring(1, service.length() - 1);
+				{
+					ContentValues contentValues = new ContentValues();
+					contentValues.put(DBConstant.TMEMBER_Columns.COLUMN_SYNC_STATUS, 1);
+					String[] data =  service.split(",");					
+					if(data.length > 0)
+					{
+						for(int i = 0; i < data.length; i++)
+						{
+							String s = data[i];
+							if(data[i].startsWith("\"") && data[i].endsWith("\""))
+							{
+								s = data[i].substring(1, data[i].length() - 1);
+							}
+							addContent(DBConstant.TMEMBER_Columns.CONTENT_URI, s);
+						}
+					}
+				}
+			}
+			
+			// ward
+			service = responseDTO.getWard();
+			if(service!= null && !service.equals("[]") && !service.equals(""))
+			{
+				service = service.substring(1, service.length() - 1);
+				{
+					ContentValues contentValues = new ContentValues();
+					contentValues.put(DBConstant.Ward_Columns.COLUMN_SYNC_STATUS, 1);
+					String[] data =  service.split(",");
+					
+					if(data.length > 0)
+					{
+						for(int i = 0; i < data.length; i++)
+						{
+							String s = data[i];
+							if(data[i].startsWith("\"") && data[i].endsWith("\""))
+							{
+								s = data[i].substring(1, data[i].length() - 1);
+							}
+							addContent(DBConstant.Ward_Columns.CONTENT_URI, s);
+						}
+					}
+				}
+			}	
+			
+		}
+	}
+	
+	public void addContent(Uri uri, String str)
+	{
+		ContentValues values = new ContentValues();
+		values.put(DBConstant.Location_Columns.COLUMN_NAME, str);
+		values.put(DBConstant.Location_Columns.COLUMN_SYNC_STATUS, 0);
+		getContentResolver().insert(uri, values);
+	}
+	
+	/*
+	 * 
+	 */
+	public void calculateDeviceSize()
+	{
+		DisplayMetrics metrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		
+		int widthPixels = metrics.widthPixels;
+		int heightPixels = metrics.heightPixels;
+		
+		float widthDpi = metrics.xdpi;
+		float heightDpi = metrics.ydpi;
+		
+		float widthInches = widthPixels / widthDpi;
+		float heightInches = heightPixels / heightDpi;
+
+		double diagonalInches = Math.sqrt((widthInches * widthInches)+ (heightInches * heightInches));
+		
+		SmartConsultant.getPreferences().setDeviceSize(String.valueOf(diagonalInches));
+		
+		Log.i("Device Size", String.valueOf(diagonalInches));
+	}
+}

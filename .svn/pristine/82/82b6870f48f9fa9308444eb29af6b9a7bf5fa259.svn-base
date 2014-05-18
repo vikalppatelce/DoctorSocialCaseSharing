@@ -1,0 +1,6 @@
+package com.netdoers.com.service;
+
+
+public interface IServiceListener {
+	public void onErrorReceived(String statusCode, String errorMessage);
+}

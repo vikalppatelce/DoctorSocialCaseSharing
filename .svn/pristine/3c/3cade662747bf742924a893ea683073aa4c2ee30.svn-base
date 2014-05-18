@@ -1,0 +1,84 @@
+/*
+* Category :- Camera
+* Developer:- Vikalp Patel
+* Aim :- Capture Image
+* Description :- Taking Picture with the Activity
+* S - START E- END C- COMMENTED U -EDITED A -ADDED
+* --------------------------------------------------------------------------------------------------------------------
+* INDEX 		DEVELOPER 			DATE 				DESCRIPTION
+* --------------------------------------------------------------------------------------------------------------------
+* 10001 	  VIKALP PATEL 		 10/01/2014 			Add Fullscreen theme to application through Preferences
+*/
+
+
+package com.netdoers.com.ui;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.ImageView;
+
+import com.netdoers.com.SmartConsultant;
+import com.smarthumanoid.com.R;
+
+
+public class DetailedImage extends Activity{
+
+	ImageView imageView;
+	Uri uri;
+	SharedPreferences pref;//ADDED 10001
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		//SA 10001
+		pref = PreferenceManager.getDefaultSharedPreferences(SmartConsultant.getApplication());
+		if(pref.getBoolean("prefIsFullScreen", false))
+		{
+			setTheme(R.style.FullScreen);
+		}
+		//EA 10001
+		setContentView(R.layout.detail_image);
+		String url = getIntent().getStringExtra("url");
+		//uri = Uri.parse(url);
+		imageView = (ImageView) findViewById(R.id.detailedImage);
+		BitmapFactory.Options btmapOptions = new BitmapFactory.Options();
+		btmapOptions.inSampleSize = 2;
+		Bitmap bm = BitmapFactory.decodeFile(url, btmapOptions);
+		imageView.setImageBitmap(bm);
+	}
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+     
+    /**
+     * Event Handling for Individual menu item selected
+     * Identify single menu item by it's id
+     * */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+         
+        switch (item.getItemId())
+        {
+        case R.id.mnuHelp:
+        	Intent i = new Intent(this, HelpActivity.class);
+        	startActivity(i);
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }   
+}

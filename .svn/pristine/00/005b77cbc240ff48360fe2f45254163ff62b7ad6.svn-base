@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView android:layout_width="fill_parent"  
+				xmlns:android="http://schemas.android.com/apk/res/android"
+				android:id="@+id/login_screen" android:layout_height="fill_parent"
+				android:padding="15dip"
+				android:background="@drawable/bg">
+		
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:orientation="vertical">
+			
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="60dip"
+			android:orientation="horizontal"
+			android:gravity="center_vertical">
+			
+			<AutoCompleteTextView 
+				android:hint="Id/Name/Location" android:textColorHint="#bebebe" 
+				android:id="@+id/search_text"
+				android:layout_width="fill_parent" 
+				android:layout_height="54dip"
+				android:singleLine="true" 
+				android:typeface="normal"
+				android:layout_weight="0.15"
+				android:layout_marginTop="4dip"
+				android:drawableRight="@drawable/search"
+				android:background="@drawable/edt_bg"
+			    android:paddingLeft="4dip"
+			    android:paddingRight="4dip"></AutoCompleteTextView>
+				
+			<ImageView android:layout_height="50dip"
+				android:layout_width="fill_parent"
+				android:id="@+id/btn_search" 
+				android:textColor="#25587E"
+				android:textSize="18dip" 
+				android:typeface="normal"
+				android:onClick="onSearchClick"
+				android:background="@drawable/search_bg"
+				android:layout_weight="0.85"
+				android:visibility="gone"></ImageView>
+			</LinearLayout>
+			
+			<LinearLayout android:layout_width="fill_parent"
+				          android:layout_height="130dip"
+						  android:orientation="horizontal"
+						  android:gravity="center_horizontal"
+						  android:layout_marginBottom="20dip"
+						  android:layout_marginTop="30dip">
+			
+							<LinearLayout android:layout_width="140dip"
+										  android:layout_height="130dip" 
+										  android:orientation="vertical"
+										  android:background="@drawable/grey_rect_shape"
+										  android:layout_marginRight="10dip"
+										  android:onClick="onAddSXClick">
+											<ImageView android:id="@+id/ImageView01"
+														android:layout_width="fill_parent" 
+														android:layout_height="fill_parent"
+														android:src="@drawable/surgery" 
+														android:layout_weight="0.2"
+														android:scaleType="fitCenter"
+														android:focusable="false"
+														android:paddingTop="0dip">
+											</ImageView>
+											<LinearLayout android:id="@+id/LinearLayout01"
+														android:layout_width="fill_parent" 
+														android:layout_height="fill_parent"
+														android:orientation="horizontal" 
+														android:paddingLeft="6dip"
+														android:paddingRight="6dip" 
+														android:layout_marginTop="2dip"
+														android:layout_weight="0.8"
+														android:focusable="false"
+														android:gravity="center">
+														<ImageView android:id="@+id/ImageView02"
+															android:layout_width="wrap_content" 
+															android:layout_height="wrap_content"
+															android:src="@drawable/add_sx_icon"
+															android:focusable="false"
+															></ImageView>
+														<TextView android:id="@+id/seperator" 
+															android:layout_width="wrap_content"
+															android:layout_height="wrap_content" 
+															android:textStyle="bold"
+															android:textColor="@color/blue_btn_bg" 
+															android:text="Add SX"
+															android:paddingLeft="6dip"
+															android:focusable="false"></TextView>
+											</LinearLayout>
+							</LinearLayout>
+							<LinearLayout android:layout_width="140dip"
+										  android:layout_height="130dip"
+										  android:orientation="vertical"
+										  android:background="@drawable/grey_rect_shape"
+										  android:layout_marginLeft="10dip"
+										  android:onClick="onRecordSXClick">
+										<ImageView android:id="@+id/ImageView01"
+														android:layout_width="fill_parent" 
+														android:layout_height="fill_parent"
+														android:src="@drawable/surgery" 
+														android:layout_weight="0.2"
+														android:scaleType="fitCenter"
+														android:focusable="false">
+											</ImageView>
+										<LinearLayout android:id="@+id/LinearLayout01" 
+										  android:layout_width="fill_parent" 
+										  android:layout_height="fill_parent"
+										  android:orientation="horizontal"
+										  android:paddingLeft="6dip"
+										  android:paddingRight="6dip"
+										  android:layout_marginTop="2dip"
+										  android:layout_weight="0.8"
+										  android:focusable="false"
+										  android:gravity="center">
+										<ImageView android:id="@+id/ImageView02" 
+										  android:layout_width="wrap_content" 
+										  android:layout_height="wrap_content"
+										  android:src="@drawable/recored_blue_icon"
+										  android:focusable="false"></ImageView>
+										<TextView android:id="@+id/seperator" 
+										  android:layout_width="wrap_content" 
+										  android:layout_height="wrap_content" 
+										  android:textStyle="bold" 
+										  android:textColor="@color/blue_btn_bg"
+										  android:text="Record SX"
+										  android:paddingLeft="6dip"
+										  android:focusable="false"></TextView>
+										</LinearLayout>
+							</LinearLayout>
+			</LinearLayout>
+			<LinearLayout android:layout_width="fill_parent"
+				          android:layout_height="wrap_content"
+						  android:orientation="horizontal"
+						  android:gravity="center_horizontal"
+						  android:layout_marginBottom="20dip">
+			
+							<LinearLayout android:layout_width="140dip"
+										  android:layout_height="130dip" 
+										  android:orientation="vertical"
+										  android:background="@drawable/grey_rect_shape"
+										  android:layout_marginRight="10dip"
+										  android:onClick="onAddIPDClick">
+											<ImageView android:id="@+id/ImageView01"
+														android:layout_width="fill_parent" 
+														android:layout_height="fill_parent"
+														android:src="@drawable/ipd_icon" 
+														android:layout_weight="0.2"
+														android:scaleType="fitCenter"
+														android:focusable="false">
+											</ImageView>
+											<LinearLayout android:id="@+id/LinearLayout01"
+														android:layout_width="fill_parent" 
+														android:layout_height="fill_parent"
+														android:orientation="horizontal" 
+														android:paddingLeft="6dip"
+														android:paddingRight="6dip" 
+														android:layout_marginTop="6dip"
+														android:layout_weight="0.8"
+														android:focusable="false"
+														android:gravity="center">
+														<ImageView android:id="@+id/ImageView02"
+															android:layout_width="wrap_content" 
+															android:layout_height="wrap_content"
+															android:src="@drawable/add_sx_icon"
+															android:focusable="false"
+															></ImageView>
+														<TextView android:id="@+id/seperator" 
+															android:layout_width="wrap_content"
+															android:layout_height="wrap_content" 
+															android:textStyle="bold"
+															android:textColor="@color/blue_btn_bg" 
+															android:text="Add IPD"
+															android:paddingLeft="6dip"
+															android:focusable="false"></TextView>
+											</LinearLayout>
+							</LinearLayout>
+							<LinearLayout android:layout_width="140dip"
+										  android:layout_height="130dip"
+										  android:orientation="vertical"
+										  android:background="@drawable/grey_rect_shape"
+										  android:layout_marginLeft="10dip"
+										  android:onClick="onRecordIPDClick">
+										<ImageView android:id="@+id/ImageView01"
+														android:layout_width="fill_parent" 
+														android:layout_height="fill_parent"
+														android:src="@drawable/ipd_icon" 
+														android:layout_weight="0.2"
+														android:scaleType="fitCenter"
+														android:focusable="false">
+											</ImageView>
+										<LinearLayout android:id="@+id/LinearLayout01" 
+										  android:layout_width="fill_parent" 
+										  android:layout_height="fill_parent"
+										  android:orientation="horizontal"
+										  android:paddingLeft="6dip"
+										  android:paddingRight="6dip"
+										  android:layout_marginTop="6dip"
+										  android:layout_weight="0.8"
+										  android:focusable="false"
+										  android:gravity="center">
+										<ImageView android:id="@+id/ImageView02" 
+										  android:layout_width="wrap_content" 
+										  android:layout_height="wrap_content"
+										  android:src="@drawable/recored_blue_icon"
+										  android:focusable="false"></ImageView>
+										<TextView android:id="@+id/seperator" 
+										  android:layout_width="wrap_content" 
+										  android:layout_height="wrap_content" 
+										  android:textStyle="bold" 
+										  android:textColor="@color/blue_btn_bg"
+										  android:text="Record IPD"
+										  android:paddingLeft="6dip"
+										  android:focusable="false"></TextView>
+										</LinearLayout>
+							</LinearLayout>
+			</LinearLayout>
+			<LinearLayout android:layout_width="fill_parent"
+				          android:layout_height="wrap_content"
+						  android:orientation="horizontal"
+						  android:gravity="center_horizontal"
+						  android:layout_marginBottom="20dip">
+			
+							<LinearLayout android:layout_width="140dip"
+										  android:layout_height="130dip" 
+										  android:orientation="vertical"
+										  android:background="@drawable/grey_rect_shape"
+										  android:layout_marginRight="10dip"
+										  android:onClick="onAddOPDClick">
+											<ImageView android:id="@+id/ImageView01"
+														android:layout_width="fill_parent" 
+														android:layout_height="fill_parent"
+														android:src="@drawable/opd_icon" 
+														android:layout_weight="0.2"
+														android:scaleType="fitCenter"
+														android:focusable="false">
+											</ImageView>
+											<LinearLayout android:id="@+id/LinearLayout01"
+														android:layout_width="fill_parent" 
+														android:layout_height="fill_parent"
+														android:orientation="horizontal" 
+														android:paddingLeft="6dip"
+														android:paddingRight="6dip" 
+														android:layout_marginTop="6dip"
+														android:layout_weight="0.8"
+														android:focusable="false"
+														android:gravity="center">
+														<ImageView android:id="@+id/ImageView02"
+															android:layout_width="wrap_content" 
+															android:layout_height="wrap_content"
+															android:src="@drawable/recored_blue_icon"
+															android:focusable="false"
+															></ImageView>
+														<TextView android:id="@+id/seperator" 
+															android:layout_width="wrap_content"
+															android:layout_height="wrap_content" 
+															android:textStyle="bold"
+															android:textColor="@color/blue_btn_bg" 
+															android:text="Add OPD"
+															android:paddingLeft="6dip"
+															android:focusable="false"></TextView>
+											</LinearLayout>
+							</LinearLayout>
+							<LinearLayout android:layout_width="140dip"
+										  android:layout_height="130dip"
+										  android:orientation="vertical"
+										  android:background="@drawable/grey_rect_shape"
+										  android:layout_marginLeft="10dip"
+										  android:onClick="onRecordOPDClick">
+										<ImageView android:id="@+id/ImageView01"
+														android:layout_width="fill_parent" 
+														android:layout_height="fill_parent"
+														android:src="@drawable/opd_icon" 
+														android:layout_weight="0.2"
+														android:scaleType="fitCenter"
+														android:focusable="false">
+											</ImageView>
+										<LinearLayout android:id="@+id/LinearLayout01" 
+										  android:layout_width="fill_parent" 
+										  android:layout_height="fill_parent"
+										  android:orientation="horizontal"
+										  android:paddingLeft="6dip"
+										  android:paddingRight="6dip"
+										  android:layout_marginTop="6dip"
+										  android:layout_weight="0.8"
+										  android:focusable="false"
+										  android:gravity="center">
+										<ImageView android:id="@+id/ImageView02" 
+										  android:layout_width="wrap_content" 
+										  android:layout_height="wrap_content"
+										  android:src="@drawable/add_sx_icon"
+										  android:focusable="false"></ImageView>
+										<TextView android:id="@+id/seperator" 
+										  android:layout_width="wrap_content" 
+										  android:layout_height="wrap_content" 
+										  android:textStyle="bold" 
+										  android:textColor="@color/blue_btn_bg"
+										  android:text="Record OPD"
+										  android:paddingLeft="6dip"
+										  android:focusable="false"></TextView>
+										</LinearLayout>
+							</LinearLayout>
+			</LinearLayout>
+			<LinearLayout android:layout_width="fill_parent"
+				          android:layout_height="wrap_content"
+						  android:orientation="horizontal"
+						  android:gravity="center_horizontal"
+						  android:layout_marginBottom="20dip">
+			
+							<RelativeLayout android:layout_width="140dip"
+										  android:layout_height="130dip" 
+										  android:orientation="vertical"
+										  android:background="@drawable/grey_rect_shape"
+										  android:layout_marginRight="10dip"
+										  android:onClick="onSetupClick">
+											<ImageView android:id="@+id/ImageView01"
+														android:layout_width="fill_parent" 
+														android:layout_height="wrap_content"
+														android:src="@drawable/setting" 
+														android:layout_weight="0.2"
+														android:scaleType="fitCenter"
+														android:focusable="false"
+														android:layout_centerInParent="true">
+											</ImageView>
+											<LinearLayout android:id="@+id/LinearLayout01"
+														android:layout_width="fill_parent" 
+														android:layout_height="wrap_content"
+														android:orientation="horizontal" 
+														android:paddingLeft="6dip"
+														android:paddingRight="6dip" 
+														android:layout_marginTop="6dip"
+														android:layout_weight="0.8"
+														android:focusable="false"
+														android:gravity="center"
+														android:layout_alignParentBottom="true">
+														<TextView android:id="@+id/seperator" 
+															android:layout_width="wrap_content"
+															android:layout_height="wrap_content" 
+															android:textStyle="bold"
+															android:textColor="@color/blue_btn_bg" 
+															android:text="Set up"
+															android:paddingLeft="6dip"
+															android:focusable="false"></TextView>
+											</LinearLayout>
+							</RelativeLayout>
+							<RelativeLayout android:layout_width="140dip"
+										  android:layout_height="130dip"
+										  android:orientation="vertical"
+										  android:background="@drawable/grey_rect_shape"
+										  android:layout_marginLeft="10dip"
+										  android:onClick="onExpensesClick">
+										<ImageView android:id="@+id/ImageView01"
+														android:layout_width="fill_parent" 
+														android:layout_height="wrap_content"
+														android:src="@drawable/curr" 
+														android:layout_weight="0.2"
+														android:scaleType="fitCenter"
+														android:focusable="false"
+														android:layout_centerInParent="true">
+											</ImageView>
+										<LinearLayout android:id="@+id/LinearLayout01" 
+										  android:layout_width="fill_parent" 
+										  android:layout_height="wrap_content"
+										  android:gravity="center"
+										  android:orientation="horizontal"
+										  android:paddingLeft="6dip"
+										  android:paddingRight="6dip"
+										  android:layout_marginTop="6dip"
+										  android:layout_weight="0.8"
+										  android:focusable="false"
+										  android:layout_alignParentBottom="true">
+										<TextView android:id="@+id/seperator" 
+										  android:layout_width="wrap_content" 
+										  android:layout_height="wrap_content" 
+										  android:textStyle="bold" 
+										  android:textColor="@color/blue_btn_bg"
+										  android:text="Expenses"
+										  android:paddingLeft="6dip"
+										  android:focusable="false"></TextView>
+										</LinearLayout>
+							</RelativeLayout>
+			</LinearLayout>
+		</LinearLayout>
+</ScrollView>

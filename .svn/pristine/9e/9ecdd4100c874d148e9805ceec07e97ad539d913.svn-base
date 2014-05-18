@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+      xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:orientation="vertical"
+  android:background="@drawable/bg"
+  android:paddingLeft="10dip"
+  android:paddingRight="10dip"
+  android:paddingTop="10dip"
+  android:paddingBottom="10dip"
+  >
+  <LinearLayout
+				  android:layout_width="fill_parent"
+	  			  android:layout_height="50dip"
+	  			  android:orientation="horizontal"
+	  			  android:background="@drawable/rect_shape"
+	  			  android:gravity="center_vertical">  
+	  			  <TextView  
+			  			android:id="@+id/title" 
+			  			android:layout_width="fill_parent" 
+						android:layout_height="wrap_content"
+						android:text="Add IPD"
+						android:textColor="#ffffff"
+						android:textSize="15dip"
+						android:paddingLeft="20dip"></TextView>
+		</LinearLayout>
+  <RelativeLayout
+				  android:layout_width="fill_parent"
+	  			  android:layout_height="fill_parent"
+	  			  android:orientation="horizontal"
+	  			  android:background="@color/blue_btn_bg"
+	  			  android:gravity="center_vertical">  
+	  			  
+	  			  <WebView  
+			  			android:id="@+id/add_sx_location_text" 
+			  			android:layout_width="fill_parent" 
+						android:layout_height="fill_parent"
+						android:textColor="#ffffff"
+						android:layout_centerVertical="true"
+						android:gravity="center_horizontal"></WebView>
+				
+		</RelativeLayout>
+
+</LinearLayout>

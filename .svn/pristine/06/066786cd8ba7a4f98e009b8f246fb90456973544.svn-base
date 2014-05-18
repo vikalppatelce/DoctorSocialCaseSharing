@@ -1,0 +1,1740 @@
+/* HISTROY
+ * CATEGORY			 :- ACTIVITY
+ * DEVELOPER		 :- VIKALP PATEL
+ * AIM     			 :- ADD IPD ACTIVITY
+ * DESCRIPTION 		 :- SAVE IPD
+ * 
+ * S - START E- END  C- COMMENTED  U -EDITED A -ADDED
+ * --------------------------------------------------------------------------------------------------------------------
+ * INDEX       DEVELOPER		DATE			FUNCTION			DESCRIPTION
+ * --------------------------------------------------------------------------------------------------------------------
+ * 10001   	   VIKALP PATEL    09/01/2014							INITCAP VALUES WHILE SAVING INTO DATABASE.
+ * 10002	   VIKALP PATEL    09/01/2014       					FIX SEARCHING WITH ID.
+ * 10003       VIKALP PATEL    10/01/2014       					APPLYING FULLSCREEN THEME TO APPLICATION WITH PREFERENCES
+ * 10004       VIKALP PATEL    13/01/2014       					APPLYING PROPER VALIDATION ON MANDATORY FIELDS.
+ * 10005       VIKALP PATEL    13/01/2014       					TOOLTIP FEATURE.
+ * 10006       VIKALP PATEL    13/01/2014       					ADD SEARCH ALGO ON PATIENT NAME.
+ * 10007       VIKALP PATEL    15/01/2014       					INDIVIDUAL SETTINGS FEATURE
+ * 10008       VIKALP PATEL    16/01/2014                       	SURGICAL NOTES PICTURE ON OFF
+ * 10009       VIKALP PATEL    17/01/2014                       	SAVING SURGICAL NOTES IN DATABASE TABLE(PATIENT DETAILS)
+ * 10010       VIKALP PATEL    17/01/2014                       	ADDED SERVICE TYPE COLUMN IN PATIENT TEMP TABLE
+ * 10012       VIKALP PATEL    17/01/2014							UPDATING ONLY NON EMPTY DATA IN PATIENT TABLE & SERVICE TABLE
+ * 10013       VIKALP PATEL    20/01/2014							LAYOUTS RE-DESIGNED
+ * 10014	   VIKALP PATEL    20/01/2014							CUSTOM-TOAST ON SAVE
+ * 10015       VIKALP PATEL    21/01/2014							TOOLTIP EVENT CHANGE TO ONFOCUS
+ * 10017       VIKALP PATEL    23/01/2014							TAKE PICTURE REPLACES WITH ADD PICTURE
+ * 10018 	   VIKALP PATEL    23/01/2014							IMAGE COMPRESSION ON PICTURES
+ * 1000A       VIKALP PATEL    04/02/2014	     RELEASE			ENABLED SURGICAL PICTURES BY DEFAULT
+ * 1000A       VIKALP PATEL    04/02/2014        RELEASE    	    CLEAR GALLERY ON SAVE
+ * 1000A-1     VIKALP PATEL    06/02/2014        RELEASE            ADD NAME OF MEDIA IN PATIENT DETAIL TABLE
+ * 1000B       VIKALP PATEL    07/02/2014        RELEASE        	ADD VIDEO OPTION
+ * --------------------------------------------------------------------------------------------------------------------
+ */
+package com.netdoers.com.ui;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.media.ThumbnailUtils;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.preference.PreferenceManager;
+import android.provider.MediaStore;
+import android.provider.MediaStore.MediaColumns;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.FilterQueryProvider;
+import android.widget.Gallery;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.SimpleCursorAdapter;
+import android.widget.SimpleCursorAdapter.CursorToStringConverter;
+import android.widget.Toast;
+
+import com.netdoers.com.CustomToast;
+import com.netdoers.com.SmartConsultant;
+import com.netdoers.com.dto.DBConstant;
+import com.netdoers.com.utils.AppConstants;
+import com.netdoers.com.utils.GalleryMedia;
+import com.netdoers.com.utils.ImageCompression;
+import com.netdoers.com.utils.InitCap;
+import com.netdoers.com.utils.SearchAlgo;
+import com.smarthumanoid.com.R;
+
+@SuppressLint("ValidFragment")
+public class AddOPDSearchActivity extends FragmentActivity{
+
+	EditText addSxId;
+	EditText addSxName;
+	AutoCompleteTextView  addSxLocation;
+	EditText addSxAge;
+	EditText addSxDiagnose;
+	EditText addSxDate;
+	CheckBox addSxEmergency;
+	AutoCompleteTextView addIpdReferredBy;
+	AutoCompleteTextView addSxType;
+	EditText note;
+	private RadioGroup radioSexGroup;
+	RadioButton btnMale;
+	RadioButton btnFemale;
+	InitCap initCap;//ADDED 10001
+	public static final int SECSETTINGS = 1007;//ADDED 10007
+	Gallery gallery;//SA 10008
+	LinearLayout surgicalPic;
+	Uri currentFileUri;
+	final int REQUEST_CAMERA = 1001;
+	final int REQUEST_SMARTHUMANOID_CAMERA = 1002; 
+	final int REQUEST_VIDEO = 1011;//ADDED 1000B
+	final int REQUEST_VIDEO_IMPORT=1012;//ADDED 1000B
+	ArrayList<Bitmap> data;
+	ArrayList<String> paths;
+	ImagesAdapter imagesAdapter = null;//EA 10008
+	Cursor patientCursor;//ADDED 10009
+	String p_id=null;//ADDED 10009
+	public static final int PIC = 117;//SA 10017
+	public static final int IMPORT_PICTURE = 118;
+	Uri outputFileUri;//EA 10017
+	String compressedPath;//ADDED 10018
+	
+	//ADDED 10003
+	SharedPreferences pref;//final static int[] to = new int[] { android.R.id.text1 };
+	final static int[] to = new int[] { R.id.txtText};
+    final static String[] from = new String[] { DBConstant.Patient_Columns.COLUMN_NAME };
+    final static String[] projection = { 
+    										DBConstant.Patient_Columns.COLUMN_ID, 
+    										DBConstant.Patient_Columns.COLUMN_NAME, 
+    										DBConstant.Patient_Columns.COLUMN_TYPE,
+    										DBConstant.Patient_Columns.COLUMN_SERVICE_TYPE
+    									};
+	
+    SimpleCursorAdapter adapter;
+	/*ArrayList<String> lstLocation = new ArrayList<String>();
+	ArrayList<String> lstReferredBy = new ArrayList<String>();
+	ArrayList<String> lstPatientType = new ArrayList<String>();
+	
+	ArrayAdapter<String> locationAdapter;
+	ArrayAdapter<String> referredByAdapter;
+	ArrayAdapter<String> typeAdapter;*/
+	
+	SimpleCursorAdapter locationAdapter;
+	SimpleCursorAdapter typeAdapter;
+	SimpleCursorAdapter referredByAdapter;
+	String _id; // 0
+	String custId; // 1
+	String name; // 2
+	String location;//8
+	String age; //3
+	String totalCount; //4
+	String diagnosis; //5
+	String date;//11
+	String ward;//12
+	String emergency;//13
+	String ref;//7
+	String type;//6
+	String noteStr;//17
+	String sex;
+	
+	int searchBy = 0;
+	String _pre_id = null;
+	
+	String _name_id = null;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		//SA 10003
+		pref = PreferenceManager.getDefaultSharedPreferences(SmartConsultant.getApplication());
+		if(pref.getBoolean("prefIsFullScreen", false))
+		{
+			//setTheme(R.style.FullScreen);
+			requestWindowFeature(Window.FEATURE_NO_TITLE);
+	        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		}
+		//EA 10003
+		//SA 10013
+		//setContentView(R.layout.add_opd);
+		setContentView(R.layout.new_add_opd);
+		//EA 10013
+		_name_id = getIntent().getStringExtra("name");
+		_pre_id = getIntent().getStringExtra("_id");
+		   
+		initializeData();
+		initCap = new InitCap();//ADDED 10001
+		//Cursor c = getContentResolver().query(DBConstant.Patient_Columns.CONTENT_URI, null, "name=?", new String[]{name}, null);
+		searchBy = getIntent().getIntExtra("searchBy", 0);
+		
+		Cursor c = null;
+		
+		if(searchBy == 0)
+		{
+			//SA 10002
+			//c = getContentResolver().query(DBConstant.Patient_Temp_Columns.CONTENT_URI, null, "_id=?", new String[]{_name_id}, null);
+			c = getContentResolver().query(DBConstant.Patient_Temp_Columns.CONTENT_URI, null, "_id=?", new String[]{_pre_id}, null);
+			//EA 1002
+		}
+		else if(searchBy == 1)
+		{
+			//SA 10002
+			//c = getContentResolver().query(DBConstant.Patient_Temp_Columns.CONTENT_URI, null, "_id=?", new String[]{_name_id}, null);
+			c = getContentResolver().query(DBConstant.Patient_Temp_Columns.CONTENT_URI, null, "_id=?", new String[]{_pre_id}, null);
+			//EA 1002
+		}
+		
+		if(c != null && c.getCount() > 0)
+		{
+			c.moveToFirst();
+			custId = c.getString(c.getColumnIndex(DBConstant.Patient_Temp_Columns.COLUMN_CUSTOM_ID));
+			name = c.getString(c.getColumnIndex(DBConstant.Patient_Temp_Columns.COLUMN_NAME));
+			age = c.getString(c.getColumnIndex(DBConstant.Patient_Temp_Columns.COLUMN_AGE));
+			totalCount = c.getString(c.getColumnIndex(DBConstant.Patient_Temp_Columns.COLUMN_TOTALCOUNT));
+			diagnosis = c.getString(c.getColumnIndex(DBConstant.Patient_Temp_Columns.COLUMN_DIAGNOSIS));
+			type = c.getString(c.getColumnIndex(DBConstant.Patient_Temp_Columns.COLUMN_TYPE));
+			ref = c.getString(c.getColumnIndex(DBConstant.Patient_Temp_Columns.COLUMN_REF));
+			location = c.getString(c.getColumnIndex(DBConstant.Patient_Temp_Columns.COLUMN_LOCATION));
+			date = c.getString(c.getColumnIndex(DBConstant.Patient_Temp_Columns.COLUMN_DATE));
+			ward = c.getString(c.getColumnIndex(DBConstant.Patient_Temp_Columns.COLUMN_WARD));
+			emergency = c.getString(c.getColumnIndex(DBConstant.Patient_Temp_Columns.COLUMN_EMERGENCY));
+			noteStr = c.getString(c.getColumnIndex(DBConstant.Patient_Temp_Columns.COLUMN_NOTE));
+			sex = c.getString(c.getColumnIndex(DBConstant.Patient_Temp_Columns.COLUMN_SEX));
+			c.close();
+		}
+		
+		/*LocationTask locationTask = new LocationTask();
+		locationTask.execute();*/
+		
+		addSxId = (EditText) findViewById(R.id.add_sx_id);
+		addSxId.setText(custId);
+		addSxName = (EditText) findViewById(R.id.add_sx_name);
+		//setNameAdapter();
+		addSxName.setText(name);
+		addSxLocation = (AutoCompleteTextView) findViewById(R.id.add_sx_location);
+		addSxLocation.setText(location);
+		setLocationAdapter();
+		gallery = (Gallery)findViewById(R.id.imagePreview);//SA 10008
+		surgicalPic = (LinearLayout)findViewById(R.id.surgicalPic);
+		gallery.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				// TODO Auto-generated method stub
+				// SU 1000B
+				String extension = "";
+				int i = paths.get(arg2).lastIndexOf('.');
+				if (i >= 0) {
+					extension = paths.get(arg2).substring(i + 1);
+				}
+				if (extension.equalsIgnoreCase("mp4")) {
+					File file = new File(paths.get(arg2));
+					Intent intent = new Intent(Intent.ACTION_VIEW);
+					intent.setDataAndType(Uri.fromFile(file), "video/*");
+					startActivity(intent);
+				} else {
+					Intent intent = new Intent(AddOPDSearchActivity.this,
+							DetailedImage.class);
+					intent.putExtra("url", paths.get(arg2));
+					startActivity(intent);
+				}
+				// EU 1000B
+			}
+		});
+		//EA 10008
+		
+		
+		addSxAge = (EditText) findViewById(R.id.add_sx_age);
+		addSxAge.setText(age);
+				
+		addSxDiagnose = (EditText) findViewById(R.id.add_sx_diagnose);		
+		addSxDiagnose.setText(diagnosis);
+		
+		addSxDate = (EditText) findViewById(R.id.add_sx_date);
+		/*if(date != null && date.length() > 0)
+		{
+			addSxDate.setText(date);
+		}*/
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		String date = sdf.format(new Date(System.currentTimeMillis()));
+		if(date.contains("/"))
+		{
+			date = date.replace("/", "-");
+		}
+		addSxDate.setText(date);
+		addSxEmergency = (CheckBox) findViewById(R.id.add_sx_manager_emergency);
+		if(emergency != null && emergency.equalsIgnoreCase("1"))
+		{
+			addSxEmergency.setChecked(true);
+		}
+		else
+		{
+			addSxEmergency.setChecked(false);
+		}
+		addIpdReferredBy = (AutoCompleteTextView) findViewById(R.id.add_sx_referred_by);
+		addIpdReferredBy.setText(ref);
+		setReferredByAdapter();
+		
+		addSxType = (AutoCompleteTextView) findViewById(R.id.add_sx_patient_type);
+		addSxType.setText(type);
+		setTypeAdapter();
+		/*if(type != null && type.length() > 0)
+		{
+			int index = lstPatientType.indexOf(type);
+			addSxType.setSelection(index);
+		}*/
+				
+		note = (EditText) findViewById(R.id.add_sx_note);
+		note.setText(noteStr);
+		radioSexGroup = (RadioGroup) findViewById(R.id.radioSex);
+		
+		btnMale = (RadioButton) findViewById(R.id.radioMale);
+		btnFemale = (RadioButton) findViewById(R.id.radioFemale);
+		if(sex!= null && sex.equals("Male"))
+		{
+			btnMale.setChecked(true);
+			btnFemale.setChecked(false);
+		}
+		else if(sex!= null && sex.equals("Female"))
+		{
+			btnMale.setChecked(false);
+			btnFemale.setChecked(true);
+		}
+		
+		//SA 10005
+		if(pref.getBoolean("prefIsToolTip", false)|| pref.getBoolean("prefIsOPDToolTip", false))//EDITED 10007
+		{
+			onToolTipOn();
+		}
+		//EA 10005
+		
+		// SA 10008
+		data = new ArrayList<Bitmap>();
+		imagesAdapter = new ImagesAdapter(this, data);
+		gallery.setAdapter(imagesAdapter);
+		paths = new ArrayList<String>();
+		//SC 1000A
+		/*if (pref.getBoolean("prefIsOPDSurgicalNotes", false)) {
+			surgicalPic.setVisibility(1);
+			gallery.setVisibility(1);
+		}*/
+		//EC 1000A
+		// EA 10008
+	}
+	ArrayList<String> strLocation = new ArrayList<String>();
+
+	ArrayList<String> strType = new ArrayList<String>();
+	ArrayList<String> strRef = new ArrayList<String>();
+	
+	public void initializeData()
+	{
+		strLocation = SmartConsultant.getApplication().loadLocation();
+		strType = SmartConsultant.getApplication().loadType();
+		strRef = SmartConsultant.getApplication().loadRef();
+	}
+	
+	public void addLocation()
+	{
+		String s = initCap.toTitleCase(addSxLocation.getText().toString());//EDITED 10001
+		if(s!= null && s.length() > 0 && !strLocation.contains(new String(s)))
+		{
+			addContent(DBConstant.Location_Columns.CONTENT_URI, s);
+		}
+	}
+	
+	
+	
+	public void addType()
+	{
+		String s = initCap.toTitleCase(addSxType.getText().toString());//EDITED 10001
+		if(s!= null && s.length() > 0 && !strType.contains(new String(s)))
+		{
+			addContent(DBConstant.Types_Columns.CONTENT_URI, s);
+		}
+	}
+	
+	public void addRef()
+	{
+		String s = initCap.toTitleCase(addIpdReferredBy.getText().toString());//EDITED 10001
+		if(s!= null && s.length() > 0 && !strRef.contains(new String(s)))
+		{
+			addContent(DBConstant.Ref_Columns.CONTENT_URI, s);
+		}
+	}
+	
+	
+	
+	public void addContent(Uri uri, String str)
+	{
+		ContentValues values = new ContentValues();
+		str = initCap.toTitleCase(str);//ADDED 10001
+		values.put(DBConstant.Location_Columns.COLUMN_NAME, str);
+		values.put(DBConstant.Location_Columns.COLUMN_SYNC_STATUS, 0);
+		getContentResolver().insert(uri, values);
+	}
+	public void startManagerScreen(int index, int reqCode)
+	{
+		Intent i = new Intent(this, ManageLOVActivity.class);
+		i.putExtra("index", index);
+		startActivityForResult(i, reqCode);
+	}
+	// SA 1000B
+		public void onTakeVideo(View v) {
+			Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+			getVideoPath();
+			intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+			startActivityForResult(intent, REQUEST_VIDEO);
+		}
+
+		public void onImportVideo(View v) {
+			Intent intent = new Intent(Intent.ACTION_PICK,
+					android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+			getVideoPath();
+			intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+			startActivityForResult(intent, REQUEST_VIDEO_IMPORT);
+		}
+		public void getVideoPath() {
+			File imageDirectory = null;
+			String state = Environment.getExternalStorageState();
+			if (Environment.MEDIA_MOUNTED.equals(state)) {
+				imageDirectory = new File(AppConstants.IMAGE_DIRECTORY_PATH);
+			} else {
+				imageDirectory = new File(AppConstants.IMAGE_DIRECTORY_PATH_DATA);
+			}
+
+			imageDirectory.mkdirs();
+			File tempFile = new File(imageDirectory, getVideoName()
+					+ AppConstants.VIDEO_EXTENSION);
+			outputFileUri = Uri.fromFile(tempFile);
+			currentFileUri = outputFileUri;
+		}
+		// EA 1000B
+	//SA 10017
+			public void getImagePath()
+			{
+				File imageDirectory =null;
+				String state = Environment.getExternalStorageState();
+				if (Environment.MEDIA_MOUNTED.equals(state)) 
+				{
+					imageDirectory = new File(AppConstants.IMAGE_DIRECTORY_PATH);
+				}
+				else
+				{
+					imageDirectory = new File(AppConstants.IMAGE_DIRECTORY_PATH_DATA);
+				}
+
+				imageDirectory.mkdirs();
+				File tempFile = new File(imageDirectory, getVideoName()+ AppConstants.EXTENSION);
+				outputFileUri = Uri.fromFile( tempFile );
+				currentFileUri = outputFileUri;
+			}
+			
+			public void copy(File src, File dst) throws IOException {
+			    InputStream in = new FileInputStream(src);
+			    OutputStream out = new FileOutputStream(dst);
+
+			    // Transfer bytes from in to out
+			    byte[] buf = new byte[1024];
+			    int len;
+			    while ((len = in.read(buf)) > 0) {
+			        out.write(buf, 0, len);
+			    }
+			    in.close();
+			    out.close();
+			}
+			
+			public void onImportPicture(View v)
+			{
+				Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+				startActivityForResult(i, IMPORT_PICTURE);
+			}
+			
+			@Override
+			protected void onPrepareDialog(int id, Dialog dialog) {
+				switch (id) {
+				case PIC:
+					final AlertDialog alertDialog = (AlertDialog) dialog;
+					Button import_picture = (Button) alertDialog.findViewById(R.id.import_picture);
+					Button take_picture = (Button) alertDialog.findViewById(R.id.take_picture);
+					Button take_video = (Button)alertDialog.findViewById(R.id.take_video);//ADDED 1000B
+					Button import_video = (Button)alertDialog.findViewById(R.id.import_video);//ADDED 1000B
+					import_picture.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							onImportPicture(v);
+							alertDialog.dismiss();
+						}
+					});
+					take_picture.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							onTakePicture(v);
+							alertDialog.dismiss();
+						}
+					});
+					// SA 1000B
+					take_video.setOnClickListener(new View.OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							onTakeVideo(v);
+							alertDialog.dismiss();
+						}
+					});
+					import_video.setOnClickListener(new View.OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							onImportVideo(v);
+							alertDialog.dismiss();
+						}
+					});
+					// EA 1000B
+					break;
+				}
+			}
+			//EA 10017
+
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		String currentSelection = null;
+		if(data != null)
+		{
+			currentSelection = data.getStringExtra("data");
+		}
+		if(resultCode == RESULT_OK && currentSelection != null)
+		{
+			switch(requestCode)
+			{
+				case 100:
+					location = currentSelection;
+					break;
+				case 107:
+					ref = currentSelection;
+					break;
+				case 106:
+					type = currentSelection;
+					break;
+						
+			}
+			clearDataStructure();
+			onDataLoaded(currentSelection);
+			/*LocationTask locationTask = new LocationTask();
+			locationTask.execute();*/
+		}
+		
+		//SA 10008
+		Bitmap bm = null;
+		if (resultCode == RESULT_OK) 
+		{
+			//SA 10017
+			if (requestCode == IMPORT_PICTURE) {
+				
+				Uri selectedImage = data.getData();
+				String[] filePathColumn = { MediaColumns.DATA };
+				Cursor cursor = getContentResolver().query(selectedImage,filePathColumn, null, null, null);
+				cursor.moveToFirst();
+				int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+				String picturePath = cursor.getString(columnIndex);
+				cursor.close();
+				
+				getImagePath();
+				try {
+					copy(new File(picturePath), new File(currentFileUri.getPath()));
+					} 
+				catch (IOException e) 
+				{
+					Log.e("IMPORT_PICTURE", e.toString());
+				}
+		         
+				BitmapFactory.Options btmapOptions = new BitmapFactory.Options();
+				btmapOptions.inSampleSize = 2;
+				bm = BitmapFactory.decodeFile(picturePath,btmapOptions);
+				AddOPDSearchActivity.this.data.add(bm);
+				imagesAdapter.notifyDataSetChanged();
+				compressedPath = ImageCompression.compressImage(currentFileUri.getPath());//ADDED 10018
+				galleryAddPic();
+				paths.add(compressedPath);//EDITED 10018
+			}
+			//EA 10017
+			
+			if (requestCode == REQUEST_CAMERA) {
+				BitmapFactory.Options btmapOptions = new BitmapFactory.Options();
+				btmapOptions.inSampleSize = 2;
+				bm = BitmapFactory.decodeFile(currentFileUri.getPath(), btmapOptions);
+				AddOPDSearchActivity.this.data.add(bm);
+				imagesAdapter.notifyDataSetChanged();
+				compressedPath = ImageCompression.compressImage(currentFileUri.getPath());//ADDED 10018
+				galleryAddPic();
+				paths.add(compressedPath);//EDITED 10018
+			}
+			
+			if (requestCode == REQUEST_SMARTHUMANOID_CAMERA) {
+				
+				if (resultCode == RESULT_OK) {
+					BitmapFactory.Options btmapOptions = new BitmapFactory.Options();
+					btmapOptions.inSampleSize = 2;
+					bm = BitmapFactory.decodeFile(currentFileUri.getPath(),
+							btmapOptions);
+					AddOPDSearchActivity.this.data.add(bm);
+					imagesAdapter.notifyDataSetChanged();
+					compressedPath = ImageCompression.compressImage(currentFileUri.getPath());//ADDED 10018
+					galleryAddPic();
+					paths.add(compressedPath);//EDITED 10018
+				} else {
+					Toast.makeText(getApplicationContext(), "Error while taking picture!", Toast.LENGTH_SHORT).show();
+				}
+			}
+			// SA 1000B
+						if (requestCode == REQUEST_VIDEO) {
+							if (resultCode == RESULT_OK) {
+								// BitmapFactory.Options btmapOptions = new
+								// BitmapFactory.Options();
+								// btmapOptions.inSampleSize = 2;
+								// bm =
+								// BitmapFactory.decodeFile(currentFileUri.getPath(),btmapOptions);
+								bm = ThumbnailUtils.createVideoThumbnail(currentFileUri.getPath(),MediaStore.Video.Thumbnails.MICRO_KIND);
+								try {
+									Resources r = getResources();
+									Drawable[] layers = new Drawable[2];
+									layers[0] = new BitmapDrawable(bm);
+									layers[1] = r.getDrawable(R.drawable.play_icon);
+									LayerDrawable layerDrawable = new LayerDrawable(layers);
+									AddOPDSearchActivity.this.data.add(GalleryMedia.drawableToBitmap(GalleryMedia.geSingleDrawable(layerDrawable)));
+								} catch (Exception e) {
+									Log.e("Creating Thumbnail",e.toString());
+								}
+								imagesAdapter.notifyDataSetChanged();
+								galleryAddPic();
+								paths.add(currentFileUri.getPath());
+							} else {
+								CustomToast.showToastMessage(getApplicationContext(),
+										"Error while taking video!");
+							}
+						}
+
+						if (requestCode == REQUEST_VIDEO_IMPORT) {
+							if (resultCode == RESULT_OK) {
+								Uri selectedImage = data.getData();
+								String[] filePathColumn = { MediaColumns.DATA };
+								Cursor cursor = getContentResolver().query(selectedImage,
+										filePathColumn, null, null, null);
+								cursor.moveToFirst();
+								int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+								String videoPath = cursor.getString(columnIndex);
+								cursor.close();
+
+								getVideoPath();
+								try {
+									copy(new File(videoPath),
+											new File(currentFileUri.getPath()));
+								} catch (IOException e) {
+									Log.e("IMPORT_VIDEO", e.toString());
+								}
+
+								bm = ThumbnailUtils.createVideoThumbnail(currentFileUri.getPath(),MediaStore.Video.Thumbnails.MICRO_KIND);
+								try {
+									Resources r = getResources();
+									Drawable[] layers = new Drawable[2];
+									layers[0] = new BitmapDrawable(bm);
+									layers[1] = r.getDrawable(R.drawable.play_icon);
+									LayerDrawable layerDrawable = new LayerDrawable(layers);
+									AddOPDSearchActivity.this.data.add(GalleryMedia.drawableToBitmap(GalleryMedia.geSingleDrawable(layerDrawable)));
+								} catch (Exception e) {
+									Log.e("Creating Thumbnail",e.toString());
+								}
+								imagesAdapter.notifyDataSetChanged();
+								galleryAddPic();
+								paths.add(currentFileUri.getPath());
+							} else {
+								CustomToast.showToastMessage(getApplicationContext(),
+										"Error while importing video!");
+							}
+						}
+						// EA 1000B
+		}
+		//EA 10008
+		// SA 10007
+		if (requestCode == SECSETTINGS) {
+			Intent intent = getIntent();
+			finish();
+			startActivity(intent);
+		}
+		// EA 10007
+	}
+	public void clearDataStructure()
+	{
+		/*lstLocation = new ArrayList<String>();
+		lstPatientType = new ArrayList<String>();
+		lstReferredBy = new ArrayList<String>();*/
+	}
+	public void onManageLocation(View v)
+	{
+		startManagerScreen(0, 100);
+	}
+	
+	public void onManageReferredBy(View v)
+	{
+		startManagerScreen(5, 107);
+	}
+	
+	
+	public void onManageWard(View v)
+	{
+		startManagerScreen(2, 104);
+	}
+		
+	public void onManagePatientType(View v)
+	{
+		startManagerScreen(4, 106);
+	}
+	public void onTime(View v)
+	{
+		DialogFragment newFragment = new FromDatePickerFragment();
+	    newFragment.show(getSupportFragmentManager(), "From Date");
+	}
+	//SA 10017
+			@SuppressWarnings("deprecation")
+			public void onAddPicture(View v)
+			{
+				showDialog(PIC);
+			}
+			//EA 10017
+	//SA 10008
+		public void onTakePicture(View v)
+		{
+			Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			getImagePath();//ADDED 10017
+			intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+	  		pref = PreferenceManager.getDefaultSharedPreferences(SmartConsultant.getApplication());
+	  		if(pref.getBoolean("prefSmartHumanoidCamera", false))
+	  		{
+	  			Intent cameraIntent = new Intent(getApplicationContext(),CameraActivity.class);
+	  	        cameraIntent.putExtra("FILE_URI", outputFileUri.toString());
+	  	        startActivityForResult(cameraIntent, REQUEST_SMARTHUMANOID_CAMERA);
+	  		}
+	  		else
+	  		{
+	  			startActivityForResult(intent, REQUEST_CAMERA);
+	  		}
+		}
+
+		public static String getVideoName()
+		{
+			String name = "smartConsultant";
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+			try {
+				name = sdf.format(new Date(System.currentTimeMillis()));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return name;
+		}
+		
+		private void galleryAddPic() {
+		    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+		    File f = new File(currentFileUri.getPath());
+		    Uri contentUri = Uri.fromFile(f);
+		    mediaScanIntent.setData(contentUri);
+		    this.sendBroadcast(mediaScanIntent);
+		}
+		
+	//EA 10008			
+	
+	
+	class FromDatePickerFragment extends DialogFragment implements OnDateSetListener
+	{
+
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			// Use the current time as the default values for the picker
+			final Calendar c = Calendar.getInstance();
+			int yr = c.get(Calendar.YEAR);
+			int mnth = c.get(Calendar.MONTH);
+			int day = c.get(Calendar.DAY_OF_MONTH);
+			// Create a new instance of TimePickerDialog and return it
+			return new DatePickerDialog(getActivity(), this, yr, mnth, day);
+		}
+		@Override
+		public void onDateSet(DatePicker view, int year, int monthOfYear,int dayOfMonth) {
+			// TODO Auto-generated method stub
+			String date;
+			monthOfYear++;
+			if(dayOfMonth < 10)
+			{
+				date = "0" + dayOfMonth+"-";
+			}
+			else 
+			{
+				date = dayOfMonth+"-";
+			}
+			if(monthOfYear < 10)
+			{
+				date += "0" + monthOfYear+"-";
+			}
+			else
+			{
+				date += monthOfYear+"-";
+			}
+			
+			date += year;
+			//addSxDate.setText(dayOfMonth+"-"+monthOfYear+"-"+year);
+			addSxDate.setText(date);
+		}
+	}
+	public void save()
+	{
+		Bundle b = new Bundle();
+		b.putString("message", "Saving OPD.");
+		showDialog(LOADING, b);
+		updateServicePatient();//ADDED 10012
+		/*
+		ContentValues contentValues = new ContentValues();
+		ContentValues contentValuesTemp = new ContentValues();
+		
+		contentValues.put(DBConstant.Patient_Columns.COLUMN_CUSTOM_ID, addSxId.getText().toString());
+		contentValuesTemp.put(DBConstant.Patient_Temp_Columns.COLUMN_CUSTOM_ID, addSxId.getText().toString());
+		String nm = initCap.toTitleCase(addSxName.getText().toString());//ADDED 10001
+		contentValues.put(DBConstant.Patient_Columns.COLUMN_NAME, nm);//EDITED 10001
+		contentValuesTemp.put(DBConstant.Patient_Temp_Columns.COLUMN_NAME, nm);//EDITED 10001
+		ContentValues name = new ContentValues();
+		name.put(DBConstant.Patient_Name_Columns.COLUMN_NAME, nm);//EDITED 10001
+		name.put(DBConstant.Patient_Name_Columns.COLUMN_CUSTOM_ID, addSxId.getText().toString());
+		//SA 10006
+		name.put(DBConstant.Patient_Name_Columns.COLUMN_NAME_SEARCHALGO, initCap.toTitleCase(SearchAlgo.getNameSearchAlgo(nm)));
+		//EA 10006
+		
+		String loc = "";
+		//if(lstLocation != null && lstLocation.size() > 0)
+		{
+			loc = initCap.toTitleCase(addSxLocation.getText().toString());//EDITED 10001//loc = lstLocation.get(addSxLocation.getSelectedItemPosition());
+		}
+		contentValues.put(DBConstant.Patient_Columns.COLUMN_LOCATION, loc);
+		contentValuesTemp.put(DBConstant.Patient_Temp_Columns.COLUMN_LOCATION, loc);
+		name.put(DBConstant.Patient_Name_Columns.COLUMN_LOCATION, loc);
+		addLocation();
+		
+		contentValues.put(DBConstant.Patient_Columns.COLUMN_AGE, addSxAge.getText().toString());
+		contentValuesTemp.put(DBConstant.Patient_Temp_Columns.COLUMN_AGE, addSxAge.getText().toString());
+				
+		String 	strDiag=initCap.toTitleCase(addSxDiagnose.getText().toString());	//ADDED 10001
+		contentValues.put(DBConstant.Patient_Columns.COLUMN_DIAGNOSIS, strDiag);//EDITED 10001
+		contentValuesTemp.put(DBConstant.Patient_Temp_Columns.COLUMN_DIAGNOSIS, strDiag);//EDITED 10001
+		
+		loc = "";
+		if(!addSxDate.getText().toString().equals("Date : DD-MM-YYYY"))
+		{
+			loc = addSxDate.getText().toString(); 
+		}
+		contentValues.put(DBConstant.Patient_Columns.COLUMN_DATE, loc);
+		contentValuesTemp.put(DBConstant.Patient_Temp_Columns.COLUMN_DATE, loc);
+		name.put(DBConstant.Patient_Name_Columns.COLUMN_DATE, loc);
+		
+		
+		//getContentResolver().insert(DBConstant.Patient_Name_Columns.CONTENT_URI, name);
+		getContentResolver().update(DBConstant.Patient_Name_Columns.CONTENT_URI, name, "_id=?", new String[]{_pre_id});
+		
+		int w = 0;
+		if(addSxEmergency.isChecked())
+		{
+			w = 1;
+		}
+		
+		contentValues.put(DBConstant.Patient_Columns.COLUMN_SX_WATCH, w);
+		contentValues.put(DBConstant.Patient_Columns.COLUMN_EMERGENCY, addSxEmergency.isChecked());
+		contentValuesTemp.put(DBConstant.Patient_Temp_Columns.COLUMN_EMERGENCY, addSxEmergency.isChecked());
+		
+		loc = "";
+		//if(lstReferredBy != null && lstReferredBy.size() > 0)
+		{
+			loc = initCap.toTitleCase(addIpdReferredBy.getText().toString());//EDITED 10001//loc = lstReferredBy.get(addIpdReferredBy.getSelectedItemPosition());
+		}
+		contentValues.put(DBConstant.Patient_Columns.COLUMN_REF, loc);		
+		contentValuesTemp.put(DBConstant.Patient_Columns.COLUMN_REF, loc);
+		addRef();
+		
+		loc = "";
+		//if(lstPatientType != null && lstPatientType.size() > 0)
+		{
+			loc = initCap.toTitleCase(addSxType.getText().toString());//EDITED 10001//loc = lstPatientType.get(addSxType.getSelectedItemPosition());
+		}
+		contentValues.put(DBConstant.Patient_Columns.COLUMN_TYPE, loc);
+		contentValuesTemp.put(DBConstant.Patient_Temp_Columns.COLUMN_TYPE, loc);
+		addType();
+		contentValues.put(DBConstant.Patient_Columns.COLUMN_SERVICE_TYPE, 0);
+		contentValuesTemp.put(DBConstant.Patient_Temp_Columns.COLUMN_SERVICE_TYPE, 0);//ADDED 10010
+		
+		
+		contentValues.put(DBConstant.Patient_Columns.COLUMN_NOTE, note.getText().toString());
+		contentValuesTemp.put(DBConstant.Patient_Temp_Columns.COLUMN_NOTE, note.getText().toString());
+
+		String sex = null;
+		if(btnMale.isChecked())
+		{
+			sex = "Male";
+		}
+		else if(btnFemale.isChecked())
+		{
+			sex = "Female";
+		}
+		contentValues.put(DBConstant.Patient_Columns.COLUMN_SEX, sex);
+		contentValuesTemp.put(DBConstant.Patient_Temp_Columns.COLUMN_SEX, sex);
+		
+		contentValues.put(DBConstant.Patient_Columns.COLUMN_SYNC_STATUS, 0);
+		contentValues.put(DBConstant.Patient_Temp_Columns.COLUMN_SYNC_STATUS, 0);
+		
+		
+		getContentResolver().insert(DBConstant.Patient_Columns.CONTENT_URI, contentValues);
+		if(searchBy == 0)
+		{
+			getContentResolver().update(DBConstant.Patient_Temp_Columns.CONTENT_URI, contentValuesTemp, "_id=?", new String[]{_name_id});
+		}
+		else if(searchBy == 1)
+		{
+			getContentResolver().update(DBConstant.Patient_Temp_Columns.CONTENT_URI, contentValuesTemp, "_id=?", new String[]{_name_id});
+		}
+		*/
+		//SA 10009
+		if(paths.size() > 0)
+		{
+			//patientCursor = getContentResolver().query(DBConstant.Patient_Columns.CONTENT_URI, null, null, null, null);
+			//if (patientCursor != null && patientCursor.getCount() > 0) 
+			//{
+				//patientCursor.moveToLast();
+				//p_id = patientCursor.getString(patientCursor.getColumnIndex(DBConstant.Patient_Columns.COLUMN_ID));
+				//String name_  = patientCursor.getString(patientCursor.getColumnIndex(DBConstant.Patient_Columns.COLUMN_NAME));
+
+				
+				for (int i = 0; i < paths.size(); i++) {
+					String url = paths.get(i);
+					String file_name = url.substring(url.lastIndexOf("/") + 1);//ADDED 1000A-1
+					ContentValues temp = new ContentValues();
+					temp.put(DBConstant.Patient_Details_Columns.COLUMN_PATIENT_ID, _pre_id);
+					temp.put(DBConstant.Patient_Details_Columns.COLUMN_NAME, file_name);//ADDED 1000A-1
+					temp.put(DBConstant.Patient_Details_Columns.COLUMN_URL, url);
+					temp.put(DBConstant.Patient_Details_Columns.COLUMN_PATIENT_TYPE, 0);
+					temp.put(DBConstant.Patient_Details_Columns.COLUMN_SYNC_STATUS, 0);
+					getContentResolver().insert(
+							DBConstant.Patient_Details_Columns.CONTENT_URI, temp);
+					Log.i("Paitent Details", "Patient ID:-"+_pre_id + " --> "+"Name:"+"-->"+url);
+				}
+			//}
+		}
+		//EA 10009
+		
+		removeDialog(LOADING);
+		//SA 10014
+		//Toast.makeText(this, "OPD saved.", Toast.LENGTH_LONG).show();
+		CustomToast.showToastMessage(this, "OPD Saved");
+		//EA 10014
+		clearField();
+
+	}
+	
+	
+	//SA 10012
+		public void updateServicePatient()
+		{
+			String nm="";
+			String reUse="";
+			ContentValues serviceValues = new ContentValues();
+			ContentValues patientValues = new ContentValues();
+			ContentValues searchValues = new ContentValues();
+			if(isDataThere(addSxName))
+			{
+				nm=initCap.toTitleCase(addSxName.getText().toString());
+				serviceValues.put(DBConstant.Patient_Columns.COLUMN_NAME, nm);
+				patientValues.put(DBConstant.Patient_Temp_Columns.COLUMN_NAME, nm);
+				searchValues.put(DBConstant.Patient_Name_Columns.COLUMN_NAME, nm);
+	            searchValues.put(DBConstant.Patient_Name_Columns.COLUMN_NAME_SEARCHALGO, initCap.toTitleCase(SearchAlgo.getNameSearchAlgo(nm)));
+			}
+			if(isDataThere(addSxId))
+			{
+				serviceValues.put(DBConstant.Patient_Columns.COLUMN_CUSTOM_ID, addSxId.getText().toString());
+				patientValues.put(DBConstant.Patient_Temp_Columns.COLUMN_CUSTOM_ID, addSxId.getText().toString());
+			}
+			if(isDataThere(addSxLocation))
+			{
+				reUse="";
+				reUse = initCap.toTitleCase(addSxLocation.getText().toString());
+				serviceValues.put(DBConstant.Patient_Columns.COLUMN_LOCATION, reUse);
+				patientValues.put(DBConstant.Patient_Temp_Columns.COLUMN_LOCATION, reUse);
+				searchValues.put(DBConstant.Patient_Name_Columns.COLUMN_LOCATION, reUse);
+				addLocation();
+			}
+			if(isDataThere(addSxAge))
+			{
+				serviceValues.put(DBConstant.Patient_Columns.COLUMN_AGE, addSxAge.getText().toString());
+				patientValues.put(DBConstant.Patient_Temp_Columns.COLUMN_AGE, addSxAge.getText().toString());
+			}
+			if(isDataThere(addSxDiagnose))
+			{
+				reUse="";
+				reUse=initCap.toTitleCase(addSxDiagnose.getText().toString());
+				serviceValues.put(DBConstant.Patient_Columns.COLUMN_DIAGNOSIS, reUse);
+				patientValues.put(DBConstant.Patient_Temp_Columns.COLUMN_DIAGNOSIS, reUse);
+			}
+			if(isDataThere(addIpdReferredBy))
+			{
+				reUse="";
+				reUse= addIpdReferredBy.getText().toString();
+				serviceValues.put(DBConstant.Patient_Columns.COLUMN_REF, reUse);	
+				patientValues.put(DBConstant.Patient_Temp_Columns.COLUMN_REF, reUse);
+				addRef();	
+			}
+			if(isDataThere(addSxType))
+			{
+				reUse="";
+				reUse = initCap.toTitleCase(addSxType.getText().toString());
+				serviceValues.put(DBConstant.Patient_Columns.COLUMN_TYPE, reUse);
+				patientValues.put(DBConstant.Patient_Temp_Columns.COLUMN_TYPE, reUse);
+				addType();
+			}
+			if(isDataThere(note))
+			{
+				serviceValues.put(DBConstant.Patient_Columns.COLUMN_NOTE, note.getText().toString());
+				patientValues.put(DBConstant.Patient_Temp_Columns.COLUMN_NOTE, note.getText().toString());
+			}
+			
+			reUse="";
+			if(btnMale.isChecked())
+			{
+				sex = "Male";
+			}
+			else if(btnFemale.isChecked())
+			{
+				sex = "Female";
+			}
+			serviceValues.put(DBConstant.Patient_Columns.COLUMN_SEX, sex);
+			patientValues.put(DBConstant.Patient_Temp_Columns.COLUMN_SEX, sex);
+			
+			reUse="";
+			if(!addSxDate.getText().toString().equals("Date : DD-MM-YYYY"))
+			{
+				reUse = addSxDate.getText().toString(); 
+			}
+
+			serviceValues.put(DBConstant.Patient_Columns.COLUMN_DATE, reUse);
+			patientValues.put(DBConstant.Patient_Temp_Columns.COLUMN_DATE, reUse);
+			searchValues.put(DBConstant.Patient_Name_Columns.COLUMN_DATE, reUse);
+
+			int w = 0;
+			if(addSxEmergency.isChecked())
+			{
+				w = 1;
+			}
+			
+			serviceValues.put(DBConstant.Patient_Columns.COLUMN_SX_WATCH, w);
+			
+			serviceValues.put(DBConstant.Patient_Columns.COLUMN_EMERGENCY, addSxEmergency.isChecked());
+			patientValues.put(DBConstant.Patient_Temp_Columns.COLUMN_EMERGENCY, addSxEmergency.isChecked());
+						
+			serviceValues.put(DBConstant.Patient_Columns.COLUMN_SX_WATCH, "");
+			
+			serviceValues.put(DBConstant.Patient_Columns.COLUMN_SYNC_STATUS, 0);
+			patientValues.put(DBConstant.Patient_Temp_Columns.COLUMN_SYNC_STATUS, 0);
+			
+			getContentResolver().update(DBConstant.Patient_Columns.CONTENT_URI, serviceValues, "_id=?", new String[]{_pre_id});
+			getContentResolver().update(DBConstant.Patient_Temp_Columns.CONTENT_URI, patientValues, "_id=?", new String[]{_pre_id});
+			getContentResolver().update(DBConstant.Patient_Name_Columns.CONTENT_URI, searchValues, "_id=?", new String[]{_pre_id});
+		}
+		
+		public boolean isDataThere(EditText e)
+		{
+			
+			if(e.getText()!=null && e.getText().toString().length() > 0)
+			{
+				return true;
+			}
+			return false;
+		}
+		//EA 10012
+	
+	//SA 10005
+	public void onToolTipOn()
+	{
+		final Context c = getApplicationContext();
+		
+		//SU 10015
+		addSxName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if(hasFocus)
+					CustomToast.showToastMessage(c, getString(R.string.tpatientname));
+			}
+		});
+		
+		addSxLocation.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if(hasFocus)
+					CustomToast.showToastMessage(c, getString(R.string.tlocation));
+			}
+		});
+		
+		addSxId.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if(hasFocus)
+					CustomToast.showToastMessage(c, getString(R.string.tpatientid));
+			}
+		});
+		
+		addSxAge.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if(hasFocus)
+					CustomToast.showToastMessage(c, getString(R.string.tage));
+			}
+		});
+		
+		addSxDiagnose.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if(hasFocus)
+					CustomToast.showToastMessage(c, getString(R.string.tdiagnose));
+			}
+		});
+		
+		addIpdReferredBy.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if(hasFocus)
+					CustomToast.showToastMessage(c, getString(R.string.tipdreferred));
+			}
+		});
+		
+		addSxType.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if(hasFocus)
+					CustomToast.showToastMessage(c, getString(R.string.tpatienttype));
+			}
+		});
+		note.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if(hasFocus)
+					CustomToast.showToastMessage(c, getString(R.string.tnote));
+			}
+		});
+		//EU 10015
+	}
+	//EA 10005
+	
+	public void clearField()
+	{
+		addSxId.setText("");
+		addSxName.setText("");
+		//if(lstLocation != null && lstLocation.size() > 0)
+		{
+			addSxLocation.setText("");//addSxLocation.setSelection(0);
+		}
+		
+		addSxAge.setText("");
+		
+
+		addSxDiagnose.setText("");
+
+
+		//addSxDate.setText("Date : DD-MM-YYYY");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		String date = sdf.format(new Date(System.currentTimeMillis()));
+		if(date.contains("/"))
+		{
+			date = date.replace("/", "-");
+		}
+		addSxDate.setText(date);
+		
+		addSxEmergency.setChecked(false);
+		
+		
+		//if(lstPatientType != null && lstPatientType.size() > 0)
+		{
+			addSxType.setText("");//addSxType.setSelection(0);
+		}
+		
+		String loc = "";
+		/*if(lstLocation != null && lstLocation.size() > 0)
+		{
+			loc = lstLocation.get(addSxLocation.getSelectedItemPosition());
+		}*/
+						
+		loc = "";
+		//if(lstReferredBy != null && lstReferredBy.size() > 0)
+		{
+			addIpdReferredBy.setText("");//addIpdReferredBy.setSelection(0);
+		}
+				
+		note.setText("");
+		//SA 1000A
+		AddOPDSearchActivity.this.data.clear();
+		paths.clear();
+		imagesAdapter.notifyDataSetChanged();
+		//EA 1000A
+	}
+
+	public void onSave(View v)
+	{
+		//SA 10004
+		if((addSxName.getText() != null && addSxName.getText().toString().length() > 0) 
+				&& (addSxLocation.getText() != null && addSxLocation.getText().toString().length() > 0))
+		{
+			save();
+		}
+		else
+		{
+			validateFields();
+			//Toast.makeText(this, "Please Enter mandatory fields!", Toast.LENGTH_LONG).show();  COMMENTED 10004
+		}
+		//EA 10004
+	}
+	
+	public void onSaveMain(View v)
+	{
+		//SA 10004
+		if((addSxName.getText() != null && addSxName.getText().toString().length() > 0) 
+				&& (addSxLocation.getText() != null && addSxLocation.getText().toString().length() > 0))
+		{
+			save();
+			finish();
+		}
+		else
+		{
+			validateFields();
+			//Toast.makeText(this, "Please enter mandatory fields!", Toast.LENGTH_LONG).show(); COMMENTED 10004
+		}
+		/*save();
+		finish();*/
+		//EA 10004
+	}
+	
+	//SA 10004
+			public void validateFields()
+		    {
+		    	if((addSxName.getText().toString() == null || addSxName.getText().toString()
+						.length() == 0))
+				{
+					addSxName.requestFocus();
+					addSxName.setError("Please enter patient name");
+				}
+				if((addSxLocation.getText().toString() == null || addSxLocation.getText()
+						.toString().length() == 0))
+				{
+					addSxLocation.requestFocus();
+					addSxLocation.setError("Please enter hospital name");
+				}
+		    }
+			//EA 10004
+	
+	public void onCancel(View v)
+	{
+		finish();
+	}
+	public void showHideNote(View v)
+	{
+		if(note.getVisibility() == View.GONE)
+		{
+			note.setVisibility(View.VISIBLE);
+		}
+		else
+		{
+			note.setVisibility(View.GONE);
+		}
+	}
+	
+	public static final int LOADING = 101;
+	@Override
+	protected Dialog onCreateDialog(int id, Bundle b) {
+		// TODO Auto-generated method stub
+		//String msg = b.getString("message");
+		switch(id)
+		{
+			case LOADING:
+				ProgressDialog loadingDialog = new ProgressDialog(this);
+				loadingDialog.setMessage("Please wait...");
+				loadingDialog.setCancelable(false);
+				return loadingDialog;
+				//SA 10017
+			 case PIC:
+				 LayoutInflater inflater = LayoutInflater.from(this);
+				 View dialogview = inflater.inflate(R.layout.add_pic_dialog, null);
+				 AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(this);
+				 //dialogbuilder.setTitle("Add Picture");
+				 dialogbuilder.setView(dialogview);
+				 return dialogbuilder.create();
+	//EA 10017
+		}
+		return super.onCreateDialog(id);
+	}
+	/*public void setNameAdapter()
+	{
+		adapter = 
+            new SimpleCursorAdapter(this, 
+                    android.R.layout.simple_dropdown_item_1line, null,
+                    from, to);
+        addSxName.setAdapter(adapter);
+
+        // Set an OnItemClickListener, to update dependent fields when
+        // a choice is made in the AutoCompleteTextView.
+        addSxName.setOnItemClickListener(new OnItemClickListener() {
+            public void onItemClick(AdapterView<?> listView, View view,
+                        int position, long id) {
+                // Get the cursor, positioned to the corresponding row in the
+                // result set
+                Cursor cursor = (Cursor) listView.getItemAtPosition(position);
+
+                // Get the state's capital from this row in the database.
+            }
+        });
+
+        // Set the CursorToStringConverter, to provide the labels for the
+        // choices to be displayed in the AutoCompleteTextView.
+        adapter.setCursorToStringConverter(new CursorToStringConverter() {
+            public String convertToString(android.database.Cursor cursor) {
+                // Get the label for this row out of the "state" column
+                //final int columnIndex = cursor.getColumnIndexOrThrow("state");
+                final String str = cursor.getString(cursor.getColumnIndex(DBConstant.Patient_Columns.COLUMN_NAME));
+                return str;
+            }
+        });
+      // Set the FilterQueryProvider, to run queries for choices
+        // that match the specified input.
+        adapter.setFilterQueryProvider(new FilterQueryProvider() {
+            public Cursor runQuery(CharSequence constraint) {
+                // Search for states whose names begin with the specified letters.
+                //Cursor cursor = getContentResolver().query(DBConstant.Patient_Columns.CONTENT_URI, projection, DBConstant.Patient_Columns.COLUMN_NAME + "=%" + constraint.toString()+"%", new String[]{constraint.toString()}, null);
+            	Cursor cursor = getContentResolver().query(DBConstant.Patient_Columns.CONTENT_URI, projection, DBConstant.Patient_Columns.COLUMN_NAME + " like '%" + constraint.toString()+"%'", null, null);
+                return cursor;
+            }
+        });
+	}*/
+	public void setLocationAdapter()
+	{
+		//int[] to = new int[] { android.R.id.text1 };
+	    String[] from = new String[] { DBConstant.Location_Columns.COLUMN_NAME };
+	    
+		locationAdapter = 
+            /*new SimpleCursorAdapter(this, 
+                    android.R.layout.simple_dropdown_item_1line, null,
+                    from, to);*/
+				new MyCursorAdapter(this, R.layout.edt_item, null, from, to);
+        addSxLocation.setAdapter(locationAdapter);
+
+        // Set an OnItemClickListener, to update dependent fields when
+        // a choice is made in the AutoCompleteTextView.
+        addSxLocation.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+			public void onItemClick(AdapterView<?> listView, View view,
+                        int position, long id) {
+                // Get the cursor, positioned to the corresponding row in the
+                // result set
+                /*Cursor cursor = (Cursor) listView.getItemAtPosition(position);
+
+                // Get the state's capital from this row in the database.
+                String name = cursor.getString(1);
+                String _id = cursor.getString(0);
+                String type = cursor.getString(2);
+                startNextActivity(_id, name, type);*/
+                // Update the parent class's TextView
+            }
+        });
+
+        // Set the CursorToStringConverter, to provide the labels for the
+        // choices to be displayed in the AutoCompleteTextView.
+        locationAdapter.setCursorToStringConverter(new CursorToStringConverter() {
+            @Override
+			public String convertToString(android.database.Cursor cursor) {
+                // Get the label for this row out of the "state" column
+                //final int columnIndex = cursor.getColumnIndexOrThrow("state");
+                final String str = cursor.getString(cursor.getColumnIndex(DBConstant.Location_Columns.COLUMN_NAME));
+                return str;
+            }
+        });
+      // Set the FilterQueryProvider, to run queries for choices
+        // that match the specified input.
+        locationAdapter.setFilterQueryProvider(new FilterQueryProvider() {
+            @Override
+			public Cursor runQuery(CharSequence constraint) {
+                // Search for states whose names begin with the specified letters.
+                //Cursor cursor = getContentResolver().query(DBConstant.Patient_Columns.CONTENT_URI, projection, DBConstant.Patient_Columns.COLUMN_NAME + "=%" + constraint.toString()+"%", new String[]{constraint.toString()}, null);
+            	//Cursor cursor = getContentResolver().query(DBConstant.Patient_Columns.CONTENT_URI, projection, DBConstant.Patient_Columns.COLUMN_NAME + " like '%" + constraint.toString()+"%'", null, null);
+            	
+            	Cursor cursor = getContentResolver().query(DBConstant.Location_Columns.CONTENT_URI, null, DBConstant.Location_Columns.COLUMN_NAME + " like '%" + constraint.toString()+"%'", null, null);
+            	
+                return cursor;
+            }
+        });
+	}
+	/*private class LocationTask extends AsyncTask<Void, Void, Cursor>
+	{
+
+		@Override
+		protected Cursor doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			try {
+				return AddOPDSearchActivity.this.getContentResolver().query(DBConstant.Location_Columns.CONTENT_URI, null, null, null, null);
+			} catch (SQLException sqle) {
+				throw sqle;
+			}
+		}
+		@Override
+		protected void onPostExecute(Cursor result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+
+			if(result != null && result.getCount() > 0)
+			{
+				//result.moveToFirst();
+				while(result.moveToNext())
+				{
+					lstLocation.add(result.getString(1));
+				}
+				locationAdapter = new ArrayAdapter<String>(AddOPDSearchActivity.this, android.R.layout.simple_AutoCompleteTextView_item, lstLocation);
+				locationAdapter.setDropDownViewResource(android.R.layout.simple_AutoCompleteTextView_dropdown_item);
+				addSxLocation.setAdapter(locationAdapter);
+			}
+			ReferredByTask wardTask = new ReferredByTask();
+			wardTask.execute();
+		}
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+			Bundle b = new Bundle();
+			b.putString("message", "Getting DB contents");
+			showDialog(LOADING, b);
+		}
+	}*/
+	public void setReferredByAdapter()
+	{
+		//int[] to = new int[] { android.R.id.text1 };
+	    String[] from = new String[] { DBConstant.Ref_Columns.COLUMN_NAME };
+	    
+		referredByAdapter = 
+            /*new SimpleCursorAdapter(this, 
+                    android.R.layout.simple_dropdown_item_1line, null,
+                    from, to);*/new MyCursorAdapter(this, R.layout.edt_item, null, from, to);
+        addIpdReferredBy.setAdapter(referredByAdapter);
+
+        // Set an OnItemClickListener, to update dependent fields when
+        // a choice is made in the AutoCompleteTextView.
+        addIpdReferredBy.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+			public void onItemClick(AdapterView<?> listView, View view,
+                        int position, long id) {
+                // Get the cursor, positioned to the corresponding row in the
+                // result set
+                /*Cursor cursor = (Cursor) listView.getItemAtPosition(position);
+
+                // Get the state's capital from this row in the database.
+                String name = cursor.getString(1);
+                String _id = cursor.getString(0);
+                String type = cursor.getString(2);
+                startNextActivity(_id, name, type);*/
+                // Update the parent class's TextView
+            }
+        });
+
+        // Set the CursorToStringConverter, to provide the labels for the
+        // choices to be displayed in the AutoCompleteTextView.
+        referredByAdapter.setCursorToStringConverter(new CursorToStringConverter() {
+            @Override
+			public String convertToString(android.database.Cursor cursor) {
+                // Get the label for this row out of the "state" column
+                //final int columnIndex = cursor.getColumnIndexOrThrow("state");
+                final String str = cursor.getString(cursor.getColumnIndex(DBConstant.Ref_Columns.COLUMN_NAME));
+                return str;
+            }
+        });
+      // Set the FilterQueryProvider, to run queries for choices
+        // that match the specified input.
+        referredByAdapter.setFilterQueryProvider(new FilterQueryProvider() {
+            @Override
+			public Cursor runQuery(CharSequence constraint) {
+                // Search for states whose names begin with the specified letters.
+                //Cursor cursor = getContentResolver().query(DBConstant.Patient_Columns.CONTENT_URI, projection, DBConstant.Patient_Columns.COLUMN_NAME + "=%" + constraint.toString()+"%", new String[]{constraint.toString()}, null);
+            	//Cursor cursor = getContentResolver().query(DBConstant.Patient_Columns.CONTENT_URI, projection, DBConstant.Patient_Columns.COLUMN_NAME + " like '%" + constraint.toString()+"%'", null, null);
+            	
+            	Cursor cursor = getContentResolver().query(DBConstant.Ref_Columns.CONTENT_URI, null, DBConstant.Ref_Columns.COLUMN_NAME + " like '%" + constraint.toString()+"%'", null, null);
+            	
+                return cursor;
+            }
+        });
+	}
+	public void setTypeAdapter()
+	{
+		//int[] to = new int[] { android.R.id.text1 };
+	    String[] from = new String[] { DBConstant.Types_Columns.COLUMN_NAME };
+	    
+		typeAdapter = 
+            /*new SimpleCursorAdapter(this, 
+                    android.R.layout.simple_dropdown_item_1line, null,
+                    from, to);*/new MyCursorAdapter(this, R.layout.edt_item, null, from, to);
+        addSxType.setAdapter(typeAdapter);
+
+        // Set an OnItemClickListener, to update dependent fields when
+        // a choice is made in the AutoCompleteTextView.
+        addSxType.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+			public void onItemClick(AdapterView<?> listView, View view,
+                        int position, long id) {
+                // Get the cursor, positioned to the corresponding row in the
+                // result set
+                /*Cursor cursor = (Cursor) listView.getItemAtPosition(position);
+
+                // Get the state's capital from this row in the database.
+                String name = cursor.getString(1);
+                String _id = cursor.getString(0);
+                String type = cursor.getString(2);
+                startNextActivity(_id, name, type);*/
+                // Update the parent class's TextView
+            }
+        });
+
+        // Set the CursorToStringConverter, to provide the labels for the
+        // choices to be displayed in the AutoCompleteTextView.
+        typeAdapter.setCursorToStringConverter(new CursorToStringConverter() {
+            @Override
+			public String convertToString(android.database.Cursor cursor) {
+                // Get the label for this row out of the "state" column
+                //final int columnIndex = cursor.getColumnIndexOrThrow("state");
+                final String str = cursor.getString(cursor.getColumnIndex(DBConstant.Types_Columns.COLUMN_NAME));
+                return str;
+            }
+        });
+      // Set the FilterQueryProvider, to run queries for choices
+        // that match the specified input.
+        typeAdapter.setFilterQueryProvider(new FilterQueryProvider() {
+            @Override
+			public Cursor runQuery(CharSequence constraint) {
+                // Search for states whose names begin with the specified letters.
+                //Cursor cursor = getContentResolver().query(DBConstant.Patient_Columns.CONTENT_URI, projection, DBConstant.Patient_Columns.COLUMN_NAME + "=%" + constraint.toString()+"%", new String[]{constraint.toString()}, null);
+            	//Cursor cursor = getContentResolver().query(DBConstant.Patient_Columns.CONTENT_URI, projection, DBConstant.Patient_Columns.COLUMN_NAME + " like '%" + constraint.toString()+"%'", null, null);
+            	
+            	Cursor cursor = getContentResolver().query(DBConstant.Types_Columns.CONTENT_URI, null, DBConstant.Types_Columns.COLUMN_NAME + " like '%" + constraint.toString()+"%'", null, null);
+            	
+                return cursor;
+            }
+        });
+	}
+	/*private class ReferredByTask extends AsyncTask<Void, Void, Cursor>
+	{
+
+		@Override
+		protected Cursor doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			try {
+				return AddOPDSearchActivity.this.getContentResolver().query(DBConstant.Ref_Columns.CONTENT_URI, null, null, null, null);
+			} catch (SQLException sqle) {
+				throw sqle;
+			}
+		}
+		@Override
+		protected void onPostExecute(Cursor result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+
+			if(result != null && result.getCount() > 0)
+			{
+				//result.moveToFirst();
+				while(result.moveToNext())
+				{
+					lstReferredBy.add(result.getString(1));
+				}
+				referredByAdapter = new ArrayAdapter<String>(AddOPDSearchActivity.this, android.R.layout.simple_AutoCompleteTextView_item, lstReferredBy);
+				referredByAdapter.setDropDownViewResource(android.R.layout.simple_AutoCompleteTextView_dropdown_item);
+				addIpdReferredBy.setAdapter(referredByAdapter);
+			}
+			TypeTask referredByTask = new TypeTask();
+			referredByTask.execute();
+		}
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+		}
+	}
+	private class TypeTask extends AsyncTask<Void, Void, Cursor>
+	{
+
+		@Override
+		protected Cursor doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			try {
+				return AddOPDSearchActivity.this.getContentResolver().query(DBConstant.Types_Columns.CONTENT_URI, null, null, null, null);
+			} catch (SQLException sqle) {
+				throw sqle;
+			}
+		}
+		@Override
+		protected void onPostExecute(Cursor result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+
+			if(result != null && result.getCount() > 0)
+			{
+				//result.moveToFirst();
+				while(result.moveToNext())
+				{
+					lstPatientType.add(result.getString(1));
+				}
+				typeAdapter = new ArrayAdapter<String>(AddOPDSearchActivity.this, android.R.layout.simple_AutoCompleteTextView_item, lstPatientType);
+				typeAdapter.setDropDownViewResource(android.R.layout.simple_AutoCompleteTextView_dropdown_item);
+				addSxType.setAdapter(typeAdapter);
+			}
+			removeDialog(LOADING);
+			onDataLoaded();
+		}
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+		}
+	}*/
+	public void onDataLoaded(String data)
+	{
+		//if(lstLocation!= null && lstLocation.size()>0)
+		{
+			//int index = lstLocation.indexOf(location);
+			//if(index >=0)
+			{
+				addSxLocation.setText(data);//addSxLocation.setSelection(index);
+				addSxLocation.requestFocus();
+				Handler handler = new Handler() 
+				{
+					@Override
+					public void handleMessage(Message msg) {
+					    ((AutoCompleteTextView)msg.obj).setAdapter(locationAdapter);
+					};
+				};
+				Message msg = handler.obtainMessage();
+				msg.obj = addSxLocation;
+				handler.sendMessageDelayed(msg, 200); 
+			}
+		}
+		
+		//if(lstPatientType!= null && lstPatientType.size()>0)
+		{
+			//int index = lstPatientType.indexOf(type);
+			//if(index >=0)
+			{
+				addSxType.setText(data);//addSxType.setSelection(index);
+				addSxType.requestFocus();
+				Handler handler = new Handler() 
+				{
+					@Override
+					public void handleMessage(Message msg) {
+					    ((AutoCompleteTextView)msg.obj).setAdapter(typeAdapter);
+					};
+				};
+				Message msg = handler.obtainMessage();
+				msg.obj = addSxType;
+				handler.sendMessageDelayed(msg, 200);
+			}
+		}
+		//if(lstReferredBy!= null && lstReferredBy.size()>0)
+		{
+			//int index = lstReferredBy.indexOf(ref);
+			//if(index >=0)
+			{
+				addIpdReferredBy.setText(data);//addIpdReferredBy.setSelection(index);
+				addIpdReferredBy.requestFocus();
+				Handler handler = new Handler() 
+				{
+					@Override
+					public void handleMessage(Message msg) {
+					    ((AutoCompleteTextView)msg.obj).setAdapter(referredByAdapter);
+					};
+				};
+				Message msg = handler.obtainMessage();
+				msg.obj = addIpdReferredBy;
+				handler.sendMessageDelayed(msg, 200);
+			}
+		}
+	}
+
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+     
+    /**
+     * Event Handling for Individual menu item selected
+     * Identify single menu item by it's id
+     * */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+         
+        switch (item.getItemId())
+        {
+        case R.id.mnuHelp:
+        	Intent i = new Intent(this, HelpActivity.class);
+        	i.putExtra("caller", "opd");
+        	startActivity(i);
+            return true;
+			// SA 10007
+		case com.smarthumanoid.com.R.id.mnuSettings:
+			Intent in = new Intent(this, PrefsSecondaryActivity.class);
+			in.putExtra("caller", "opd");
+			startActivityForResult(in, SECSETTINGS);
+			return true;
+			// EA 10007
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }   
+
+}

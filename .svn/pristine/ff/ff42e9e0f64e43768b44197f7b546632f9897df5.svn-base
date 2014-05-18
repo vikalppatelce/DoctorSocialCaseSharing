@@ -1,0 +1,42 @@
+/*
+* Category :- Camera
+* Developer:- Vikalp Patel
+* Aim :- Capture Image
+* Description :- Taking Picture with the Activity
+* S - START E- END C- COMMENTED U -EDITED A -ADDED
+* --------------------------------------------------------------------------------------------------------------------
+* INDEX 		DEVELOPER 			DATE 				DESCRIPTION
+* --------------------------------------------------------------------------------------------------------------------
+* 10001 	  VIKALP PATEL 		 10/01/2014 			Add Fullscreen theme to application through Preferences
+*/
+
+
+
+
+package com.netdoers.com.ui;
+
+import com.netdoers.com.SmartConsultant;
+import com.smarthumanoid.com.R;
+
+import android.app.Activity;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+
+public class DashboardManageActivity extends Activity {
+	SharedPreferences pref;//Added 10001
+	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		//SA 10001
+		pref = PreferenceManager.getDefaultSharedPreferences(SmartConsultant.getApplication());
+		if(pref.getBoolean("prefIsFullScreen", false))
+		{
+			setTheme(R.style.FullScreen);
+		}
+		//EA 10001
+
+	}
+
+}

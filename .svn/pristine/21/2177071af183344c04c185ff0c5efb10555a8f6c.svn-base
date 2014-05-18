@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+			  xmlns:android="http://schemas.android.com/apk/res/android" 
+			  android:id="@+id/editorPannel" 
+			  android:layout_width="fill_parent" 
+			  android:layout_height="50dip"
+			  android:orientation="horizontal"
+			  android:gravity="center_vertical"
+			  android:paddingLeft="6dip"
+			  android:paddingRight="6dip"
+			  android:layout_marginTop="10dip"
+			  android:background="#00000000">
+		<TextView android:id="@+id/txtLovValue" 
+					  android:layout_width="fill_parent" 
+					  android:layout_height="50dip"
+					  android:singleLine="true"
+					  android:text="izharkhanart@gmail.com"
+					  android:gravity="center_vertical"
+					  android:textColor="@color/blue_btn_bg"
+					  android:textSize="20dip"
+					  android:layout_alignParentLeft="true"
+					  android:layout_toLeftOf="@+id/btnRemoveLOV"
+					  android:focusable="false"
+					  android:focusableInTouchMode="false"></TextView>
+		<Button android:id="@+id/btnRemoveLOV" 
+			  android:layout_width="wrap_content" 
+			  android:layout_height="wrap_content"
+			  android:orientation="horizontal"
+			  android:background="@drawable/minus_bg"
+			  android:layout_alignParentRight="true"
+			  android:layout_centerVertical="true"
+			  android:focusable="false"
+			  android:focusableInTouchMode="false"/>
+</RelativeLayout>

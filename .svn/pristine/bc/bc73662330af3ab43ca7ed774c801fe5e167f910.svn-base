@@ -1,0 +1,61 @@
+package com.netdoers.com.ui;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.smarthumanoid.com.R;
+
+public class Dashboard  extends Activity {
+	
+	LinearLayout l1,l2,l3,l4,l5,l6,l7,l8;
+	ImageView   i1,i2,i3,i4,i5,i6,i7,i8;
+	ImageView ii1,ii2,ii3,ii4,ii5,ii6,ii7,ii8;
+	TextView t1,t2,t3,t4,t5,t6,t7,t8;
+	public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.option_screen_dashboard);
+		
+		l1 = (LinearLayout)findViewById(R.id.db1);
+		l2 = (LinearLayout)findViewById(R.id.db2);
+		l3 = (LinearLayout)findViewById(R.id.db3);
+		l4 = (LinearLayout)findViewById(R.id.db4);
+		l5 = (LinearLayout)findViewById(R.id.db5);
+		l6 = (LinearLayout)findViewById(R.id.db6);
+		l7 = (LinearLayout)findViewById(R.id.db7);
+		l8 = (LinearLayout)findViewById(R.id.db8);
+		
+		i1 = (ImageView)findViewById(R.id.db1_img);
+		i2 = (ImageView)findViewById(R.id.db2_img);
+		i3 = (ImageView)findViewById(R.id.db3_img);
+		i4 = (ImageView)findViewById(R.id.db4_img);
+		i5 = (ImageView)findViewById(R.id.db5_img);
+		i6 = (ImageView)findViewById(R.id.db6_img);
+		i7 = (ImageView)findViewById(R.id.db7_img);
+		i8 = (ImageView)findViewById(R.id.db8_img);
+		
+		
+		ii1 = (ImageView)findViewById(R.id.db1_img_img);
+		ii2 = (ImageView)findViewById(R.id.db2_img_img);
+		ii3 = (ImageView)findViewById(R.id.db3_img_img);
+		ii4 = (ImageView)findViewById(R.id.db4_img_img);
+		ii5 = (ImageView)findViewById(R.id.db5_img_img);
+		ii6 = (ImageView)findViewById(R.id.db6_img_img);
+		ii7 = (ImageView)findViewById(R.id.db7_img_img);
+		
+		t1 = (TextView)findViewById(R.id.db1_img_img_txt);
+		t2 = (TextView)findViewById(R.id.db2_img_img_txt);
+		t3 = (TextView)findViewById(R.id.db3_img_img_txt);
+		t4 = (TextView)findViewById(R.id.db4_img_img_txt);
+		t5 = (TextView)findViewById(R.id.db5_img_img_txt);
+		t6 = (TextView)findViewById(R.id.db6_img_img_txt);
+		t7 = (TextView)findViewById(R.id.db7_img_img_txt);
+		t8 = (TextView)findViewById(R.id.db8_img_txt);
+		
+		
+	}
+
+}

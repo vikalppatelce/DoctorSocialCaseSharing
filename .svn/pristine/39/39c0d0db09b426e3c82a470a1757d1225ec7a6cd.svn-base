@@ -1,0 +1,171 @@
+/*
+* Category :- Camera
+* Developer:- Vikalp Patel
+* Aim :- Capture Image
+* Description :- Taking Picture with the Activity
+* S - START E- END C- COMMENTED U -EDITED A -ADDED
+* --------------------------------------------------------------------------------------------------------------------
+* INDEX 		DEVELOPER 			DATE 				DESCRIPTION
+* --------------------------------------------------------------------------------------------------------------------
+* 10001 	  VIKALP PATEL 		 10/01/2014 			Add Fullscreen theme to application through Preferences
+*/
+package com.netdoers.com.ui;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.preference.PreferenceManager;
+import android.provider.MediaStore;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Spinner;
+
+import com.netdoers.com.SmartConsultant;
+import com.netdoers.com.utils.AppConstants;
+import com.smarthumanoid.com.R;
+
+public class ExpensesActivity extends Activity{
+
+	EditText expensesDate;
+	EditText expensesAmount;
+	Spinner  paymentMode;
+	EditText description;
+	Spinner category;
+	Uri currentFileUri;
+	final int REQUEST_CAMERA = 1001;
+	SharedPreferences pref;//Added 10001
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		//SA 10001
+		pref = PreferenceManager.getDefaultSharedPreferences(SmartConsultant.getApplication());
+		if(pref.getBoolean("prefIsFullScreen", false))
+		{
+			setTheme(R.style.FullScreen);
+		}
+		//EA 10001
+		setContentView(R.layout.expenses);
+		expensesDate = (EditText) findViewById(R.id.expenses_date);
+		expensesAmount = (EditText) findViewById(R.id.expenses_amount);
+		paymentMode = (Spinner) findViewById(R.id.expenses_mode_of_payment);
+		
+		ArrayAdapter<String> paymentModeAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, SmartConsultant.getDataController().getPaymentMode());
+		paymentModeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		paymentMode.setAdapter(paymentModeAdapter);
+		
+		description = (EditText) findViewById(R.id.expenses_description);		
+				
+		category = (Spinner) findViewById(R.id.expense_category);
+		ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, SmartConsultant.getDataController().getExpenseCategory());
+		categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		category.setAdapter(categoryAdapter);
+	}
+	public void onManagePaymentMode(View v)
+	{
+		
+	}
+	
+	public void onManageExpenseCategory(View v)
+	{
+		
+	}
+	
+	public void onTakePicture(View v)
+	{
+		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File imageDirectory =null;
+		String state = Environment.getExternalStorageState();
+		if (Environment.MEDIA_MOUNTED.equals(state)) 
+		{
+			imageDirectory = new File(AppConstants.IMAGE_DIRECTORY_PATH);
+		}
+		else
+		{
+			imageDirectory = new File(AppConstants.IMAGE_DIRECTORY_PATH_DATA);
+		}
+
+		imageDirectory.mkdirs();
+		File tempFile = new File(imageDirectory, getVideoName()+ AppConstants.EXTENSION);
+		Uri outputFileUri = Uri.fromFile( tempFile );
+		currentFileUri = outputFileUri;
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+        startActivityForResult(intent, REQUEST_CAMERA);
+	}
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		Bitmap bm = null;
+		if (resultCode == RESULT_OK) 
+		{
+			if (requestCode == REQUEST_CAMERA) {
+				BitmapFactory.Options btmapOptions = new BitmapFactory.Options();
+				btmapOptions.inSampleSize = 2;
+				bm = BitmapFactory.decodeFile(currentFileUri.getPath(), btmapOptions);
+				ImageView image = (ImageView) findViewById(R.id.imagePreview);
+				image.setImageBitmap(bm);
+				galleryAddPic();
+			}
+		}
+	}
+	
+	public static String getVideoName()
+	{
+		String name = "smartConsultant";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		try {
+			name += sdf.format(new Date(System.currentTimeMillis()));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return name;
+	}
+	private void galleryAddPic() {
+	    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+	    File f = new File(currentFileUri.getPath());
+	    Uri contentUri = Uri.fromFile(f);
+	    mediaScanIntent.setData(contentUri);
+	    this.sendBroadcast(mediaScanIntent);
+	}
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+     
+    /**
+     * Event Handling for Individual menu item selected
+     * Identify single menu item by it's id
+     * */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+         
+        switch (item.getItemId())
+        {
+        case R.id.mnuHelp:
+        	Intent i = new Intent(this, HelpActivity.class);
+        	startActivity(i);
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }   
+}

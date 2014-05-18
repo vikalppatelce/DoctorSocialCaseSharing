@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    android:orientation="vertical" >
+
+    <!-- Header  Starts -->
+	<LinearLayout
+	    android:id="@+id/search_txt_layout"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal" 
+	    android:layout_alignParentTop="true"
+	    >
+	<EditText
+        android:id="@+id/search_txt"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:layout_marginTop="2dp"
+        android:drawableLeft="@drawable/edit_search"
+        android:inputType="textNoSuggestions"
+        android:layout_weight="9"
+        android:singleLine="true" />
+	<ImageView 
+	    android:id="@+id/clear_srch_button"
+	    android:layout_width="0dp"
+	    android:layout_height="wrap_content"
+	    android:scaleType="fitCenter"
+	    android:src="@drawable/abs__ic_clear_search_api_holo_light"
+	    android:layout_weight="1"
+	    android:layout_gravity="center"
+	    android:onClick="onClear"
+	    />
+	    
+	</LinearLayout>
+    
+    <ListView
+        android:id="@+id/contactList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/search_txt_layout"
+        android:background="@color/transparent"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@drawable/list_divider"
+        android:dividerHeight="1dp"
+        android:fastScrollEnabled="true" />
+
+    <include layout="@layout/progress_dialog_custom" />
+
+</RelativeLayout>

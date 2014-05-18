@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="@drawable/bg"
+  >
+  <LinearLayout
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:orientation="vertical"
+  >
+  <RelativeLayout
+				  android:layout_width="fill_parent"
+	  			  android:layout_height="50dip"
+	  			  android:orientation="horizontal"
+	  			  android:background="@color/blue_btn_bg"
+	  			  android:gravity="center_vertical">  
+	  			  <ImageView android:id="@+id/btn_header_first"
+	  			  			 android:layout_width="wrap_content"
+	  			  			 android:layout_height="wrap_content"
+	  			  			 android:scaleType="fitCenter"
+	  			  			 android:layout_alignParentLeft="true"
+	  			  			 android:layout_centerVertical="true"
+	  			  			 android:src="@drawable/btn_first"
+	  			  			 android:padding="15dip"
+	  			  			 android:onClick="onFirst"
+	  			  			 ></ImageView>
+	  			  <ImageView android:id="@+id/btn_header_prev"
+	  			  			 android:layout_width="wrap_content"
+	  			  			 android:layout_height="wrap_content"
+	  			  			 android:scaleType="fitCenter"
+	  			  			 android:layout_centerVertical="true"
+	  			  			 android:src="@drawable/btn_prev"
+	  			  			 android:padding="15dip"
+	  			  			 android:onClick="onPrev"
+	  			  			 android:layout_toRightOf="@+id/btn_header_first"
+	  			  			 ></ImageView>
+	  			  <TextView  
+			  			android:id="@+id/add_sx_location_text" 
+			  			android:layout_width="fill_parent" 
+						android:layout_height="wrap_content"
+						android:text="Expenses"
+						android:textColor="#ffffff"
+						android:textSize="15dip"
+						android:layout_centerVertical="true"
+						android:layout_toRightOf="@+id/btn_header_prev"
+						android:layout_toLeftOf="@+id/btn_header_next"
+						android:gravity="center_horizontal"></TextView>
+				<ImageView android:id="@+id/btn_header_next"
+	  			  			 android:layout_width="wrap_content"
+	  			  			 android:layout_height="wrap_content"
+	  			  			 android:layout_centerVertical="true"
+	  			  			 android:src="@drawable/btn_next"
+	  			  			 android:padding="15dip"
+	  			  			 android:onClick="onNext"
+	  			  			 android:layout_toLeftOf="@+id/btn_header_last"></ImageView>
+	  			<ImageView android:id="@+id/btn_header_last"
+	  			  			 android:layout_width="wrap_content"
+	  			  			 android:layout_height="wrap_content"
+	  			  			 android:layout_alignParentRight="true"
+	  			  			 android:layout_centerVertical="true"
+	  			  			 android:src="@drawable/btn_last"
+	  			  			 android:padding="15dip"
+	  			  			 android:onClick="onLast"></ImageView>
+		</RelativeLayout>
+<LinearLayout
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:orientation="vertical"
+  android:paddingLeft="10dip"
+  android:paddingRight="10dip"
+  android:paddingTop="10dip"
+  android:paddingBottom="10dip"
+  >
+	<EditText  
+			  android:id="@+id/expenses_date" 
+			  android:layout_width="fill_parent" 
+			  android:layout_height="50dip"
+			  android:hint="Date"
+			  android:layout_marginTop="10dip"
+			  android:background="@drawable/edt_bg"
+			  android:onClick="onTime"
+			  android:editable="false"
+			  android:paddingLeft="10dp"
+			  android:paddingRight="10dp"
+			  />
+	<EditText  
+			  android:id="@+id/expenses_amount" 
+			  android:layout_width="fill_parent" 
+			  android:layout_height="50dip"
+			  android:hint="Amount"
+			  android:inputType="numberDecimal|textCapWords"
+			  android:layout_marginTop="10dip"
+			  android:background="@drawable/edt_bg"
+			  android:paddingLeft="10dp"
+			  android:paddingRight="10dp"
+			  />
+	<EditText  
+			  android:id="@+id/expenses_description" 
+			  android:layout_width="fill_parent" 
+			  android:layout_height="55dip"
+			  android:hint="Description"
+			  android:layout_marginTop="10dip"
+			  android:background="@drawable/edt_bg"
+			  android:paddingLeft="10dp"
+			  android:paddingRight="10dp"
+			  android:inputType="textCapWords"></EditText>
+	<TextView  
+			  android:id="@+id/add_sx_location_text" 
+			  android:layout_width="fill_parent" 
+			  android:layout_height="wrap_content"
+			  android:layout_marginTop="6dip"
+			  android:text="Mode e.g Bank transfer, Cash"
+			  android:textColor="@color/blue_btn_bg"
+			  android:textSize="15dip"
+			  android:paddingLeft="6dip"></TextView>
+	<LinearLayout
+			  android:layout_width="fill_parent"
+  			  android:layout_height="50dip"
+  			  android:orientation="horizontal"
+  			  android:layout_marginTop="10dip">  
+  			  <AutoCompleteTextView android:id="@+id/expenses_mode_of_payment"
+  			  		   android:layout_width="fill_parent"
+  			  		   android:layout_height="50dip"
+  			  		   android:layout_weight="0.15"
+  			  		   android:drawSelectorOnTop="true"
+  			  		   android:background="@drawable/edt_bg"
+  			  		   android:paddingLeft="10dp"
+  			  		   android:inputType="textCapWords"></AutoCompleteTextView>
+  			  <ImageView android:id="@+id/add_sx_manager_location"
+  			  			 android:layout_width="fill_parent"
+  			  			 android:layout_height="wrap_content"
+  			  			 android:layout_gravity="center_vertical"
+  			  			 android:layout_weight="0.85"
+  			  			 android:background="@drawable/plus_bg"
+  			  			 android:onClick="onManagePaymentMode"
+  			  			 android:visibility="gone"></ImageView>
+	</LinearLayout>
+	<TextView  
+			  android:id="@+id/add_sx_location_text" 
+			  android:layout_width="fill_parent" 
+			  android:layout_height="wrap_content"
+			  android:layout_marginTop="6dip"
+			  android:text="Expense category"
+			  android:textColor="@color/blue_btn_bg"
+			  android:textSize="15dip"
+			  android:paddingLeft="6dip"></TextView>
+	<LinearLayout
+			  android:layout_width="fill_parent"
+  			  android:layout_height="50dip"
+  			  android:orientation="horizontal"
+  			  android:layout_marginTop="10dip">  
+  			  <AutoCompleteTextView android:id="@+id/expense_category"
+  			  		   android:layout_width="fill_parent"
+  			  		   android:layout_height="50dip"
+  			  		   android:layout_weight="0.15"
+  			  		   android:drawSelectorOnTop="true"
+  			  		   android:background="@drawable/edt_bg"
+  			  		   android:paddingLeft="10dp"
+			  android:paddingRight="10dp"
+  			  		   android:inputType="textCapWords"></AutoCompleteTextView>
+  			  <ImageView android:id="@+id/add_sx_manager_patient_type"
+  			  			 android:layout_width="fill_parent"
+  			  			 android:layout_height="wrap_content"
+  			  			 android:layout_gravity="center_vertical"
+  			  			 android:layout_weight="0.85"
+  			  			 android:background="@drawable/plus_bg"
+  			  			 android:onClick="onManageExpenseCategory"
+  			  			 android:visibility="gone"></ImageView>
+	</LinearLayout>
+	<LinearLayout
+			  android:layout_width="fill_parent"
+  			  android:layout_height="50dip"
+  			  android:orientation="horizontal"
+  			  android:layout_marginTop="10dip"
+  			  android:background="@drawable/rect_shape"
+  			  android:gravity="center_vertical"
+  			  android:onClick="onTakePicture"> 
+	<Button android:id="@+id/take_picture"
+  			  			 android:layout_width="wrap_content"
+  			  			 android:layout_height="wrap_content"
+  			  			 android:text="Take picture"
+  			  			 android:drawableLeft="@drawable/camera_icon"
+  			  			 android:textColor="#ffffff"
+						 android:background="#00000000"
+						 android:textSize="15dip"
+						 android:drawablePadding="20dip"
+						 android:layout_marginLeft="20dip"></Button>
+  	</LinearLayout>
+  	<Gallery android:id="@+id/imagePreview"
+  			  			 android:layout_width="fill_parent"
+  			  			 android:layout_height="100dip"
+  			  			 android:layout_gravity="center_horizontal"
+  			  			 android:src="@drawable/manage"
+  			  			 android:scaleType="fitXY"
+  			  			 android:layout_marginTop="10dip"
+  			  			 android:layout_marginBottom="10dip"
+  			  			 android:spacing="10dip"
+  			  			 ></Gallery>
+  	<Button android:id="@+id/add_sx_save"
+  			  			 android:layout_width="fill_parent"
+  			  			 android:layout_height="50dip"
+  			  			 android:layout_gravity="center_vertical"
+  			  			 android:layout_weight="1"
+  			  			 android:onClick="onSave"
+  			  			 android:text="Save"
+  			  			 android:textColor="#ffffff"
+  			  			 android:textSize="20dip"
+						 android:background="@drawable/rect_shape"
+						 android:layout_marginRight="6dip"></Button>
+</LinearLayout>
+/</LinearLayout>
+</ScrollView>

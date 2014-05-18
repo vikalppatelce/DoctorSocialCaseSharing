@@ -1,0 +1,159 @@
+/*HISTORY
+* CATEGORY 			:- CAMERA
+* DEVELOPER			:- VIKALP PATEL
+* AIM 				:- CAPTURE IMAGE
+* DESCRIPTION		:- TAKING PICTURE WITH THE ACTIVITY
+* 
+* S - START E- END C- COMMENTED U -EDITED A -ADDED
+* --------------------------------------------------------------------------------------------------------------------
+* INDEX 		DEVELOPER 			DATE 			FUNCTION		DESCRIPTION
+* --------------------------------------------------------------------------------------------------------------------
+* 10001 	  VIKALP PATEL		 07/01/2014							ADD FULLSCREEN THEME TO APPLICATION THROUGH PREFERENCES
+* --------------------------------------------------------------------------------------------------------------------
+*/
+
+package com.netdoers.com.ui;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
+
+import com.netdoers.com.SmartConsultant;
+import com.netdoers.com.service.ServiceAlarm;
+import com.smarthumanoid.com.R;
+
+public class SetupHomeActivity extends Activity{
+	
+	SharedPreferences pref;//ADDED 10001
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+	    //SA 10001
+  		pref = PreferenceManager.getDefaultSharedPreferences(SmartConsultant.getApplication());
+  		if(pref.getBoolean("prefIsFullScreen", false))
+  		{
+  			setTheme(R.style.FullScreen);
+  		}
+  		//EA 10001
+
+		setContentView(R.layout.setup_screen);
+	}
+	public void onStartSyncClick(View v)
+	{		
+		/*Intent i =  new Intent(this, UploadData.class);
+		startService(i);*/	
+		if(isNetworkAvailable())
+		{
+			if(SmartConsultant.getPreferences().getUserLoginDTO().getSign_id() == null && SmartConsultant.getPreferences().getUserLoginDTO().getUserName() == null)
+			{
+				/*Intent i = new Intent(this, LoginScreen.class);
+				startActivityForResult(i, 100);*/
+				showDialog(MESSAGE);
+			}
+			else
+			{
+				Intent i = new Intent(this, UploadStatusActivity.class);
+				startActivity(i);	
+			}
+		}
+		else
+		{
+			Toast.makeText(this, "Not Connected", Toast.LENGTH_LONG).show();
+		}
+	}
+	
+	private boolean isNetworkAvailable() {
+	    ConnectivityManager connectivityManager 
+	          = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+	    return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+	}
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == 100 && resultCode == RESULT_OK)
+		{
+			Intent i = new Intent(this, UploadStatusActivity.class);
+			startActivity(i);
+			ServiceAlarm.startServiceAlarm();//ADDED 1000C
+		}
+		else
+		{
+			String error = data.getStringExtra("error");
+			Toast.makeText(SetupHomeActivity.this, error, Toast.LENGTH_LONG).show();
+		}
+	}
+	public void onManageLOVClick(View v)
+	{
+		Intent i = new Intent(this, ManageLOVActivity.class);
+		startActivity(i);
+	}
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+   
+    /**
+     * Event Handling for Individual menu item selected
+     * Identify single menu item by it's id
+     * */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+         
+        switch (item.getItemId())
+        {
+        case R.id.mnuHelp:
+        	Intent i = new Intent(this, HelpActivity.class);
+        	i.putExtra("caller", "setup");
+        	startActivity(i);
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }
+    
+    public static final int MESSAGE = 101;
+    @Override
+    protected Dialog onCreateDialog(int id) {
+    	// TODO Auto-generated method stub
+    	switch (id)
+    	{
+	    	case MESSAGE:
+	    		AlertDialog.Builder builder1 = new Builder(this);
+	    		builder1.setTitle(R.string.app_name);
+	    		builder1.setMessage("If you dont already have a login, please visit www.smarthumanoid.com and register.");
+	    		builder1.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+	
+	    			@Override
+	    			public void onClick(DialogInterface dialog, int which) {
+	    				// TODO Auto-generated method stub
+	    				removeDialog(MESSAGE);
+	    				Intent i = new Intent(SetupHomeActivity.this, LoginScreen.class);
+	    				startActivityForResult(i, 100);
+	    			}
+	    		});
+	    		return builder1.create();
+    	}
+    	return super.onCreateDialog(id);
+    }	
+}

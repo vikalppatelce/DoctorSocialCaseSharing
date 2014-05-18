@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+* /res/layout/options_screen.xml
+*
+* Author: VIKALP PATEL
+* Purpose: Dashboard Screen
+* S - START E- END C- COMMENTED U -EDITED A -ADDED
+* **********************************************************************************************************************
+* INDEX 	DEVELOPER 		DATE 		DESCRIPTION
+* **********************************************************************************************************************
+* 10001    VIKALP PATEL  10/01/2014 	Added Preferences Setup
+**
+*/
+-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/mnuHelp"
+        android:icon="@android:drawable/ic_menu_help"
+        android:menuCategory="system"
+        android:title="@string/help">
+    </item>
+    <item
+        android:id="@+id/mnuSettings"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:menuCategory="system"
+        android:title="@string/settings"
+        android:visible="false"
+        />
+</menu>

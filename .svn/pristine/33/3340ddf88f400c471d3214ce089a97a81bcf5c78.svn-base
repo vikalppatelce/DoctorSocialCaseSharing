@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center"
+    android:orientation="vertical" >
+            	    
+    <Button
+        android:id="@+id/import_picture"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"
+        android:layout_marginLeft="20dp"
+        style="@style/IgBlueButtonStyle"
+        android:drawableLeft="@android:drawable/ic_menu_gallery"
+        android:drawablePadding="15dip"
+        android:text="Import Picture"
+        android:textColor="#ffffff"
+        android:textSize="15dip" />
+
+	<Button
+	    android:id="@+id/take_picture"
+	    android:layout_width="fill_parent"
+	    android:layout_height="40dp"
+	    android:layout_margin="10dp"
+	    android:layout_marginLeft="20dp"
+	    style="@style/IgBlueButtonStyle"
+	    android:drawableLeft="@drawable/camera_icon"
+	    android:drawablePadding="20dip"
+	    android:text="Take picture"
+	    android:textColor="#ffffff"
+	    android:textSize="15dip" />
+	
+		<Button
+	    android:id="@+id/take_video"
+	    android:layout_width="fill_parent"
+	    android:layout_height="40dp"
+	    android:layout_margin="10dp"
+	    android:layout_marginLeft="20dp"
+	    style="@style/IgBlueButtonStyle"
+	    android:drawableLeft="@android:drawable/ic_media_play"
+	    android:drawablePadding="20dip"
+	    android:text="Take video"
+	    android:visibility="gone"
+	    android:textColor="#ffffff"
+	    android:textSize="15dip" />
+	
+	<Button
+	    android:id="@+id/import_video"
+	    android:layout_width="fill_parent"
+	    android:layout_height="40dp"
+	    android:layout_margin="10dp"
+	    android:layout_marginLeft="20dp"
+	    style="@style/IgBlueButtonStyle"
+	    android:drawableLeft="@android:drawable/ic_menu_upload_you_tube"
+	    android:drawablePadding="20dip"
+	    android:visibility="gone"
+	    android:text="Import video"
+	    android:textColor="#ffffff"
+	    android:textSize="15dip" />
+  	</LinearLayout>

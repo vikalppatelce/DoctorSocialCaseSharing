@@ -1,0 +1,323 @@
+/*HISTORY
+* CATEGORY			 :- CAMERA
+* DEVELOPER			 :- VIKALP PATEL
+* AIM				 :- CAPTURE IMAGE
+* DESCRIPTION		 :- TAKING PICTURE WITH THE ACTIVITY
+* 
+* S - START E- END C- COMMENTED U -EDITED A -ADDED
+* --------------------------------------------------------------------------------------------------------------------
+* INDEX 		DEVELOPER 			DATE 			FUNCTION		DESCRIPTION
+* --------------------------------------------------------------------------------------------------------------------
+* 10001 	  VIKALP PATEL 		 10/01/2014 						ADD FULLSCREEN THEME TO APPLICATION THROUGH PREFERENCES
+* S0002       VIKALP PATEL       28/02/2014         SECURITY        LOGIN CHECK[DEVICE - SUBSCRIPTION]
+* F0001       VIKALP PATEL       03/03/2014         FLOW            RE-FLOWED SYNC SCREEN	
+* --------------------------------------------------------------------------------------------------------------------
+*/
+
+
+package com.netdoers.com.ui;
+
+import org.json.JSONObject;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.telephony.TelephonyManager;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.netdoers.com.CustomToast;
+import com.netdoers.com.SmartConsultant;
+import com.netdoers.com.dto.UserLoginDTO;
+import com.netdoers.com.service.RequestBuilder;
+import com.netdoers.com.service.ResponseParser;
+import com.netdoers.com.service.ServiceDelegate;
+import com.netdoers.com.utils.AppConstants;
+import com.smarthumanoid.com.R;
+
+public class LoginScreen extends Activity {
+    /** Called when the activity is first created. */
+	SharedPreferences pref;//ADDED 10001
+	EditText edtUserName, edtPassword;//ADDED 10002
+	String error;// ADDED S0002
+	String errorvalue = null;//ADDED S0002
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        /*if(SmartConsultant.getPreferences().getUserLoginDTO().getSign_id() == null && SmartConsultant.getPreferences().getUserLoginDTO().getUserName() == null)
+		{
+        	setContentView(R.layout.login_screen);
+		}
+		else
+		{
+			Intent i = new Intent(this, HomeActivity.class);
+			startActivity(i);
+			finish();
+		}*/
+        /*
+         * 
+         */
+        //setContentView(R.layout.login_screen); VIKALP
+		//SA 10001
+		pref = PreferenceManager.getDefaultSharedPreferences(SmartConsultant.getApplication());
+		if(pref.getBoolean("prefIsFullScreen", false))
+		{
+			//setTheme(R.style.FullScreen);
+			requestWindowFeature(Window.FEATURE_NO_TITLE);
+	        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		}
+		//EA 10001
+
+        setContentView(R.layout.login_screen_updated);
+        edtUserName= (EditText) findViewById(R.id.edtUserName);//SA 10002
+        edtPassword= (EditText)findViewById(R.id.edtPassword);//EA 10002
+        
+		try {
+			//SA S0002
+			error = getIntent().getStringExtra("error");
+			if(!TextUtils.isEmpty(error))
+			{
+			CustomToast.showToastMessage(this, error);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}//EA S0002
+    }
+    
+    public String getDeviceName() {
+    	  try
+    	  {
+    		  String manufacturer = Build.MANUFACTURER;
+        	  String model = Build.MODEL;
+        	  if (model.startsWith(manufacturer)) {
+        	    return capitalize(model);
+        	  } else {
+        	    return capitalize(manufacturer) + " " + model;
+        	  }
+    	  }
+    	  catch(Exception e)
+    	  {
+    		  return "Device Unidentified";
+    	  }
+    	}
+    
+	private String capitalize(String s) {
+		try {
+			if (s == null || s.length() == 0) {
+				return "";
+			}
+			char first = s.charAt(0);
+			if (Character.isUpperCase(first)) {
+				return s;
+			} else {
+				return Character.toUpperCase(first) + s.substring(1);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+				return "";
+		}
+	} 
+    
+    public void onLoginClick(View v)
+    {
+    	String userName = ((EditText) findViewById(R.id.edtUserName)).getText().toString();
+		String password = ((EditText) findViewById(R.id.edtPassword)).getText().toString();
+		//SA S0002
+		TelephonyManager mTelephonyMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		String device_id = mTelephonyMgr.getDeviceId();
+		String device_name = getDeviceName();
+		String myVersion = android.os.Build.VERSION.RELEASE;
+		//EA S0002
+    	LoginTask loginTask = new LoginTask();
+    	if((userName.toString() != null && userName.toString().length() > 0) 
+				&& (password.toString()!= null && password.toString().length() > 0))
+    	{
+		loginTask.execute(new String[]{userName, password, device_id, device_name, myVersion});//EDITED X0001
+    	}
+    	else
+    	{
+    		validateFields();//ADDED 
+    	}
+    	/*Intent i = new Intent(this, HomeActivity.class);
+    	startActivity(i);
+    	finish();*/
+    }
+    
+  //SA 10002
+  		public void validateFields()
+  	    {
+  	    	if((edtUserName.getText().toString() == null || edtUserName.getText().toString()
+  					.length() == 0))
+  			{
+  	    		edtUserName.requestFocus();
+  	    		edtUserName.setError("Please enter username");
+  			}
+  			if((edtPassword.getText().toString() == null || edtPassword.getText()
+  					.toString().length() == 0))
+  			{
+  				edtPassword.requestFocus();
+  				edtPassword.setError("Please enter password");
+  			}
+  	    }
+  		//EA 10002
+    
+    public void onForgetPassword(View v)
+    {
+    	Toast.makeText(this, "Forgot Password", Toast.LENGTH_SHORT).show();
+    }
+    
+    public static final int LOADING = 100;
+	public static final int MESSAGE = 101;
+	public static final int ERROR_MESSAGE = 102;
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		// TODO Auto-generated method stub
+		switch (id)
+		{
+		case LOADING:
+			ProgressDialog loadingDialog = new ProgressDialog(this);
+			loadingDialog.setMessage("Loading...");
+			loadingDialog.setCancelable(false);
+			return loadingDialog;
+		case ERROR_MESSAGE:
+			AlertDialog.Builder builder = new Builder(this);
+			builder.setTitle(R.string.app_name);
+			builder.setMessage("Problem in Login. \nPlease try again later.");
+			builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					removeDialog(ERROR_MESSAGE);
+				}
+			});
+			return builder.create();
+		case MESSAGE:
+			AlertDialog.Builder builder1 = new Builder(this);
+			builder1.setTitle(R.string.app_name);
+			builder1.setMessage("Problem in Login. \nPlease try again later.");
+			builder1.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					removeDialog(ERROR_MESSAGE);
+				}
+			});
+			return builder1.create();
+		}
+		return super.onCreateDialog(id);
+	}	
+    private class LoginTask extends AsyncTask<String, Void, UserLoginDTO>
+	{
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+			showDialog(LOADING);
+		}
+		@Override
+		protected UserLoginDTO doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			JSONObject dataToSend = RequestBuilder.getLoginData(params[0], params[1], params[2], params[3], params[4]); //EDITED S0002
+			Log.i("Login", dataToSend.toString());
+			UserLoginDTO res = null;
+			String url = RequestBuilder.getLoginUrl(params[0], params[1]);
+			try {
+				url = AppConstants.URLS.BASE_URL;
+				String str = ServiceDelegate.postData(url, dataToSend);
+				if(AppConstants.DEBUG)
+				{
+					res = ResponseParser.getLoginResponse("{\"status\":true,\"uid\":\"1746\",\"username\":\"dheeraj.kanhai@gmail.com\"}");
+				}
+				else
+				{
+					res = ResponseParser.getLoginResponse(str);
+					try
+					{
+						JSONObject object = new JSONObject(str);
+						errorvalue = object.getString("error");
+					}
+					catch(Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+				Log.i("Login-Response", res.toString());
+//				SmartConsultant.getPreferences().setUserLoginDTO(res);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return res;
+		}
+		@Override
+		protected void onPostExecute(UserLoginDTO result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			removeDialog(LOADING);
+			if(result!=null && result.isStatus())
+			{
+				/*Intent i = new Intent(LoginScreen.this, HomeActivity.class);
+		    	startActivity(i);
+		    	finish();*/
+				SmartConsultant.getPreferences().setUserLoginDTO(result);//ADDED S0002
+				setResult(RESULT_OK);
+				finish();
+			}
+			else
+			{
+				//showDialog(ERROR_MESSAGE);
+				//Toast.makeText(LoginScreen.this, "Invalid login credentials", Toast.LENGTH_LONG).show();
+				//SA S0002
+				try
+				{
+					if(!TextUtils.isEmpty(errorvalue))
+					{
+//						SA F0001
+//						Intent i = new Intent(SmartConsultant.getApplication().getApplicationContext(),SetupHomeActivity.class);
+//						startActivity(i);
+//						Toast.makeText(SmartConsultant.getApplication().getApplicationContext(), errorvalue, Toast.LENGTH_SHORT).show();
+//						CustomToast.showToastMessage(SmartConsultant.getApplication().getApplicationContext(), errorvalue);
+						Intent data = new Intent();
+						data.putExtra("error", errorvalue);
+						setResult(RESULT_CANCELED,data);
+						finish();
+//						EA F0001
+					}
+				}
+				catch(Exception e)
+				{
+				e.printStackTrace();	
+				}
+//				SC F0001
+//				Intent data = new Intent();
+//				data.putExtra("error", errorvalue);
+//				setResult(RESULT_CANCELED,data);
+//				finish();
+//				EC F0001
+				
+				//EA S0002
+//SC S0002		setResult(RESULT_CANCELED); 
+//EC S0002		finish(); 
+			}
+		}
+	}
+}

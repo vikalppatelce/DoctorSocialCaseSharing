@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:background="@drawable/bg"
+	android:gravity="center" android:fillViewport="true"
+	android:paddingTop="30dip" >
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:paddingBottom="10dip" android:layout_gravity="center_vertical">
+
+		<LinearLayout android:orientation="vertical"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_gravity="center">
+			<LinearLayout android:orientation="horizontal"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:layout_gravity="center" android:paddingLeft="20dip"
+				android:paddingRight="20dip" android:layout_marginBottom="10dip">
+				<ImageView android:id="@+id/ImageView01"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:src="@drawable/logo" android:layout_gravity="center_horizontal"
+					android:layout_marginLeft="0dip">
+				</ImageView>
+				<TextView android:id="@+id/seperator" android:layout_width="fill_parent"
+					android:layout_height="fill_parent" android:textColor="@color/blue_btn_bg"
+					android:text="Smart  Consultant" android:textSize="38dip"
+					android:layout_marginLeft="30dip" android:gravity="center_vertical"></TextView>
+			</LinearLayout>
+			<TextView android:id="@+id/seperator" android:layout_width="fill_parent"
+				android:layout_height="1dip" android:textStyle="bold"
+				android:background="#ffffff"></TextView>
+			<LinearLayout android:id="@+id/LinearLayout01"
+				android:layout_width="fill_parent" android:layout_height="60dip"
+				android:orientation="horizontal" android:gravity="center_vertical"
+				android:layout_marginLeft="20dip"
+				android:layout_marginRight="20dip"
+				android:layout_marginTop="30dip" android:background="@drawable/white_rect_shape">
+				<ImageView android:id="@+id/ImageView02"
+					android:layout_width="34dip" 
+					android:layout_height="wrap_content"
+					android:src="@drawable/user_icon"></ImageView>
+				<EditText android:id="@+id/edtUserName"
+					android:layout_width="fill_parent" 
+					android:layout_height="fill_parent"
+					android:layout_marginLeft="6dip" 
+					android:singleLine="true"
+					android:text=""
+					android:background="@drawable/edt_bg"
+					android:paddingLeft="4dip"></EditText>
+			</LinearLayout>
+			<LinearLayout android:id="@+id/LinearLayout01"
+				android:layout_width="fill_parent" android:layout_height="60dip"
+				android:orientation="horizontal" android:gravity="center_vertical"
+				android:layout_marginLeft="20dip"
+				android:layout_marginRight="20dip"
+				android:layout_marginTop="10dip" android:background="@drawable/white_rect_shape">
+				<ImageView android:id="@+id/ImageView02"
+					android:layout_width="34dip" android:layout_height="wrap_content"
+					android:src="@drawable/pass_icon"></ImageView>
+				<EditText android:id="@+id/edtPassword"
+					android:layout_width="fill_parent" android:layout_height="fill_parent"
+					android:layout_marginLeft="10dip" android:password="true"
+					android:text="" android:singleLine="true"
+					android:background="@drawable/edt_bg"
+					android:paddingLeft="4dip"
+					></EditText>
+			</LinearLayout>
+			<Button android:id="@+id/buttonPannel" android:layout_width="fill_parent"
+				android:layout_height="46dip" android:orientation="horizontal"
+				android:gravity="center" android:text="Log in" android:textColor="#ffffff"
+				android:layout_marginTop="10dip" android:background="@drawable/rect_shape"
+				android:layout_marginLeft="20dip" android:layout_marginRight="20dip"
+				android:focusable="true" android:onClick="onLoginClick"
+				android:textSize="20dip" />
+			<Button android:id="@+id/buttonPannel" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:orientation="horizontal"
+				android:gravity="center" android:text="Forgot Password?"
+				android:textColor="@color/blue_btn_bg" android:layout_marginTop="10dip"
+				android:background="@drawable/white_rect_shape" android:paddingLeft="10dip"
+				android:paddingRight="10dip" android:paddingTop="6dip"
+				android:paddingBottom="6dip" android:focusable="true"
+				android:onClick="onForgetPassword" android:layout_gravity="center_horizontal" />
+		</LinearLayout>
+
+	</LinearLayout>
+</ScrollView>

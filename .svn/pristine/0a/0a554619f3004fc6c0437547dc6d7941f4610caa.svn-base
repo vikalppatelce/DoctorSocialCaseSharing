@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bg"
+     >
+
+    <ImageView
+        android:id="@+id/picView"
+        android:layout_above="@+id/buttonPanel"
+        android:padding="5dp"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="fitXY"
+        />
+    <LinearLayout
+        android:id="@id/buttonPanel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:background="@color/metadata_background"
+         >
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:layout_marginTop="10dip"
+            android:layout_marginBottom="10dip"
+            android:layout_weight="0.5"
+            android:background="@drawable/rect_shape"
+            android:padding="7dp"
+            android:text="@string/discard"
+            android:textSize="20dip"
+            android:textColor="#ffffff"
+            android:onClick="onDiscard"
+             />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:textSize="20dip"
+            android:layout_marginRight="10dip"
+            android:layout_marginTop="10dip"
+            android:layout_marginBottom="10dip"
+            android:layout_weight="0.5"
+            android:background="@drawable/rect_shape"
+            android:padding="7dp"
+            android:text="@string/save"
+            android:onClick="onSave"
+            android:textColor="#ffffff" />
+    </LinearLayout>
+</RelativeLayout>

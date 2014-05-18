@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="blue_btn_bg">#01afd2</color>
+	<color name="blue_btn_bg_trans">#ff01afd2</color>
+	<color name="option_grey_btn_bg">#e2e2e2</color>
+	<color name="metadata_background">#ffcccccc</color>
+	<color name="link_color">#ff3f739a</color>
+	<color name="text_shadow_green_button">#ff237531</color>
+	<color name="white">#ffffffff</color>
+	<color name="dark_grey">#ff888888</color>
+	<color name="header_color">#f6f6f6</color>
+    <color name="header_border_shadow">#ffffff</color>
+    <color name="section_color">#f0f0f0</color>
+    <color name="border_color">#dedede</color>
+    <color name="transparent">#00000000</color>
+</resources>

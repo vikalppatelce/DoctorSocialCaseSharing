@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+* /res/values/string.xml
+*
+* Author: VIKALP PATEL
+* Purpose: Strings which are used in Application
+* S - START E- END C- COMMENTED U -EDITED A -ADDED
+* **********************************************************************************************************************
+* INDEX 	DEVELOPER 		DATE 			DESCRIPTION
+* **********************************************************************************************************************
+* 10001    VIKALP PATEL    09/01/2014		Added Bank value in LOV List 		
+**
+*/
+
+-->
+
+
+<resources>
+
+    <string name="hello">Hello World, LoginScreen!</string>
+    <string name="app_name">Smart Consultant</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Log In</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="forget_account">Forget this account</string>
+
+    <string-array name="listOfLOVS">
+        <item name="location">Hospital/Clinic</item>
+        <item name="procedure">Procedure</item>
+        <item name="ward">Ward</item>
+        <item name="teamMember">Surgeon/Assistant</item>
+        <item name="type">Patient Type</item>
+        <item name="ref">Referred By</item>
+        <item name="startTime">Start Time of surgery</item>
+        <item name="level">Surgery Level</item>
+        <item name="modeOfPayment">Mode Of Payment</item>
+        <item name="bank">Expense Category</item>
+        <item name="depositedBank">Bank</item><!-- ADDED 10001 -->
+    </string-array>
+
+    <string name="location">Location</string>
+
+    <string-array name="specialities">
+        <item>ANAESTHESIOLOGY</item>
+        <item>AYURVED</item>
+        <item>BARIATRIC SURGERY</item>
+        <item>CARDIOLOGY</item>
+        <item>CVTS</item>
+        <item>DENTAL</item>
+        <item>DERMATOLOGY</item>
+        <item>DIABETOLOGY</item>
+        <item>ENDOCRINOLOGY</item>
+        <item>ENT</item>
+        <item>GASTRO-ENTEROLOGY</item>
+        <item>GENERAL MEDICINE</item>
+        <item>GENERAL SURGERY</item>
+        <item>GYNAEC AND OBS</item>
+        <item>HOMEOPATHY</item>
+        <item>INTENSIVE AND CRITICAL CARE</item>
+        <item>MAXILLOFACIAL SURGERY</item>
+        <item>NEONATOLOGY</item>
+        <item>NEPHROLOGY</item>
+        <item>NEUROLOGY</item>
+        <item>NEUROSURGERY</item>
+        <item>ONCOLOGY</item>
+        <item>ONCOSURGERY</item>
+        <item>OPHTHALMOLOGY</item>
+        <item>ORTHOPAEDICS</item>
+        <item>PAEDIATRIC SURGERY</item>
+        <item>PAEDIATRICS</item>
+        <item>PHYSIOTHERAPY</item>
+        <item>PLASTIC AND COSMETIC SURGERY</item>
+        <item>PSYCHIATRY</item>
+        <item>PSYCHOLOGY</item>
+        <item>PULMONOLOGY / CHEST MEDICINE</item>
+        <item>SEXOLOGY</item>
+        <item>SPEECH THERAPY</item>
+        <item>TRICHOLOGY</item>
+        <item>UROSURGERY</item>
+        <item>VETERINARY</item>
+    </string-array>
+    <string-array name="default_level">
+        <item>1 Minor</item>
+        <item>2 Medium</item>
+        <item>3 Major</item>
+        <item>4 Supra Major</item>
+        <item>5 Supra Major +</item>
+        <item>6 Supra Major ++</item>
+        <item>7 Special Level</item>
+    </string-array>
+    <string-array name="default_ward">
+        <item>General</item>
+        <item>Share</item>
+        <item>Individual</item>
+        <item>AC - 1</item>
+        <item>AC - 2</item>
+        <item>Delux</item>
+    </string-array>
+    <string-array name="default_patienttype">
+        <item>General</item>
+        <item>Insurance - New India</item>
+        <item>Corporate - RCF</item>
+        <item>Cashless - Bajaj</item>
+    </string-array>
+    <string-array name="default_modeofpayment">
+        <item>Cash</item>
+        <item>Bank Transfer - HDFC</item>
+        <item>Credit Card - Kotak</item>
+        <item>EWallet - Paytm</item>
+    </string-array>
+    <string-array name="default_starttime">
+        <item>Morning</item>
+        <item>Afternoon</item>
+        <item>Evening</item>
+        <item>Night</item>
+    </string-array>
+    <string-array name="default_expcat">
+        <item>Purchases - EQUIPMENTS / INSTRUMENTS</item>
+        <item>Purchases - DRUGS AND MISC ITEMS</item>
+        <item>Purchases - LAPTOP/DESKTOP/MOBILES/TABLETS/PRINTERS</item>
+        <item>Purchases - STATIONARY</item>
+        <item>REPAIRS / AMC / CMC OF INSTRUMENTS AND EQUIPMENTS</item>
+        <item>DEPRECIATION</item>
+        <item>SALES PROMOTION EXPENSES</item>
+        <item>PROFESSIONAL INDEMNITY INSURANCE </item>
+        <item>Car - FUEL</item>
+        <item>CAR INSURANCE</item>
+        <item>CAR MAINTAINANCE SERVICING</item>
+        <item>TOLL TAX</item>
+        <item>TELEPHONE EXPENSES / MOBILE </item>
+        <item>ACCOUNTING AND TAX AUDIT FEES OF CA</item>
+        <item>TRAVELLING AND CONVEYANCE</item>
+        <item>FESTIVAL CELEBRATION EXPENSES </item>
+        <item>JUNIOR  PRACTITIONER FEES / PROFFESSIONAL FEES TO COLLEAGUE</item>
+        <item>MEMBERSHIP FEES OF ASSOCIATIONS</item>
+        <item>CME / CONFERENCE /WORKSHOP FEES</item>
+        <item>TRAVELLING AND CONVEYANCE</item>
+        <item>ACCOMODATION AND FOOD</item>
+        <item>SALARY - ASSISTANT</item>
+        <item>SALARY - TECHNICIAN</item>
+        <item>SALARY  - DRIVERS</item>
+        <item>SALARY - RECEPTIONIST</item>
+        <item>SALARY - STAFF / SISTER / BROTHERS</item>
+        <item>SALARY - CLERK</item>
+        <item>SALARY - ACCOUNTANT</item>
+        <item>SALARY - ADMINISTRATIVE STAFF</item>
+        <item>ELECTRICITY EXPENSES</item>
+    </string-array>
+    <!-- SA 10001 -->
+    <string-array name="default_deposited_bank">
+        <item>Bank Of India</item>
+        <item>ICICI</item>
+        <item>SBI Bikaner</item>
+    </string-array>
+    
+   <string-array name="accordion_sections">
+        <item>Patient Details</item>
+        <item>General Details</item>
+        <item>Other Details</item>
+    </string-array>
+    <string-array name="accordion_expense_sections">
+        <item>Expense Details</item>
+        <item>General Details</item>
+        <item>Expense Pic Details</item>
+    </string-array>
+    <string-array name="accordion_payment_sections">
+        <item>Payment Details</item>
+        <item>TDS Details</item>
+        <item>Other Details</item>
+    </string-array>
+
+    <integer-array name="accordion_visibility">
+        <item>1</item>
+        <item>1</item>
+        <item>0</item>
+    </integer-array>
+    <integer-array name="accordion_other_visibility">
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+    </integer-array>
+    
+    
+    
+    <!-- EA 10001 -->
+        <string name="discard">Discard</string>
+        <string name="save">Save</string>
+        <string name="capture">Capture</string>
+        <string name="cancel">Cancel</string>
+        <string name="create_an_account">Create an Account</string>
+        <string name="fullscreen">FullScreen</string>
+        <string name="fullscreen_summary">Application view in Fullscreen Mode</string>
+        <string name="ipd">Add IPD</string>
+        <string name="opd">Add OPD</string>
+        <string name="sx">Add SX</string>
+        <string name="ripd">Record IPD</string>
+        <string name="ropd">Record OPD</string>
+        <string name="rsx">Record SX</string>
+        <string name="expense">Expense</string>
+        <string name="payment">Add Payment</string>
+        <string name="tooltip">Tool Tip</string>
+        <string name="dashboard_summary">Option will Appear on DashBoard</string>
+        <string name="tooltip_summary">Shows help text in Application</string>
+        <string name="surgical_notes_summary">Pictures of Surgical Notes is Allowed or Not</string>
+        <string name="dashboard">DashBoard</string>
+        <string name="manage_dashboard">Manage Dashboard</string>
+        <string name="Managelov">Manage LOV</string>
+        <string name="manage_list">Manage Lists</string>
+        <string name="Sync">Sync</string>
+        <string name="startsync">Start Sync</string>
+        <string name="sync_frequency_summary">Application Sync Data within these much times in a day periodically</string>
+        <string name="sync_frequency">Sync Frequency</string>
+        <string name="camera">Camera</string>
+        <string name="camera_summary">Use SmartHumanoid Camera to take pictures with Flash ON</string>
+        <string name="about">About</string>
+        <string name="about_summary">About SmartHumanoid</string>
+        <string name="off">Off</string>
+        <string name="add_payment">Add Payment</string>
+        <string name="received_date">Received Date</string>
+        <string name="service_date">Service Date</string>
+        <string name="payment_source">Payment Source</string>
+        <string name="payment_type">Payment Type</string>
+        <string name="cheque">Cheque</string>
+        <string name="cash">Cash</string>
+        <string name="cheque_no">Cheque No</string>
+        <string name="reconcile">Reconcile</string>
+        <string name="tds_">TDS % (As per Payment Source)</string>
+        <string name="date">Date</string>
+        <string name="other">Other</string>
+        <string name="tds_amount">TDS Amount</string>
+        <string name="in_hand">In Hand</string>
+        <string name="deposited_in">Deposited In</string>
+        <string name="professional">Professional</string>
+        <string name="amount">Amount</string>
+        <string name="help">Help</string>
+        <string name="settings">Settings</string>
+        <string name="setup">SetUp</string>
+        <string name="info">info</string>
+        <string name="appearance">Appearance</string>
+        
+        <string name="tpatientname">Full name of the patient</string>
+        <string name="tlocation">Name of the hospital or clinic</string>
+        <string name="tpatientid">Patient ID</string>
+        <string name="tage">Age of the patient</string>
+        <string name="tdiagnose">Free text for patient condition</string>
+        <string name="tipdreferred">Referring doctor name</string>
+        <string name="tpatienttype">Patient type e.g General, Cashless, Insurance</string>
+        <string name="tward">General, AC, Delux etc</string>
+        <string name="ttotal">Patient total no. of visit</string>
+        <string name="tnote">Additional details for the patient</string>
+        <string name="tduration">Duration of surgery</string>
+        <string name="tprocedure">Procedure done on the basis of Speciality</string>
+        <string name="tlevel">Surgery level or phase</string>
+        <string name="tmember">Team memeber\'s name</string>
+        <string name="tcheque">Cheque no used for payment</string>
+        <string name="tinhand">In Hand Amount after deducting TDS</string>
+        <string name="ttdsper">TDS percentage</string>
+        <string name="ttdsamt">Amount of In Hand acc. to TDS %</string>
+        <string name="tamt">Total Amount before TDS%</string>
+        <string name="tamtlocation">Amount for particular hospital or location</string>
+        <string name="tbank">Bank name where amount is deposited</string>
+        <string name="texpense">Amount of money spent</string>
+        <string name="tdesc">Description on expense</string>
+        <string name="tcategory">Broad Categorization like Office Supplies</string>
+
+</resources>

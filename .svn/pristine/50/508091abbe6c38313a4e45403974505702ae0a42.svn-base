@@ -1,0 +1,91 @@
+/* HISTORY
+ * CATEGORY 		:- ACTIVITY
+ * DEVELOPER		:- VIKALP PATEL
+ * AIM			    :- SPLASH SCREEN
+ * DESCRIPTION 		:- SHOW SPONSORER IMAGE ON FLY WITH RESPECTIVE TO THE USER SYNC WITH THAT DEVICE
+ * 
+ * S - START E- END  C- COMMENTED  U -EDITED A -ADDED
+ * --------------------------------------------------------------------------------------------------------------------
+ * INDEX       DEVELOPER		DATE			FUNCTION		DESCRIPTION
+ * --------------------------------------------------------------------------------------------------------------------
+ * M0001      VIKALP PATEL    28/02/14          MONETIZE        GLOBAL CONTEXT OF IMAGE LOADER CONFIGURATION
+ * --------------------------------------------------------------------------------------------------------------------
+ */
+package com.netdoers.com.ui;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Window;
+import android.widget.ImageView;
+
+import com.netdoers.com.SmartConsultant;
+import com.netdoers.com.utils.AppConstants;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.smarthumanoid.com.R;
+
+public class SplashScreen extends Activity{
+	
+	private final int SPLASH_DISPLAY_LENGTH = 2500;
+	ImageView sponsorImage;
+	String imageUri;
+	
+	/*
+	 * (Activity Created)
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
+	@Override
+	@SuppressWarnings("deprecation")
+	public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		setContentView(R.layout.splash_screen);
+		sponsorImage = (ImageView)findViewById(R.id.sponsorer_image);
+		imageUri = AppConstants.URLS.SPONSOR_URL;
+		
+		ImageLoader imageLoader = ImageLoader.getInstance();
+        // Initialize ImageLoader with configuration. Do it once.
+//        imageLoader.init(ImageLoaderConfiguration.createDefault(this));
+        // Load and display image asynchronously
+        imageLoader.init(SmartConsultant.getImageLoaderConfiguration());
+
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+        .showImageOnLoading(R.drawable.logo) // resource or drawable
+        .showImageForEmptyUri(R.drawable.logo) // resource or drawable
+        .showImageOnFail(R.drawable.logo) //this is the image that will be displayed if download fails
+        .cacheInMemory()
+        .cacheOnDisc()
+        .build();
+		
+		if(SmartConsultant.getPreferences().getSponsorImage()!=null)
+		{
+			imageUri = imageUri+SmartConsultant.getPreferences().getSponsorImage();
+            imageLoader.displayImage(imageUri, sponsorImage, options);
+		}
+		
+		new Thread() {
+			@Override
+			public void run() {
+				try {
+					sleep(SPLASH_DISPLAY_LENGTH);
+					Intent localIntent;
+					if(SmartConsultant.getPreferences().getSpeciality()==null)
+					{
+					localIntent = new Intent(SplashScreen.this, SelectSpecialityActivity.class);
+					}
+					else
+					{
+					localIntent = new Intent(SplashScreen.this, HomeActivity.class);	
+					}
+					startActivity(localIntent);
+					finish();
+					return;
+				} catch (Exception localException) {
+				}
+			}
+		}.start();
+		
+	}
+}

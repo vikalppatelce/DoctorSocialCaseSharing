@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Record Screen</title>
+<style type="text/css">
+.underline{
+	text-decoration: underline;
+}
+</style>
+</head>
+<body>
+<div>
+	If you have selected the wrong  type of service (IPD/OPD/Sx) to reach here or selected the wrong hospital, click on back button to go to home screen and select  the right values<br/><br/>
+
+Click on the Record button with red dot to start recording. <br/><br/>
+
+When you are finished recording, click on the Stop button. <br/><br/>
+
+Click Back button to go to Home Screen.<br/>
+	
+	 
+</div>
+</body>
+</html>

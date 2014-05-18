@@ -1,0 +1,66 @@
+package com.netdoers.com.service;
+
+import java.util.Calendar;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.text.TextUtils;
+import android.util.Log;
+
+import com.netdoers.com.SmartConsultant;
+
+public class ServiceAlarm {
+	public static AlarmManager alarmMgr;
+	public static AlarmManager stopAlarmMgr;
+	public static PendingIntent alarmIntent;
+	static Context context;
+	public static void startServiceAlarm(String times)
+	{
+		context = SmartConsultant.getApplication();
+		alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);		
+		Intent intent = new Intent(SmartConsultant.getApplication(), UploadData.class);
+		alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+
+		// Set the alarm to start at 9:00 p.m.
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(System.currentTimeMillis());
+		calendar.set(Calendar.HOUR_OF_DAY, 21);
+		calendar.set(Calendar.MINUTE, 00);
+		if(TextUtils.isEmpty(times))
+		{
+			alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_HOUR, alarmIntent);	
+		}
+		else
+		{
+			alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_HOUR, alarmIntent);
+		}
+//		toStopServiceAlarm();
+		Log.i("Alarm", "Service Scheduled!");
+	}
+	
+	public static void toStopServiceAlarm()
+	{
+		context = SmartConsultant.getApplication();
+		stopAlarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);		
+		Intent intent = new Intent(SmartConsultant.getApplication(), TestStopService.class);
+		alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+
+		// Set the alarm to start at 12:00 a.m.
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(System.currentTimeMillis());
+		calendar.set(Calendar.HOUR_OF_DAY, 21);
+		calendar.set(Calendar.MINUTE, 00);
+		
+		stopAlarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
+		Log.i("Service", "Stop Service!");
+	}
+	
+	public class StopServiceAlarm {
+		public void stopServiceAlarm() {
+			alarmMgr.cancel(alarmIntent);
+			Log.i("Service", "Alarm cancelled service!");
+		}
+	}
+}

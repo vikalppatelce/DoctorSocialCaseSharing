@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="DuplicateDefinition">
+        <ignore path="res/values-v11/styles.xml" />
+    </issue>
+</lint>

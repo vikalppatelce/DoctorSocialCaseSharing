@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Set Up</title>
+<style type="text/css">
+.underline{
+	text-decoration: underline;
+}
+</style>
+</head>
+<body>
+<div>
+	<b><span class="underline">Start Syncing</span></b><br/>
+The app syncs all the records, voice and images when you are in the wi-fi zone but if you want to sync before that, you can click the start syncing button to sync data over the 3G network.
+<br/><br/>
+<b><span class="underline">LOV Maintenance</span></b><br/>
+LOV stands for List of values
+All the values in the fields that auto-complete can be added and deleted here. 
+</div>
+</body>
+</html>

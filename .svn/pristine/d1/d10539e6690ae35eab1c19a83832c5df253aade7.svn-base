@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="image_labeled_button">
+        <attr name="icon_resource" format="reference" />
+        <attr name="icon_label" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="toggle_image_labeled_button">
+        <attr name="icon_resource_off" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="accordion">
+        <attr name="header_layout_id" format="reference" />
+        <attr name="header_layout_fold_button_id" format="reference" />
+        <attr name="header_layout_label_id" format="reference" />
+        <attr name="custom_font" format="string" />
+        <attr name="section_headers" format="reference" />
+        <attr name="section_container" format="reference" />
+        <attr name="section_container_parent" format="reference" />
+        <attr name="section_bottom" format="reference" />
+        <attr name="section_visibility" format="reference"/>
+    </declare-styleable>
+    
+    	<attr name="switchStyle" format="reference" />
+    <declare-styleable name="Switch">
+        <attr name="thumb" format="reference"/>
+        <attr name="track" format="reference" />
+        <attr name="textOn" format="string"/>
+        <attr name="textOff" format="string"/>
+        <attr name="thumbTextPadding" format="dimension" />
+        <attr name="switchTextAppearance" format="reference" />
+        <attr name="switchMinWidth" format="dimension" />
+        <attr name="switchPadding" format="dimension" />
+	</declare-styleable>
+	
+    <attr name="textAppearance" format="reference" />
+  <declare-styleable name="TextAppearanceSwitch" >
+      	<attr name="textColor" format="color" /> 
+        <attr name="textSize" format="dimension"/>
+        <attr name="textStyle" format="reference"/>
+        <attr name="typeface" format="reference"/>
+        <attr name="fontFamily" format="reference"/>
+        <attr name="textColorHighlight" format="color"/>
+        <attr name="textColorHint" format="color" />
+        <attr name="textColorLink" format="color" />
+        <attr name="textAllCaps" format="boolean" />
+    </declare-styleable>   
+
+  
+  <declare-styleable name="SmoothProgressBar">
+        <attr name="spbStyle" format="reference"/>
+        <attr name="spb_color" format="color"/>
+        <attr name="spb_stroke_width" format="dimension"/>
+        <attr name="spb_stroke_separator_length" format="dimension"/>
+        <attr name="spb_sections_count" format="integer"/>
+        <attr name="spb_speed" format="float"/>
+        <attr name="spb_progressiveStart_speed" format="float"/>
+        <attr name="spb_progressiveStop_speed" format="float"/>
+        <attr name="spb_interpolator" format="enum">
+            <enum name="spb_interpolator_accelerate" value="0"/>
+            <enum name="spb_interpolator_linear" value="1"/>
+            <enum name="spb_interpolator_acceleratedecelerate" value="2"/>
+            <enum name="spb_interpolator_decelerate" value="3"/>
+        </attr>
+        <attr name="spb_reversed" format="boolean"/>
+        <attr name="spb_mirror_mode" format="boolean"/>
+        <attr name="spb_colors" format="reference"/>
+        <attr name="spb_progressiveStart_activated" format="boolean"/>
+        <attr name="spb_background" format="reference"/>
+        <attr name="spb_generate_background_with_colors" format="boolean"/>
+    </declare-styleable>
+    
+  <declare-styleable name="FlowLayout">
+		<attr name="android:gravity" />
+	</declare-styleable>
+	<declare-styleable name="FlowLayout_Layout">
+		<attr name="android:layout_gravity" />
+	</declare-styleable>
+</resources>

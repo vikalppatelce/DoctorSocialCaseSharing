@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+* /res/xml/settings.xml
+*
+* Author: VIKALP PATEL
+* Purpose: Preference Screen
+* S - START E- END C- COMMENTED U -EDITED A -ADDED
+* **********************************************************************************************************************
+* INDEX 	DEVELOPER 		DATE 		DESCRIPTION
+* **********************************************************************************************************************
+* 10001 	VIKALP PATEL 10/01/2014 	CREATED PREFERENCE SCREEN
+**
+*/
+
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:title="@string/appearance" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="prefIsFullScreen"
+            android:summary="@string/fullscreen_summary"
+            android:title="@string/fullscreen" >
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="prefIsToolTip"
+            android:summary="@string/tooltip_summary"
+            android:title="@string/tooltip" >
+        </CheckBoxPreference>
+    </PreferenceCategory>
+<!--        <PreferenceCategory android:title="@string/dashboard"> -->
+<!--        <Preference android:title="@string/manage_dashboard" android:key="prefDashboard"/>        -->
+<!--    </PreferenceCategory> -->
+       <PreferenceCategory android:title="@string/Managelov">
+       <Preference android:title="@string/manage_list" android:key="prefManageLov"/>       
+   </PreferenceCategory>
+   <PreferenceCategory android:title="@string/Sync">
+       <Preference android:title="@string/startsync" android:key="prefSync"/>
+
+<!--        <EditTextPreference -->
+<!--            android:icon="@android:drawable/ic_popup_sync" -->
+<!--            android:key="prefSyncFrequency" -->
+<!--            android:summary="@string/sync_frequency_summary" -->
+<!--            android:title="@string/sync_frequency" /> -->
+       
+       <ListPreference
+           android:defaultValue="0"
+           android:dialogTitle="App will sync these much times"
+           android:entries="@array/syncFrequency"
+           android:entryValues="@array/syncFrequencyValues"
+           android:icon="@android:drawable/ic_popup_sync"
+           android:key="prefListSyncFrequency"
+           android:summary="@string/sync_frequency_summary"
+           android:title="@string/sync_frequency" />
+
+   </PreferenceCategory> 
+   <PreferenceCategory android:title="@string/camera_title" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="prefSmartHumanoidCamera"
+            android:summary="@string/camera_summary"
+            android:title="@string/camera" >
+        </CheckBoxPreference>    
+            <ListPreference
+           android:defaultValue="0"
+           android:dialogTitle="App will resize image"
+           android:entries="@array/resizeImage"
+           android:entryValues="@array/resizeImageValues"
+           android:icon="@android:drawable/ic_menu_gallery"
+           android:key="prefListResizeImage"
+           android:summary="@string/resize_summary"
+           android:title="@string/resize" />
+    </PreferenceCategory>
+<!-- 	<PreferenceCategory android:title="@string/help_setup"> -->
+       <Preference android:title="@string/help_setup_summary" android:key="prefHelpSetup"/>       
+<!--    </PreferenceCategory> -->
+<!-- 	<PreferenceCategory android:title="@string/feedback"> -->
+<!--        <Preference android:title="@string/feedback_summary" android:key="prefFeedback"/>        -->
+<!--    </PreferenceCategory> -->
+<!--     <PreferenceCategory android:title="@string/about"> -->
+<!--        <Preference android:title="@string/about_summary" android:key="prefAbout"/>        -->
+<!--    </PreferenceCategory> -->
+
+<!--     <PreferenceCategory android:title="Developer"> -->
+<!--     <Preference android:title="Developer Options" android:key="prefDev" -->
+<!--     android:enabled="true"/> -->
+<!--     </PreferenceCategory> -->
+
+<!--    <PreferenceCategory android:title="Release Note"> -->
+<!--        <Preference android:title="Change Log" android:key="prefRelease" -->
+<!--            android:enabled="true"/>        -->
+<!--    </PreferenceCategory>   -->
+</PreferenceScreen>

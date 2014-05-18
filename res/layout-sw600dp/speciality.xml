@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+      xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:orientation="vertical"
+  android:background="@drawable/bg"
+  android:gravity="center"
+  >
+  <RelativeLayout
+				  android:layout_width="fill_parent"
+	  			  android:layout_height="wrap_content"
+	  			  android:orientation="horizontal"
+	  			  android:gravity="center_vertical"
+	  			  android:padding="6dip">  
+	  			     <Button
+	  			         android:id="@+id/btn"
+	  			         android:layout_width="fill_parent"
+	  			         android:layout_height="70dip"
+	  			         android:layout_centerInParent="true"
+	  			         android:background="@drawable/rect_shape"
+	  			         android:onClick="onSaveMain"
+	  			         android:text="Click to select specialty"
+	  			         android:textColor="#ffffff"
+	  			         android:textSize="24sp" />
+		</RelativeLayout>
+</LinearLayout>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Manange List</title>
+<style type="text/css">
+.underline{
+	text-decoration: underline;
+}
+</style>
+</head>
+<body>
+<div>
+	Select the list you want to manage at the top of the screen.<br/><br/>
+
+To add a value to the list, type the value in the text box at the bottom and click on the + button<br/><br/>
+
+To delete any value, simply click on the – button in front of those values.<br/><br/>
+
+For first time users, a lot of values in the Lists will auto-load from the server once you register and sign in.  If you are an existing user but  just installed this app on a new phone, logging in will sync the lists from the server just like your older device.<br/><br/>
+	 
+</div>
+</body>
+</html>

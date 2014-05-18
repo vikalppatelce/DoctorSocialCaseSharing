@@ -1,0 +1,193 @@
+package com.netdoers.com.dto;
+
+
+public class PatientDTO {
+
+	public String _id;
+	public String _newId;
+	public String name;
+	public String age;
+	public String totalCount;
+	public String diagnosis;
+	public String type;
+	public String serviceType;
+	public String ref;
+	public String location;
+	public String startTime;
+	public String time_spent;
+	public String date;
+	public String ward;
+	public String emergency;
+	public String teamMember;
+	public String procedure;
+	public String level;
+	public String note;
+	public String sex;
+	public String status;
+	public String sx_watch;
+	
+	
+	
+	public PatientDTO() {
+	}
+	public PatientDTO(String id, String newId, String name, String age,
+			String totalCount, String diagnosis, String type, String ref,
+			String location, String startTime, String timeSpent, String date,
+			String ward, String emergency, String teamMember, String procedure,
+			String level, String note, String sex, String status, String serviceType, String sx_watch) {
+		_id = id;
+		_newId = newId;
+		this.name = name;
+		this.age = age;
+		this.totalCount = totalCount;
+		this.diagnosis = diagnosis;
+		this.type = type;
+		this.ref = ref;
+		this.location = location;
+		this.startTime = startTime;
+		time_spent = timeSpent;
+		this.date = date;
+		this.ward = ward;
+		this.emergency = emergency;
+		this.teamMember = teamMember;
+		this.procedure = procedure;
+		this.level = level;
+		this.note = note;
+		this.sex = sex;
+		this.status = status;
+		this.serviceType = serviceType;
+		this.sx_watch = sx_watch;
+	}
+	public String get_id() {
+		return _id;
+	}
+	public void set_id(String id) {
+		_id = id;
+	}
+	public String get_newId() {
+		return _newId;
+	}
+	public void set_newId(String newId) {
+		_newId = newId;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getAge() {
+		return age;
+	}
+	public void setAge(String age) {
+		this.age = age;
+	}
+	public String getTotalCount() {
+		return totalCount;
+	}
+	public void setTotalCount(String totalCount) {
+		this.totalCount = totalCount;
+	}
+	public String getDiagnosis() {
+		return diagnosis;
+	}
+	public void setDiagnosis(String diagnosis) {
+		this.diagnosis = diagnosis;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public String getRef() {
+		return ref;
+	}
+	public void setRef(String ref) {
+		this.ref = ref;
+	}
+	public String getLocation() {
+		return location;
+	}
+	public void setLocation(String location) {
+		this.location = location;
+	}
+	public String getStartTime() {
+		return startTime;
+	}
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
+	}
+	public String getTime_spent() {
+		return time_spent;
+	}
+	public void setTime_spent(String timeSpent) {
+		time_spent = timeSpent;
+	}
+	public String getDate() {
+		return date;
+	}
+	public void setDate(String date) {
+		this.date = date;
+	}
+	public String getWard() {
+		return ward;
+	}
+	public void setWard(String ward) {
+		this.ward = ward;
+	}
+	public String getEmergency() {
+		return emergency;
+	}
+	public void setEmergency(String emergency) {
+		this.emergency = emergency;
+	}
+	public String getTeamMember() {
+		return teamMember;
+	}
+	public void setTeamMember(String teamMember) {
+		this.teamMember = teamMember;
+	}
+	public String getProcedure() {
+		return procedure;
+	}
+	public void setProcedure(String procedure) {
+		this.procedure = procedure;
+	}
+	public String getLevel() {
+		return level;
+	}
+	public void setLevel(String level) {
+		this.level = level;
+	}
+	public String getNote() {
+		return note;
+	}
+	public void setNote(String note) {
+		this.note = note;
+	}
+	public String getSex() {
+		return sex;
+	}
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getServiceType() {
+		return serviceType;
+	}
+	public void setServiceType(String serviceType) {
+		this.serviceType = serviceType;
+	}
+	public String getSx_watch() {
+		return sx_watch;
+	}
+	public void setSx_watch(String sxWatch) {
+		sx_watch = sxWatch;
+	}
+}

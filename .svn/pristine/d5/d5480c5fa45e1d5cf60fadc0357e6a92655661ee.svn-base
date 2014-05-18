@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/socialScreen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <FrameLayout
+        android:id="@+id/webview_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+<!--             <ProgressBar -->
+<!--             android:id="@+id/webview_progressbar" -->
+<!--             style="@android:style/Widget.ProgressBar.Horizontal" -->
+<!--             android:layout_width="fill_parent" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:indeterminate="true" -->
+<!--             android:layout_marginTop="-8dp" -->
+<!--             android:visibility="invisible" /> -->
+
+            <com.netdoers.com.utils.SmoothProgressBar
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/webview_progressbar"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-8dp"
+                android:indeterminate="true"
+                android:visibility="invisible"
+                app:spb_color="#03AFD2"
+                app:spb_mirror_mode="false"
+                app:spb_progressiveStart_activated="true"
+                app:spb_progressiveStart_speed="1.5"
+                app:spb_progressiveStop_speed="3.4"
+                app:spb_reversed="false"
+                app:spb_sections_count="4"
+                app:spb_speed="2.0"
+                app:spb_stroke_separator_length="4dp"
+                app:spb_stroke_width="4dp" />
+
+            <WebView
+                android:id="@+id/webview"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:visibility="invisible" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <RelativeLayout
+            android:id="@+id/retry_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:visibility="invisible" >
+
+            <Button
+                android:id="@+id/retry"
+                style="@style/IgBlueButtonStyle"
+                android:textColor="#ffffff"
+                android:textSize="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:onClick="Retry"
+                android:text="Retry" />
+
+            <TextView
+                android:id="@+id/internet_lost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/retry"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:text="@string/internetlost" />
+        </RelativeLayout>
+    </FrameLayout>
+    
+        <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <RelativeLayout
+            android:id="@+id/social_login_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@drawable/white_rect_shape"
+            android:visibility="invisible" >
+
+            <Button
+                android:id="@+id/socialbtnlogin"
+                style="@style/IgBlueButtonStyle"
+                android:textColor="#ffffff"
+                android:textSize="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:onClick="Login"
+                android:text="Login" />
+
+            <TextView
+                android:id="@+id/sociallogindetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/socialbtnlogin"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:text="@string/logindetails" />
+        </RelativeLayout>
+    </FrameLayout>
+    
+</FrameLayout>

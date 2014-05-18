@@ -1,0 +1,60 @@
+package com.netdoers.com.ui;
+
+import com.smarthumanoid.com.R;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.ImageView;
+
+
+public class DetailedImage extends Activity{
+
+	ImageView imageView;
+	Uri uri;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.detail_image);
+		String url = getIntent().getStringExtra("url");
+		//uri = Uri.parse(url);
+		imageView = (ImageView) findViewById(R.id.detailedImage);
+		BitmapFactory.Options btmapOptions = new BitmapFactory.Options();
+		btmapOptions.inSampleSize = 2;
+		Bitmap bm = BitmapFactory.decodeFile(url, btmapOptions);
+		imageView.setImageBitmap(bm);
+	}
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+     
+    /**
+     * Event Handling for Individual menu item selected
+     * Identify single menu item by it's id
+     * */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+         
+        switch (item.getItemId())
+        {
+        case R.id.mnuHelp:
+        	Intent i = new Intent(this, HelpActivity.class);
+        	startActivity(i);
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }   
+}

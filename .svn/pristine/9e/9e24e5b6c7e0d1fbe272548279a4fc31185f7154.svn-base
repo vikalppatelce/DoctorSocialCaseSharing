@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bg"
+     >
+
+    <ImageView
+        android:id="@+id/picView"
+        android:layout_above="@+id/buttonPanel"
+        android:padding="5dp"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="fitXY"
+        />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right|center"
+        android:layout_margin="16.0dip"
+        android:background="@drawable/camera_preview_btn_background"
+        android:padding="16.0dip"
+        android:onClick="onSave"
+        android:src="@drawable/ic_done_normal" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left|center"
+        android:layout_margin="16.0dip"
+        android:background="@drawable/camera_preview_btn_background"
+        android:contentDescription="@string/cancel"
+        android:padding="16.0dip"
+        android:onClick="onDiscard"
+        android:src="@drawable/ic_discard_normal" />
+
+</FrameLayout>

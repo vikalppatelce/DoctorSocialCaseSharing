@@ -1,0 +1,562 @@
+/*HISTORY
+* CATEGORY			 :- PREFERENCES
+* DEVELOPER			 :- VIKALP PATEL
+* AIM 				 :- SETTINGS PREFERENCES
+* DESCRIPTION 		 :- TAKING PICTURE WITH THE ACTIVITY
+* 
+* S - START E- END C- COMMENTED U -EDITED A -ADDED
+* --------------------------------------------------------------------------------------------------------------------
+* INDEX		 DEVELOPER		 DATE		 FUNCTION			DESCRIPTION
+* --------------------------------------------------------------------------------------------------------------------
+* 10001 	VIKALP PATEL  10/01/2014 	 					CREATED PREFERENCES
+* 10002     VIKALP PATEL  10/01/2014    					ADD FULLSCREEN THEME TO APPLICATION THROUGH PREFERENCES
+* 10003     VIKALP PATEL  05/02/2014     RELEASE            ADD RELEASE NOTE
+* 10004     VIKALP PATEL  13/02/2014     PREFERENCES        SAVING PREFERENCES SUMMARY
+* B0P01     VIKALP PATEL  04/03/2014     BUG                FIXED FOR AUTO SYNC PREFERENCES
+* ALARM     VIKALP PATEL  05/03/2014     ALARM              SCHEDULE SERVICE AT 9PM TO MIDNIGHT EVERYDAY
+* P2MA1     VIKALP PATEL  14/03/2014						INITIAL LOV VALUES ADDED
+* --------------------------------------------------------------------------------------------------------------------
+*/
+
+package com.netdoers.com.ui;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
+
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.app.Dialog;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Environment;
+import android.preference.ListPreference;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
+import android.preference.PreferenceManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+
+import com.netdoers.com.CustomToast;
+import com.netdoers.com.SmartConsultant;
+import com.netdoers.com.dto.DBConstant;
+import com.netdoers.com.service.ServiceAlarm;
+import com.netdoers.com.utils.AboutDialog;
+import com.netdoers.com.utils.ChangeLogDialog;
+import com.smarthumanoid.com.R;
+
+@SuppressLint("NewApi")
+public class PrefsActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener
+{
+	public static final int MESSAGE = 101;
+	public static final int ABOUT = 102;
+	public static final int DASHBOARD = 103;
+	public static final int DEV=104;
+	EditText userName,password;
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		PreferenceManager prefMgr = getPreferenceManager();
+		//prefMgr.setSharedPreferencesName("appSettingsPreferences");
+		//SharedPreferences prefMgr =SmartConsultant.getSharedPreferences(); 
+		//prefMgr.registerOnSharedPreferenceChangeListener(listener);
+		addPreferencesFromResource(R.xml.settings);
+		//SA 10004
+		for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); i++) {
+            initSummary(getPreferenceScreen().getPreference(i));
+        }
+		//EA 10004
+//		Preference dashBoard = prefMgr.findPreference("prefDashboard");
+//		if(dashBoard!=null)
+//		{
+//			dashBoard.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+//				
+//				@Override
+//				public boolean onPreferenceClick(Preference preference) {
+//					// TODO Auto-generated method stub
+//					Intent i = new Intent(getApplicationContext(), DashboardManageActivity.class);
+//					startActivityForResult(i, DASHBOARD);;
+//					return false;
+//				}
+//			});
+//		}
+
+//      SA P2MA1
+      if(!SmartConsultant.getPreferences().getIsLOVInserted())
+      {
+      	DefaultTask d = new DefaultTask();
+      	d.execute();
+      }
+//      EA P2MA1
+      
+		Preference manageList = prefMgr.findPreference("prefManageLov");
+		if(manageList!=null)
+		{
+			manageList.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+				
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+					// TODO Auto-generated method stub
+					Intent i = new Intent(getApplicationContext(), ManageLOVActivity.class);
+					startActivity(i);
+					return false;
+				}
+			});
+		}
+		
+		Preference syncFrequency = prefMgr.findPreference("prefSync");
+		if(syncFrequency!=null)
+		{
+			syncFrequency.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+				
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+					// TODO Auto-generated method stub
+					if(isNetworkAvailable())
+					{
+						if(SmartConsultant.getPreferences().getUserLoginDTO().getSign_id() == null && SmartConsultant.getPreferences().getUserLoginDTO().getUserName() == null)
+						{
+							showDialog(MESSAGE);
+							ServiceAlarm.startServiceAlarm("0"); //ADDED ALARM
+						}
+						else
+						{
+							Intent i = new Intent(getApplicationContext(), UploadStatusActivity.class);
+							startActivity(i);	
+						}
+					}
+					else
+					{
+						CustomToast.showToastMessage(SmartConsultant.getApplication().getApplicationContext(), "Please check your internet connection");
+					}
+					return false;
+				}
+			});
+		}
+		
+//		SA P2M01
+//		Preference syncListFrequency = prefMgr.findPreference("prefListSyncFrequency");
+//		if(syncListFrequency!=null)
+//		{
+//			syncListFrequency.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+//				
+//				@Override
+//				public boolean onPreferenceChange(Preference preference, Object newValue) {
+//					// TODO Auto-generated method stub
+////					ServiceAlarm.startServiceAlarm(SmartConsultant.getSharedPreferences().getString("prefListSyncFrequency", String.valueOf(0))); //ADDED ALARM
+////					CustomToast.showToastMessage(SmartConsultant.getApplication().getApplicationContext(), SmartConsultant.getSharedPreferences().getString("prefListSyncFrequency", String.valueOf(0)));
+//					return false;
+//				}
+//			});
+//		}
+//		EA P2M01
+		
+		Preference about = prefMgr.findPreference("prefAbout");
+		if(about!=null)
+		{
+			about.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+				
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+					// TODO Auto-generated method stub
+//					showDialog(ABOUT);
+					AboutDialog aboutDialog = new AboutDialog(PrefsActivity.this);
+					aboutDialog.show();
+					return false;
+				}
+			});
+		}
+		//SA 10003
+		Preference release = prefMgr.findPreference("prefRelease");
+		if(release!=null)
+		{
+			release.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+					// TODO Auto-generated method stub
+					ChangeLogDialog changeLogDialog = new ChangeLogDialog(PrefsActivity.this);
+					changeLogDialog.show();
+					return false;
+				}
+			});
+		}
+		//EA 10003
+		//DEVELOPER OPTION
+//		Preference dev = prefMgr.findPreference("prefDev");
+//		if(dev!=null)
+//		{
+//			dev.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+//				
+//				@Override
+//				public boolean onPreferenceClick(Preference preference) {
+//					// TODO Auto-generated method stub
+//				//	showDialog(DEV);
+//					dev();
+//					return false;
+//				}
+//			});
+//		}
+		//DEVELOPER OPTION
+		
+	}
+	
+//	SA P2MA1
+	private class DefaultTask extends AsyncTask<String, Void, Boolean>
+	{
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+		}
+		@Override
+		protected Boolean doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			SmartConsultant.getApplication().checkForInitialValues();
+			return Boolean.TRUE;
+		}
+		@Override
+		protected void onPostExecute(Boolean bool) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(bool);
+		}
+	}
+//	EA P2MA1
+	
+	private boolean isNetworkAvailable() {
+	    ConnectivityManager connectivityManager 
+	          = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+	    return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+	}
+	
+	
+	//DEVELOPER OPTION
+	public void dev()
+	{
+		try {
+            File sd = Environment.getExternalStorageDirectory();
+            File data = Environment.getDataDirectory();
+
+            if (sd.canWrite()) {
+                String currentDBPath = "/data/data/" + getPackageName() + "/databases/PatientDB";
+                String backupDBPath = "PatientDB_Dev.db";
+                File currentDB = new File(currentDBPath);
+                File backupDB = new File(sd, backupDBPath);
+
+                if (currentDB.exists()) {
+                    FileChannel src = new FileInputStream(currentDB).getChannel();
+                    FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                    dst.transferFrom(src, 0, src.size());
+                    src.close();
+                    dst.close();
+                    CustomToast.showToastMessage(getApplicationContext(), "Database Transfered!");
+                }
+            }
+        } catch (Exception e) {
+        		CustomToast.showToastMessage(getApplicationContext(), e.toString());
+        }
+
+	}
+	/*
+	 * 
+	 */
+	 @Override
+	protected Dialog onCreateDialog(int id) {
+	    	// TODO Auto-generated method stub
+	    	switch (id)
+	    	{
+		    	case MESSAGE:
+		    		AlertDialog.Builder builder1 = new Builder(this);
+		    		builder1.setTitle(R.string.app_name);
+		    		builder1.setMessage("If you dont already have a login, please visit www.smarthumanoid.com and register.");
+		    		builder1.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		
+		    			@Override
+		    			public void onClick(DialogInterface dialog, int which) {
+		    				// TODO Auto-generated method stub
+		    				removeDialog(MESSAGE);
+		    				Intent i = new Intent(getApplicationContext(), LoginScreen.class);
+		    				startActivityForResult(i, 100);
+		    			}
+		    		});
+		    		return builder1.create();
+
+		    	case DEV:
+		    		   LayoutInflater inflater = LayoutInflater.from(this);
+		    		   View dialogview = inflater.inflate(R.layout.dev_login, null);
+		    		   AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(this);
+		    		   dialogbuilder.setTitle("Login");
+		    		   dialogbuilder.setView(dialogview);
+		    		   return dialogbuilder.create();
+		    		
+		    	case ABOUT:
+		    		AlertDialog.Builder builder2 = new Builder(this);
+				try {
+					builder2.setTitle(getString(R.string.app_name) + "      " +"Version:" +getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
+				} catch (NameNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    		builder2.setMessage("Smart Humanoid enables medical professional to spend more quality time with the patients by effectively using the technology already present with them. Currently we have 2 products in the pipeline- Smart Consultant: an app that enables medical professionals to track expenses and receivables.- Smart EHR – Medical records management system oriented towards single doctor clinic to mid sized practices");
+		    		builder2.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		
+		    			@Override
+		    			public void onClick(DialogInterface dialog, int which) {
+		    				// TODO Auto-generated method stub
+		    				removeDialog(ABOUT);
+		    			}
+		    		});
+		    		return builder2.create();
+	    	}
+	    	return super.onCreateDialog(id);
+	    }
+	 //DEVELOPER
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+
+		switch (id) {
+		case DEV:
+			final AlertDialog alertDialog = (AlertDialog) dialog;
+			Button loginbutton = (Button) alertDialog
+					.findViewById(R.id.btn_login);
+			Button cancelbutton = (Button) alertDialog
+					.findViewById(R.id.btn_cancel);
+			userName = (EditText) alertDialog
+					.findViewById(R.id.txt_name);
+			password = (EditText) alertDialog
+					.findViewById(R.id.password);
+
+			cancelbutton.setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					alertDialog.dismiss();
+				}
+			});
+			break;
+		}
+	}
+	 
+	public void onLogin(View v)
+	{
+		if(userName.getText().toString().trim().equalsIgnoreCase("admin") && password.getText().toString().trim().equals("admin"))
+		{
+			dev();
+		}
+		else
+		{
+			CustomToast.showToastMessage(getApplicationContext(), "Invalid Credentials!");
+		}
+	}
+	
+	//DEVELOPER
+	/*
+	 * 
+	 */
+	 @Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+			// TODO Auto-generated method stub
+			super.onActivityResult(requestCode, resultCode, data);
+			if(requestCode == 100 && resultCode == RESULT_OK)
+			{
+				Intent i = new Intent(this, UploadStatusActivity.class);
+				startActivity(i);	
+			}
+			else
+			{
+				try {
+					String error = data.getStringExtra("error");
+					// Toast.makeText(getApplicationContext(),
+					// "Invalid login credentials", Toast.LENGTH_LONG).show();
+					CustomToast.showToastMessage(SmartConsultant.getApplication()
+							.getApplicationContext(), error);
+				} catch (Exception e) {
+					e.printStackTrace();
+			}
+			}
+			if(requestCode == 103)
+			{
+				
+			}
+		}
+	 
+	 @Override
+	protected void onResume(){
+	        super.onResume();
+	        // Set up a listener whenever a key changes
+	        getPreferenceScreen().getSharedPreferences()
+	            .registerOnSharedPreferenceChangeListener(this);
+	    }
+	 
+
+	@Override
+	protected void onPause() {
+	        super.onPause();
+	        // Unregister the listener whenever a key changes
+	        getPreferenceScreen().getSharedPreferences()
+            .unregisterOnSharedPreferenceChangeListener(this);
+	    }
+	
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+			String key) {
+		updatePrefSummary(findPreference(key));//ADDED 10004
+		updatePreference(key);
+	}
+	//SA 10004
+		private void initSummary(Preference p) {
+	        if (p instanceof PreferenceCategory) {
+	            PreferenceCategory pCat = (PreferenceCategory) p;
+	            for (int i = 0; i < pCat.getPreferenceCount(); i++) {
+	                initSummary(pCat.getPreference(i));
+	            }
+	        } else {
+	            updatePrefSummary(p);
+	        }
+	    }
+		
+		private void updatePrefSummary(Preference p) {
+		try {
+//	        if (p instanceof EditTextPreference) {
+//	            EditTextPreference editTextPref = (EditTextPreference) p;
+////					p.setSummary("Sync the app "+editTextPref.getText()+" times in a day");
+//	            if(TextUtils.isEmpty(editTextPref.getText()) || !isInteger(editTextPref.getText()))
+//	            {
+//	            	p.setSummary("Every night from 9pm to midnight");
+//	            }
+//	            else
+//	            {
+//	            	p.setSummary("Sync the app "+editTextPref.getText()+" times in a day");
+//	            }
+//	        }
+//	        SA P2M01
+	        if (p instanceof ListPreference) {
+	            ListPreference syncListPref = (ListPreference) p;
+	            String s = syncListPref.getValue();
+				
+				switch(Integer.parseInt(s))
+				{
+				case 0:
+					p.setSummary("Every night from 9pm to midnight");
+					break;
+				case 1:
+					p.setSummary("Sync the app every hour in a day");
+					break;
+				case 2:
+					p.setSummary("Sync the app once in a day");
+					break;
+				case 3:
+					p.setSummary("Sync the app twice in a day");
+					break;
+				case 4:
+					p.setSummary("Sync the app once in a week");
+					break;
+				case 5:
+					p.setSummary("Never (Update maually)");
+					break;
+				}
+
+	        }
+//	        EA P2MO1
+		} catch (Exception e) {
+
+		}
+		}
+		//EA 10004
+	
+	public boolean isInteger(String str) {
+		boolean ret = true;
+	    try {
+
+	    	if(str.equalsIgnoreCase("0"))
+	    		return false;
+	        Double.parseDouble(str);
+
+	    }catch (NumberFormatException e) {
+	        ret = false;
+	    }
+	    return ret;
+	}
+	
+	 private void updatePreference(String key){
+		 
+//		 if (key.equals("prefSyncFrequency")) {
+//			Preference preference = findPreference(key);
+//			if (preference instanceof EditTextPreference) {
+//				EditTextPreference syncFreqPreference = (EditTextPreference) preference;
+//				boolean isInt = isInteger(syncFreqPreference.getEditText().getText().toString());
+//				if (!TextUtils.isEmpty(syncFreqPreference.getEditText().toString()) && isInt) {
+//					syncFreqPreference.setSummary("Sync the app "+syncFreqPreference.getEditText(). getText().toString() +" times in a day");
+//					ServiceAlarm.startServiceAlarm(null); //ADDED ALARM
+//				} else {
+//					syncFreqPreference.setSummary("Every night from 9pm to midnight");
+//					ServiceAlarm.startServiceAlarm(null); //ADDED ALARM
+//				}
+//			}
+//		}
+//		 SA P2M01
+		 if (key.equals("prefListSyncFrequency")) {
+				Preference preference = findPreference(key);
+				if (preference instanceof ListPreference) {
+					ListPreference syncListFreqPreference = (ListPreference) preference;
+					
+					String s = syncListFreqPreference.getValue();
+					
+					SmartConsultant.getPreferences().setSyncFrequency(s);
+					
+					switch(Integer.parseInt(s))
+					{
+					case 0:
+//						ServiceAlarm.toStopServiceAlarm();//ADDED P2MA1
+						ServiceAlarm.startServiceAlarm("0");
+						syncListFreqPreference.setSummary("Every night from 9pm to midnight");
+						break;
+					case 1:
+//						ServiceAlarm.toStopServiceAlarm();//ADDED P2MA1
+						ServiceAlarm.startServiceAlarm("1");
+						syncListFreqPreference.setSummary("Sync the app every hour in a day");
+						break;
+					case 2:
+//						ServiceAlarm.toStopServiceAlarm();//ADDED P2MA1
+						ServiceAlarm.startServiceAlarm("2");
+						syncListFreqPreference.setSummary("Sync the app once in a day");
+						break;
+					case 3:
+//						ServiceAlarm.toStopServiceAlarm();//ADDED P2MA1
+						ServiceAlarm.startServiceAlarm("3");
+						syncListFreqPreference.setSummary("Sync the app twice in a day");
+						break;
+					case 4:
+//						ServiceAlarm.toStopServiceAlarm();//ADDED P2MA1
+						ServiceAlarm.startServiceAlarm("4");
+						syncListFreqPreference.setSummary("Sync the app once in a week");
+						break;
+					case 5:
+						ServiceAlarm.toStopServiceAlarm();//ADDED P2MA1
+						ServiceAlarm.startServiceAlarm("5");
+						syncListFreqPreference.setSummary("Never (Update maually)");
+						break;
+					}
+				}
+			}
+//		 EA P2M01
+    }
+}

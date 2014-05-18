@@ -1,0 +1,498 @@
+/*
+ * Category :- UI | Payment
+ * Developer:- Vikalp Patel
+ * Aim      :- Add Payment
+ * Description :- Add Payment in the application
+ * S - START E- END  C- COMMENTED  U -EDITED A -ADDED
+ * --------------------------------------------------------------------------------------------------------------------
+ * INDEX       DEVELOPER		DATE			DESCRIPTION
+ * --------------------------------------------------------------------------------------------------------------------
+ * 10001       VIKALP PATEL   07/01/2014        ADDING PAYMENT
+ */
+
+package com.netdoers.com.ui;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.Dialog;
+import android.content.ContentValues;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
+
+import com.netdoers.com.SmartConsultant;
+import com.netdoers.com.dto.DBConstant;
+import com.smarthumanoid.com.R;
+
+@SuppressLint({ "ValidFragment", "NewApi" })
+public class AddPaymentActivity extends FragmentActivity {
+
+	EditText recDate, serDate;
+	EditText chqNo, inHand;
+	EditText tdsPer, tdsAmt, amount;
+	EditText strCheque,location,bank;
+	RadioGroup radioPaySrc,radioPayMode;
+	CheckBox isReconcileChk;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.add_payment);
+
+		recDate = (EditText) findViewById(R.id.receive_date);
+		serDate = (EditText) findViewById(R.id.service_date);
+		radioPaySrc = (RadioGroup)findViewById(R.id.radioPaySrc);
+		radioPayMode = (RadioGroup)findViewById(R.id.radioPayMode);
+		isReconcileChk = (CheckBox)findViewById(R.id.add_pay_reconcile);
+		tdsPer=(EditText)findViewById(R.id.add_pay_tds_per);
+		inHand = (EditText)findViewById(R.id.add_pay_tds_in_hand);
+		tdsAmt = (EditText)findViewById(R.id.add_pay_tds_amt);
+		amount = (EditText)findViewById(R.id.add_pay_amt);
+		strCheque= (EditText)findViewById(R.id.add_pay_chq);
+		location = (EditText)findViewById(R.id.add_pay_location);
+		bank=(EditText)findViewById(R.id.add_pay_bank);
+		
+		tdsPer.setText("10");
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		String date = sdf.format(new Date(System.currentTimeMillis()));
+		if (date.contains("/")) {
+			date = date.replace("/", "-");
+		}
+		recDate.setText(date);
+		inHand.addTextChangedListener(textWatcher);
+		tdsPer.addTextChangedListener(textWatcher);
+		//tdsAmt.addTextChangedListener(watcher);
+	}
+
+	public void onReceiveTime(View v) {
+		DialogFragment newFragment = new ReceivedDatePickerFragment();
+		newFragment.show(getSupportFragmentManager(), "Received Date");
+	}
+	
+	public void onServiceTime(View v) {
+		DialogFragment newFragment = new ServiceDatePickerFragment();
+		newFragment.show(getSupportFragmentManager(), "Service Date");
+	}
+	
+	public void onRadioPaySrc(View v)
+	{
+		boolean checked = ((RadioButton)v).isChecked();
+		
+		switch(v.getId())
+		{
+		case R.id.radioPrf:
+			if(checked)
+			{
+				isReconcileChk.setChecked(true);
+			}
+			break;
+		case R.id.radioOther:
+			if(checked)
+			{
+				isReconcileChk.setChecked(false);
+			}
+			break;
+		}
+		
+	}
+	
+	
+	public void onRadioPayMode(View v)
+	{
+		boolean checked = ((RadioButton)v).isChecked();
+		
+		switch(v.getId())
+		{
+		case R.id.radioCheque:
+			if(checked)
+			{
+				tdsPer.setText("10");
+			}
+			break;
+		case R.id.radioCash:
+			if(checked)
+			{
+				tdsPer.setText("0");
+			}
+			break;
+		}
+		
+	}
+	
+	
+	public void onSave(View v)
+	{
+		if(true/*(addSxName.getText() != null && addSxName.getText().toString().length() > 0) 
+				&& (addSxLocation.getText() != null && addSxLocation.getText().toString().length() > 0)*/)
+		{
+			save();
+		}
+		else
+		{
+			Toast.makeText(this, "Make sure you have enter proper values in Name and Location fields.", Toast.LENGTH_LONG).show();
+		}
+		//Toast.makeText(this, "Data saved", Toast.LENGTH_LONG).show();
+	}
+	
+	public void onSaveMain(View v)
+	{
+		if(true/*(addSxName.getText() != null && addSxName.getText().toString().length() > 0) 
+				&& (addSxLocation.getText() != null && addSxLocation.getText().toString().length() > 0)*/)
+		{
+			save();
+			finish();
+		}
+		else
+		{
+			Toast.makeText(this, "Make sure you have enter proper values in Name and Location fields.", Toast.LENGTH_LONG).show();
+		}
+		finish();
+	}
+	
+	public void onCancel(View v)
+	{
+		finish();
+	}
+	
+	
+	
+	public void save()
+	{
+		//Toast.makeText(this, "Data saved", Toast.LENGTH_LONG).show();
+		Bundle b = new Bundle();
+		b.putString("message", "Saving IPD");
+		showDialog(LOADING, b);
+		ContentValues contentValues = new ContentValues();
+		ContentValues contentValuesTemp = new ContentValues();
+		
+		String svRecvDate = recDate.getText().toString().trim();
+		String svServDate = serDate.getText().toString().trim();
+		String svPaySrc="";
+		String svReconcile="";
+		String svPayType="";
+		String svCheque="", svInHand="",svTdsPer="",svTdsAmt="",svAmt="",svLocation="",svBank="";
+		RadioButton paySrc = (RadioButton)findViewById(radioPaySrc.getCheckedRadioButtonId());
+		RadioButton payType = (RadioButton)findViewById(radioPayMode.getCheckedRadioButtonId());
+		svPaySrc=paySrc.getText().toString().trim();	
+		if(isReconcileChk.isChecked())
+		{
+			svReconcile="True";
+		}
+		else
+		{
+			svReconcile="False";
+		}
+			svPayType=payType.getText().toString().trim();
+
+		svCheque = strCheque.getText().toString().trim();
+		svInHand = inHand.getText().toString().trim();
+		svTdsPer = tdsPer.getText().toString().trim();
+		svTdsAmt = tdsAmt.getText().toString().trim();
+		svAmt = amount.getText().toString().trim();
+		svLocation = location.getText().toString().trim();
+		svBank = bank.getText().toString().trim();
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_CUSTOM_ID, SmartConsultant.getPreferences().getIMEINo());
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_CUSTOM_ID, SmartConsultant.getPreferences().getIMEINo());
+		
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_RECEIVED_DATE, svRecvDate);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_RECEIVED_DATE, svRecvDate);
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_SERVICED_DATE, svServDate);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_SERVICED_DATE, svServDate);
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_PAYMENT_SOURCE, svPaySrc);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_PAYMENT_SOURCE, svPaySrc);
+
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_PAYMENT_MODE, svPayType);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_PAYMENT_MODE, svPayType);
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_RECONCILE, svReconcile);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_RECONCILE, svReconcile);
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_CHEQUE, svCheque);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_CHEQUE, svCheque);
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_IN_HAND, svInHand);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_IN_HAND, svInHand);
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_TDS_PER, svTdsPer);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_TDS_PER, svTdsPer);
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_TDS_AMT, svTdsAmt);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_TDS_AMT, svTdsAmt);
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_AMOUNT, svAmt);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_AMOUNT, svAmt);
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_LOCATION, svLocation);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_LOCATION, svLocation);
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_BANK, svBank);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_BANK, svBank);
+		
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_PY_WATCH,  "");
+		contentValues.put(DBConstant.Payment_Columns.COLUMN_SYNC_STATUS, 0);
+		contentValuesTemp.put(DBConstant.Payment_Temp_Columns.COLUMN_SYNC_STATUS, 0);
+		
+
+		getContentResolver().insert(DBConstant.Payment_Columns.CONTENT_URI, contentValues);
+		
+		Uri uri = getContentResolver().insert(DBConstant.Payment_Temp_Columns.CONTENT_URI, contentValuesTemp);
+		
+		
+	//	String myId = uri.toString().substring(uri.toString().lastIndexOf("/") + 1);
+		//name.put(DBConstant.Patient_Name_Columns.COLUMN_RED_ID, myId);
+		//getContentResolver().insert(DBConstant.Patient_Name_Columns.CONTENT_URI, name);
+		removeDialog(LOADING);
+		
+		Toast.makeText(this, "Payment saved.", Toast.LENGTH_LONG).show();
+//		clearField();
+	}
+
+	public void clearField() {
+		strCheque.setText("");
+		//inHand.setText("");
+		// if(lstLocation != null && lstLocation.size() > 0)
+
+		location.setText("");// addSxLocation.setSelection(0);
+		bank.setText("");
+		//tdsPer.setText("");
+
+		// addSxDate.setText("Date : DD-MM-YYYY");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		String date = sdf.format(new Date(System.currentTimeMillis()));
+		if (date.contains("/")) {
+			date = date.replace("/", "-");
+		}
+		recDate.setText(date);
+		serDate.setText("");// addSxWard.setSelection(0);
+		isReconcileChk.setChecked(false);
+		radioPaySrc.check(0);
+		radioPayMode.check(0);
+	}
+
+	public static final int LOADING = 101;
+	protected Dialog onCreateDialog(int id, Bundle b) {
+		String msg = b.getString("message");
+		switch(id)
+		{
+			case LOADING:
+				ProgressDialog loadingDialog = new ProgressDialog(this);
+				loadingDialog.setMessage(msg);
+				loadingDialog.setCancelable(false);
+				return loadingDialog;
+		}
+		return super.onCreateDialog(id);
+	}
+	
+		TextWatcher textWatcher = new TextWatcher() {
+		 
+	    @Override
+	    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+	 
+	    }
+	 
+	    @Override
+	    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+	  
+	    }
+	 
+	    @Override
+	    public void afterTextChanged(Editable editable) {
+	    
+	    	String strHand = inHand.getText().toString().trim();
+	    	String strTdsPer = tdsPer.getText().toString().trim();
+	    	String strTdsAmt = tdsAmt.getText().toString().trim();
+	    	int intInHand, intInTdsPer, intTdsAmt;
+	    	if((!strHand.isEmpty()))
+	    	{
+		    	intInHand = Integer.parseInt(strHand);
+	    	}
+	    	else 
+	    	{
+	    		intInHand = 0;
+	    	}
+	    	
+	    	if((!strTdsPer.isEmpty()))
+	    	{
+	    		intInTdsPer = Integer.parseInt(strTdsPer);
+	    	}
+	    	else
+	    	{
+	    		intInTdsPer= 0;
+	    	}
+	    	intTdsAmt = calculate(intInHand,intInTdsPer);
+	    	amount.setText(String.valueOf(intInHand - intTdsAmt));
+	    	tdsAmt.setText(String.valueOf(intTdsAmt));
+	    	tdsAmt.addTextChangedListener(watcher);
+	    }
+	};
+	
+	public int calculate(int inHand, int tdsPer)
+	{
+		int amount = 0;
+		amount = (inHand * tdsPer)/100;
+		return amount;
+	}
+	
+	TextWatcher watcher = new TextWatcher() {
+		 
+	    @Override
+	    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+	 
+	    }
+	 
+	    @Override
+	    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+	  
+	    }
+	 
+	    @Override
+	    public void afterTextChanged(Editable editable) {
+	    
+	    	String strHand = inHand.getText().toString().trim();
+	    	String strTdsPer = tdsPer.getText().toString().trim();
+	    	String strTdsAmt = tdsAmt.getText().toString().trim();
+	    	int intInHand, intInTdsAmt, intTdsPer;
+	    	if((!strHand.isEmpty()))
+	    	{
+		    	intInHand = Integer.parseInt(strHand);
+	    	}
+	    	else 
+	    	{
+	    		intInHand = 0;
+	    	}
+	    	
+	    	if((!strTdsAmt.isEmpty()))
+	    	{
+	    		intInTdsAmt = Integer.parseInt(strTdsPer);
+	    	}
+	    	else
+	    	{
+	    		intInTdsAmt= 0;
+	    	}
+	    	intTdsPer = calculateTdsPer(intInHand,intInTdsAmt);
+	    	//amount.setText(String.valueOf(intInHand - intTdsAmt));
+	    	//tdsPer.setText(String.valueOf(intTdsPer));
+	    	//Toast.makeText(getApplicationContext(), ""+String.valueOf(intTdsPer), Toast.LENGTH_SHORT).show();
+	    }
+	};
+	
+	public int calculateTdsPer(int intInHand,int intInTdsAmt)
+	{
+		int tdsPercentage = 0;
+		if(intInTdsAmt > intInHand)
+		{
+			Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
+			intInTdsAmt = intInHand;
+			tdsPercentage = 100;
+		}
+		else
+		{
+			try
+			{
+			tdsPercentage = (intInTdsAmt*100)/intInHand;
+			}
+			catch(ArithmeticException e)
+			{
+				tdsPercentage =0;
+			}
+		}
+		return tdsPercentage;
+	}
+	
+	class ServiceDatePickerFragment extends DialogFragment implements
+			OnDateSetListener {
+
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			// Use the current time as the default values for the picker
+			final Calendar c = Calendar.getInstance();
+			int yr = c.get(Calendar.YEAR);
+			int mnth = c.get(Calendar.MONTH);
+			int day = c.get(Calendar.DAY_OF_MONTH);
+			// Create a new instance of TimePickerDialog and return it
+			return new DatePickerDialog(getActivity(), this, yr, mnth, day);
+		}
+
+		@Override
+		public void onDateSet(DatePicker view, int year, int monthOfYear,
+				int dayOfMonth) {
+			// TODO Auto-generated method stub
+			String date;
+			monthOfYear++;
+			if (dayOfMonth < 10) {
+				date = "0" + dayOfMonth + "-";
+			} else {
+				date = dayOfMonth + "-";
+			}
+			if (monthOfYear < 10) {
+				date += "0" + monthOfYear + "-";
+			} else {
+				date += monthOfYear + "-";
+			}
+
+			date += year;
+			// addSxDate.setText(dayOfMonth+"-"+monthOfYear+"-"+year);
+			serDate.setText(date);
+		}
+	}
+	
+	
+	class ReceivedDatePickerFragment extends DialogFragment implements
+			OnDateSetListener {
+
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			// Use the current time as the default values for the picker
+			final Calendar c = Calendar.getInstance();
+			int yr = c.get(Calendar.YEAR);
+			int mnth = c.get(Calendar.MONTH);
+			int day = c.get(Calendar.DAY_OF_MONTH);
+			// Create a new instance of TimePickerDialog and return it
+			return new DatePickerDialog(getActivity(), this, yr, mnth, day);
+		}
+
+		@Override
+		public void onDateSet(DatePicker view, int year, int monthOfYear,
+				int dayOfMonth) {
+			// TODO Auto-generated method stub
+			String date;
+			monthOfYear++;
+			if (dayOfMonth < 10) {
+				date = "0" + dayOfMonth + "-";
+			} else {
+				date = dayOfMonth + "-";
+			}
+			if (monthOfYear < 10) {
+				date += "0" + monthOfYear + "-";
+			} else {
+				date += monthOfYear + "-";
+			}
+
+			date += year;
+			// addSxDate.setText(dayOfMonth+"-"+monthOfYear+"-"+year);
+			recDate.setText(date);
+		}
+	}
+}

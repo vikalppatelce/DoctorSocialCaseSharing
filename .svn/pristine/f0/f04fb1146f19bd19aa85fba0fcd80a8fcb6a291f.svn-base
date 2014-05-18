@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bg"
+    android:paddingBottom="10dip"
+    android:paddingLeft="10dip"
+    android:paddingRight="10dip"
+    android:paddingTop="10dip" >
+
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="60dip"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/rect_shape"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/add_sx_location_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Manage List"
+            android:textColor="#ffffff"
+            android:textSize="22sp" >
+        </TextView>
+    </LinearLayout>
+
+    <!--
+        VIKALP PATEL 
+		SC 
+		android:background="@drawable/white_rect_shape"
+		EC 
+    -->
+
+    <Spinner
+        android:id="@+id/listOfLOV"
+        android:layout_width="fill_parent"
+        android:layout_height="70dip"
+        android:layout_below="@+id/header"
+        android:layout_marginTop="10dip"
+        android:background="@drawable/shape_spinner"
+        android:drawSelectorOnTop="true"
+        android:paddingLeft="10dip" >
+    </Spinner>
+
+    <ListView
+        android:id="@+id/lovValues"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/editorPannel"
+        android:layout_below="@+id/listOfLOV"
+        android:layout_marginBottom="10dip"
+        android:layout_marginTop="10dip"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:scrollingCache="false" >
+    </ListView>
+
+    <LinearLayout
+        android:id="@+id/editorPannel"
+        android:layout_width="fill_parent"
+        android:layout_height="50dip"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="10dip"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="2dip"
+        android:paddingRight="2dip" >
+
+        <!-- VIKALP android:background="@drawable/edt_bg" -> android:background="@drawable/edit_shape" -->
+        <!-- Added shape_inputbox & shape_inputbox_blueborder in drawables -->
+
+        <EditText
+            android:id="@+id/edtLOVValue"
+            android:layout_width="fill_parent"
+            android:layout_height="50dip"
+            android:layout_weight="0.15"
+            android:background="@drawable/edit_shape"
+            android:hint="Enter new value"
+            android:inputType="textCapWords"
+            android:paddingLeft="10dip"
+            android:singleLine="true"
+            android:textSize="20sp"
+            android:textColor="@color/blue_btn_bg" >
+        </EditText>
+
+        <Button
+            android:id="@+id/btnAddLOV"
+            android:layout_width="fill_parent"
+            android:layout_height="50dip"
+            android:layout_weight="0.85"
+            android:background="@drawable/plus_bg"
+            android:focusable="true"
+            android:gravity="center"
+            android:onClick="onAddLOVClick"
+            android:orientation="horizontal" />
+    </LinearLayout>
+
+</RelativeLayout>

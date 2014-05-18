@@ -1,0 +1,142 @@
+/*
+ * Category :- Activity
+ * Developer:- Vikalp Patel
+ * Aim      :- Add IPD Activity
+ * Description :- Save IPD
+ * S - START E- END  C- COMMENTED  U -EDITED A -ADDED
+ * --------------------------------------------------------------------------------------------------------------------
+ * INDEX       DEVELOPER		DATE			DESCRIPTION
+ * --------------------------------------------------------------------------------------------------------------------
+ * 10001       VIKALP PATEL    10/01/2014       Applying Fullscreen through Preferences.
+ */
+package com.netdoers.com.ui;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
+import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.provider.MediaStore.MediaColumns;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.netdoers.com.SmartConsultant;
+import com.smarthumanoid.com.R;
+
+public class PicSaveActivity extends Activity{
+
+	ImageView imgView;
+	Uri absPathUri;
+	SharedPreferences pref; //ADDED 10001
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{
+	super.onCreate(savedInstanceState);
+	//SA 10001
+			pref = PreferenceManager.getDefaultSharedPreferences(SmartConsultant.getApplication());
+			if(pref.getBoolean("prefIsFullScreen", false))
+			{
+				setTheme(R.style.FullScreen);
+			}
+			//EA 10001
+	setContentView(R.layout.pic_screen);
+	imgView = (ImageView)findViewById(R.id.picView);
+	Bundle b= getIntent().getExtras();
+	absPathUri = Uri.parse(b.getString("URI"));
+	Toast.makeText(getApplicationContext(), ""+absPathUri, Toast.LENGTH_SHORT).show();
+	if(absPathUri!=null)
+	{
+		//Bitmap bitmap = BitmapFactory.decodeFile(absPathUri.toString());
+        ///Do Implement your logic whatever you want.
+		//imgView.setImageBitmap(getScaledBitmap(absPathUri));
+		File imgFile = new  File(getPath(absPathUri));
+		//Toast.makeText(getApplicationContext(), "ImageFile Exists"+imgFile.exists(), Toast.LENGTH_SHORT).show();
+		//if(imgFile.exists())
+
+		    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+		    imgView.setImageBitmap(myBitmap);
+	//	sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE));
+		//imgView.setImageURI(absPathUri);
+		}
+		//Toast.makeText(getApplicationContext(), ""+imgView.isEnabled(), Toast.LENGTH_SHORT).show();
+	
+	
+	/*Handler handler = new Handler() 
+	{
+		public void handleMessage(Message msg) {
+		    ((ImageView)msg.obj).setImageURI(absPathUri);
+		};
+	};
+	Message msg = handler.obtainMessage();
+	msg.obj = imgView;
+	handler.sendMessageDelayed(msg, 100);
+	imgView.setImageURI(absPathUri);
+	*/
+	}
+	
+	private Bitmap getScaledBitmap(Uri uri){
+        Bitmap thumb = null ;
+        try {
+            ContentResolver cr = getContentResolver();
+            InputStream in = cr.openInputStream(uri);
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize=8;
+            thumb = BitmapFactory.decodeStream(in,null,options);
+        } catch (FileNotFoundException e) {
+            Toast.makeText(getApplicationContext() , "File not found" , Toast.LENGTH_SHORT).show();
+        }
+        return thumb ; 
+    }
+	
+	
+	public String getPath(Uri photoUri) {
+
+        String filePath = "";
+        if (photoUri != null) {
+            String[] filePathColumn = { MediaColumns.DATA };
+            try
+            {
+            
+            	Cursor cursor = getContentResolver().query(photoUri,
+                        filePathColumn, null, null, null);
+                try
+                {
+                	cursor.moveToFirst();
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    filePath = cursor.getString(columnIndex);	
+                }
+                catch(Exception e)
+                {
+                                   	
+                }
+                cursor.close();
+            }catch(Exception e)
+            {
+            Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();	
+            }
+        }
+        return filePath;
+    }
+	
+	public void onSave(View v)
+	{
+		setResult(RESULT_OK);
+		finish();
+	}
+	
+	public void onDiscard(View v)
+	{
+		setResult(RESULT_CANCELED);
+		finish();
+	}
+}

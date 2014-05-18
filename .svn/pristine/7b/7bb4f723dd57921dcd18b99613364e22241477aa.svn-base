@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:orientation="vertical"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:background="@drawable/bg"
+  android:paddingLeft="10dip"
+  android:paddingRight="10dip"
+  android:paddingTop="10dip"
+  android:paddingBottom="10dip"
+  android:focusableInTouchMode="true">
+  <LinearLayout
+				  android:layout_width="fill_parent"
+	  			  android:layout_height="50dip"
+	  			  android:orientation="horizontal"
+	  			  android:background="@drawable/rect_shape"
+	  			  android:gravity="center_vertical">  
+	  			  <ImageView android:id="@+id/add_sx_manager_header"
+	  			  			 android:layout_width="wrap_content"
+	  			  			 android:layout_height="wrap_content"
+	  			  			 android:layout_gravity="center_vertical"
+	  			  			 android:src="@drawable/add_wht_icon"
+	  			  			 android:layout_marginLeft="20dip"></ImageView>
+	  			 <TextView  
+			  			android:id="@+id/add_sx_location_text" 
+			  			android:layout_width="fill_parent" 
+						android:layout_height="wrap_content"
+						android:text="Add SX"
+						android:textColor="#ffffff"
+						android:textSize="15dip"
+						android:paddingLeft="20dip"></TextView>
+		</LinearLayout>
+<ScrollView
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent" >
+<LinearLayout
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:orientation="vertical">
+
+	
+	<EditText  
+			  android:id="@+id/add_sx_name" 
+			  android:layout_width="fill_parent" 
+			  android:layout_height="50dip"
+			  android:hint="Patient Name"
+			  android:layout_marginTop="10dip"
+			  android:background="@drawable/edt_bg"
+			  android:paddingLeft="10dp"
+			  android:paddingRight="10dp"
+			  android:inputType="textCapWords"/>
+	<TextView  
+			  android:id="@+id/add_sx_location_text" 
+			  android:layout_width="fill_parent" 
+			  android:layout_height="wrap_content"
+			  android:layout_marginTop="6dip"
+			  android:text="Hospital/Clinic"
+			  android:textColor="@color/blue_btn_bg"
+			  android:textSize="15dip"
+			  android:paddingLeft="6dip"></TextView>
+	<LinearLayout
+			  android:layout_width="fill_parent"
+  			  android:layout_height="50dip"
+  			  android:orientation="horizontal"
+  			  android:layout_marginTop="10dip">  
+  			  <AutoCompleteTextView android:id="@+id/add_sx_location"
+  			  		   android:layout_width="fill_parent"
+  			  		   android:layout_height="50dip"
+  			  		   android:layout_weight="0.15"
+  			  		   android:drawSelectorOnTop="true"
+  			  		   android:background="@drawable/edt_bg"
+  			  		   android:paddingLeft="10dp"
+			  android:paddingRight="10dp"
+  			  		   android:inputType="textCapWords"></AutoCompleteTextView>
+  			  <Button android:id="@+id/add_sx_manager_location"
+  			  			 android:layout_width="fill_parent"
+  			  			 android:layout_height="48dip"
+  			  			 android:layout_gravity="center_vertical"
+  			  			 android:layout_weight="0.85"
+  			  			 android:background="@drawable/plus_bg"
+  			  			 android:onClick="onManageLocation"
+  			  			 android:visibility="gone"></Button>
+	</LinearLayout>
+	
+	
+	<EditText android:id="@+id/add_sx_date" android:layout_width="fill_parent"
+		android:layout_height="50dip" android:hint="Date" android:inputType="number"
+		android:editable="false" android:focusable="false" android:onClick="onTime"
+		android:layout_marginTop="10dip"
+		android:background="@drawable/edt_bg"
+		android:paddingLeft="10dp"
+			  android:paddingRight="10dp"/>	
+	  
+	<EditText  
+			  android:id="@+id/add_sx_id" 
+			  android:layout_width="fill_parent" 
+			  android:layout_height="50dip"
+			  android:hint="Patient Id"
+			  android:layout_marginTop="10dip"
+			  android:background="@drawable/edt_bg"
+			  android:paddingLeft="10dp"
+			  android:paddingRight="10dp"
+			  android:inputType="textCapWords"></EditText>
+	<LinearLayout
+				  android:layout_width="fill_parent"
+	  			  android:layout_height="55dip"
+	  			  android:orientation="horizontal"
+	  			  android:gravity="center_vertical">  
+			<EditText  
+				  android:id="@+id/add_sx_age" 
+				  android:layout_width="fill_parent" 
+				  android:layout_height="50dip"
+				  android:hint="Age"
+				  android:inputType="numberDecimal"
+				  android:layout_marginTop="3dip"
+				  android:maxLength="5"
+				  android:layout_weight="0.7"
+				  android:background="@drawable/edt_bg"
+			  	  android:paddingLeft="10dp"></EditText>
+	  		<LinearLayout 
+    			 android:layout_width="fill_parent"
+    			 android:layout_height="fill_parent"
+    			 android:orientation="horizontal" 
+    			 android:layout_weight="0.3"
+    			 android:gravity="center_vertical"
+    			 android:layout_marginLeft="10dip">
+ 
+ 		   <RadioGroup
+		        android:id="@+id/radioSex"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:orientation="horizontal"
+		        android:layout_gravity="center_vertical"
+		        android:gravity="center_vertical" >
+ 
+		        <RadioButton
+		            android:id="@+id/radioMale"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="Male" 
+		            android:checked="true"
+		            android:textColor="#000000"
+		            android:textSize="15dip" />
+		 
+		        <RadioButton
+		            android:id="@+id/radioFemale"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="Female"
+		            android:layout_marginLeft="10dip"
+		            android:textColor="#000000"
+		            android:textSize="15dip" />
+		 
+		    </RadioGroup>
+		</LinearLayout>
+	</LinearLayout>
+	<TextView  
+			  android:id="@+id/add_sx_starttime_text" 
+			  android:layout_width="fill_parent" 
+			  android:layout_height="wrap_content"
+			  android:layout_marginTop="6dip"
+			  android:text="Start time"
+			  android:textColor="@color/blue_btn_bg"
+			  android:textSize="15dip"
+			  android:paddingLeft="6dip"></TextView>
+	<LinearLayout
+			  android:layout_width="fill_parent"
+  			  android:layout_height="50dip"
+  			  android:orientation="horizontal"
+  			  android:layout_marginTop="10dip">  
+  			  <AutoCompleteTextView android:id="@+id/add_sx_start_time"
+  			  		   android:layout_width="fill_parent"
+  			  		   android:layout_height="50dip"
+  			  		   android:layout_weight="0.15"
+  			  		   android:drawSelectorOnTop="true"
+  			  		   android:background="@drawable/edt_bg"
+  			  		   android:paddingLeft="10dp"
+			  android:paddingRight="10dp"
+  			  		   android:inputType="textCapWords"></AutoCompleteTextView>
+  			  <ImageView android:id="@+id/add_sx_manager_start_time"
+  			  			 android:layout_width="fill_parent"
+  			  			 android:layout_height="48dip"
+  			  			 android:layout_gravity="center_vertical"
+  			  			 android:layout_weight="0.85"
+  			  			 android:background="@drawable/plus_bg"
+  			  			 android:onClick="onManageStartTime"
+  			  			 android:visibility="gone"></ImageView>
+	</LinearLayout>
+	<EditText  
+			  android:id="@+id/add_sx_duration" 
+			  android:layout_width="fill_parent" 
+			  android:layout_height="50dip"
+			  android:hint="Duration"
+			  android:inputType="text|textCapWords"
+			  android:layout_marginTop="10dip"
+			  android:background="@drawable/edt_bg"
+			  android:paddingLeft="10dp"></EditText>
+	<TextView  
+			  android:id="@+id/add_sx_location_text" 
+			  android:layout_width="fill_parent" 
+			  android:layout_height="wrap_content"
+			  android:layout_marginTop="6dip"
+			  android:text="Surgery Level"
+			  android:textColor="@color/blue_btn_bg"
+			  android:textSize="15dip"
+			  android:paddingLeft="6dip"></TextView>
+	<LinearLayout
+			  android:layout_width="fill_parent"
+  			  android:layout_height="50dip"
+  			  android:orientation="horizontal"
+  			  android:layout_marginTop="10dip">  
+  			  <AutoCompleteTextView android:id="@+id/add_sx_level"
+  			  		   android:layout_width="fill_parent"
+  			  		   android:layout_height="50dip"
+  			  		   android:layout_weight="0.15"
+						android:drawSelectorOnTop="true"
+  			  		   android:background="@drawable/edt_bg"
+  			  		   android:paddingLeft="10dp"
+			  android:paddingRight="10dp"
+  			  		   android:inputType="textCapWords"></AutoCompleteTextView>
+  			  <ImageView android:id="@+id/add_sx_manager_level"
+  			  			 android:layout_width="fill_parent"
+  			  			 android:layout_height="48dip"
+  			  			 android:layout_gravity="center_vertical"
+  			  			 android:layout_weight="0.85"
+  			  			 android:background="@drawable/plus_bg"
+  			  			 android:onClick="onManageLevel"
+  			  			 android:visibility="gone"></ImageView>
+	</LinearLayout>
+	<EditText  
+			  android:id="@+id/add_sx_diagnose" 
+			  android:layout_width="fill_parent" 
+			  android:layout_height="50dip"
+			  android:hint="Diagnosis"
+			  android:layout_marginTop="10dip"
+			  android:background="@drawable/edt_bg"
+			  android:paddingLeft="10dp"
+			  android:paddingRight="10dp"
+			  android:inputType="textCapWords"></EditText>
+	<TextView  
+			  android:id="@+id/add_sx_procedure_text" 
+			  android:layout_width="fill_parent" 
+			  android:layout_height="wrap_content"
+			  android:layout_marginTop="6dip"
+			  android:text="Procedure"
+			  android:textColor="@color/blue_btn_bg"
+			  android:textSize="15dip"
+			  android:paddingLeft="6dip"></TextView>
+	<LinearLayout
+			  android:layout_width="fill_parent"
+  			  android:layout_height="50dip"
+  			  android:orientation="horizontal"
+  			  android:layout_marginTop="10dip">  
+  			  <AutoCompleteTextView android:id="@+id/add_sx_procedure"
+  			  		   android:layout_width="fill_parent"
+  			  		   android:layout_height="50dip"
+  			  		   android:layout_weight="0.15"
+  			  		   android:drawSelectorOnTop="true"
+  			  		   android:background="@drawable/edt_bg"
+  			  		   android:paddingLeft="10dp"
+			  android:paddingRight="10dp"
+  			  		   android:inputType="textCapWords"></AutoCompleteTextView>
+  			  <ImageView android:id="@+id/add_sx_manager_procedure"
+  			  			 android:layout_width="fill_parent"
+  			  			 android:layout_height="wrap_content"
+  			  			 android:layout_gravity="center_vertical"
+  			  			 android:layout_weight="0.85"
+  			  			 android:background="@drawable/plus_bg"
+  			  			 android:onClick="onManageProcedure"
+  			  			 android:visibility="gone"></ImageView>
+	</LinearLayout>
+	<TextView  
+			  android:id="@+id/add_sx_location_text" 
+			  android:layout_width="fill_parent" 
+			  android:layout_height="wrap_content"
+			  android:layout_marginTop="6dip"
+			  android:text="Ward"
+			  android:textColor="@color/blue_btn_bg"
+			  android:textSize="15dip"
+			  android:paddingLeft="6dip"></TextView>
+	<LinearLayout
+			  android:layout_width="fill_parent"
+  			  android:layout_height="50dip"
+  			  android:orientation="horizontal"
+  			  android:layout_marginTop="10dip">  
+  			  <AutoCompleteTextView android:id="@+id/add_sx_ward"
+  			  		   android:layout_width="fill_parent"
+  			  		   android:layout_height="50dip"
+  			  		   android:layout_weight="0.15"
+						android:drawSelectorOnTop="true"
+  			  		   android:background="@drawable/edt_bg"
+  			  		   android:paddingLeft="10dp"
+			  android:paddingRight="10dp"
+  			  		   android:inputType="textCapWords"></AutoCompleteTextView>
+  			  <ImageView android:id="@+id/add_sx_manager_ward"
+  			  			 android:layout_width="fill_parent"
+  			  			 android:layout_height="wrap_content"
+  			  			 android:layout_gravity="center_vertical"
+  			  			 android:layout_weight="0.85"
+  			  			 android:background="@drawable/plus_bg"
+  			  			 android:onClick="onManageWard"
+  			  			 android:visibility="gone"></ImageView>
+	</LinearLayout>
+	<CheckBox android:id="@+id/add_sx_manager_emergency"
+  			  			 android:layout_width="fill_parent"
+  			  			 android:layout_height="wrap_content"
+  			  			 android:text="Emergency"
+  			  			 android:layout_marginTop="10dip"
+  			  			 android:textColor="#5e5e5e"></CheckBox>
+  	<TextView  
+			  android:id="@+id/add_sx_location_text" 
+			  android:layout_width="fill_parent" 
+			  android:layout_height="wrap_content"
+			  android:layout_marginTop="6dip"
+			  android:text="Surgeon/Assistant"
+			  android:textColor="@color/blue_btn_bg"
+			  android:textSize="15dip"
+			  android:paddingLeft="6dip"></TextView>
+  	<LinearLayout
+			  android:layout_width="fill_parent"
+  			  android:layout_height="50dip"
+  			  android:orientation="horizontal"
+  			  android:layout_marginTop="10dip">  
+  			  <AutoCompleteTextView android:id="@+id/add_sx_team_member"
+  			  		   android:layout_width="fill_parent"
+  			  		   android:layout_height="50dip"
+  			  		   android:layout_weight="0.15"
+						android:drawSelectorOnTop="true"
+  			  		   android:background="@drawable/edt_bg"
+  			  		   android:paddingLeft="10dp"
+			  android:paddingRight="10dp"
+  			  		   android:inputType="textCapWords"></AutoCompleteTextView>
+  			  <ImageView android:id="@+id/add_sx_manager_team_member"
+  			  			 android:layout_width="fill_parent"
+  			  			 android:layout_height="wrap_content"
+  			  			 android:layout_gravity="center_vertical"
+  			  			 android:layout_weight="0.85"
+  			  			 android:background="@drawable/plus_bg"
+  			  			 android:onClick="onManageTeamMemeber"
+  			  			 android:visibility="gone"></ImageView>
+	</LinearLayout>
+	<TextView  
+			  android:id="@+id/add_sx_location_text" 
+			  android:layout_width="fill_parent" 
+			  android:layout_height="wrap_content"
+			  android:layout_marginTop="6dip"
+			  android:text="Referred By"
+			  android:textColor="@color/blue_btn_bg"
+			  android:textSize="15dip"
+			  android:paddingLeft="6dip"></TextView>
+  	<LinearLayout
+			  android:layout_width="fill_parent"
+  			  android:layout_height="50dip"
+  			  android:orientation="horizontal"
+  			  android:layout_marginTop="10dip">  
+  			  <AutoCompleteTextView android:id="@+id/add_sx_referred_by"
+  			  		   android:layout_width="fill_parent"
+  			  		   android:layout_height="50dip"
+  			  		   android:layout_weight="0.15"
+						android:drawSelectorOnTop="true"
+  			  		   android:background="@drawable/edt_bg"
+  			  		   android:paddingLeft="10dp"
+			  android:paddingRight="10dp"
+  			  		   android:inputType="textCapWords"></AutoCompleteTextView>
+  			  <ImageView android:id="@+id/add_sx_manager_referred_by"
+  			  			 android:layout_width="fill_parent"
+  			  			 android:layout_height="wrap_content"
+  			  			 android:layout_gravity="center_vertical"
+  			  			 android:layout_weight="0.85"
+  			  			 android:background="@drawable/plus_bg"
+  			  			 android:onClick="onManageReferredBy"
+  			  			 android:visibility="gone"></ImageView>
+	</LinearLayout>	
+	<TextView  
+			  android:id="@+id/add_sx_location_text" 
+			  android:layout_width="fill_parent" 
+			  android:layout_height="wrap_content"
+			  android:layout_marginTop="6dip"
+			  android:text="Patient Type"
+			  android:textColor="@color/blue_btn_bg"
+			  android:textSize="15dip"
+			  android:paddingLeft="6dip"></TextView>
+		
+	<LinearLayout
+			  android:layout_width="fill_parent"
+  			  android:layout_height="50dip"
+  			  android:orientation="horizontal"
+  			  android:layout_marginTop="10dip">  
+  			  <AutoCompleteTextView android:id="@+id/add_sx_patient_type"
+  			  		   android:layout_width="fill_parent"
+  			  		   android:layout_height="50dip"
+  			  		   android:layout_weight="0.15"
+						android:drawSelectorOnTop="true"
+  			  		   android:background="@drawable/edt_bg"
+  			  		   android:paddingLeft="10dp"
+			  android:paddingRight="10dp"
+  			  		   android:inputType="textCapWords"></AutoCompleteTextView>
+  			  <ImageView android:id="@+id/add_sx_manager_patient_type"
+  			  			 android:layout_width="fill_parent"
+  			  			 android:layout_height="wrap_content"
+  			  			 android:layout_gravity="center_vertical"
+  			  			 android:layout_weight="0.85"
+  			  			android:background="@drawable/plus_bg"
+  			  			 android:onClick="onManagePatientType"
+  			  			 android:visibility="gone"></ImageView>
+	</LinearLayout>
+	<Button android:id="@+id/noteDisable"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:drawableLeft="@drawable/add_note_icon"
+			android:drawablePadding="6dip"
+			android:text="Note"
+			android:textColor="#5e5e5e"
+			android:background="#00000000"
+			android:onClick="showHideNote"
+			android:layout_marginTop="10dip"></Button>
+	<EditText  
+			  android:id="@+id/add_sx_note" 
+			  android:layout_width="fill_parent" 
+			  android:layout_height="100dip"
+			  android:hint="Note"
+			  android:layout_marginTop="10dip"
+			  android:visibility="gone"
+			  android:background="@drawable/edt_bg"
+			  android:paddingLeft="10dp"
+			  android:paddingRight="10dp"/>
+	<Button android:id="@+id/add_sx_save_main"
+  			  			 android:layout_width="fill_parent"
+  			  			 android:layout_height="50dip"
+  			  			 android:layout_gravity="center_vertical"
+  			  			 android:layout_weight="1"
+  			  			 android:onClick="onSaveMain"
+  			  			 android:text="Save and Main"
+  			  			 android:textColor="#ffffff"
+			  			 android:textSize="20dip"
+			  			 android:background="@drawable/rect_shape"
+			  			 android:layout_marginTop="10dip"></Button>
+	<LinearLayout
+			  android:layout_width="fill_parent"
+  			  android:layout_height="50dip"
+  			  android:orientation="horizontal"
+  			  android:layout_marginTop="7dip">  
+  			  <Button android:id="@+id/add_sx_save"
+  			  			 android:layout_width="fill_parent"
+  			  			 android:layout_height="50dip"
+  			  			 android:layout_gravity="center_vertical"
+  			  			 android:layout_weight="1"
+  			  			 android:onClick="onSave"
+  			  			 android:text="Save"
+  			  			 android:textColor="#ffffff"
+  			  			 android:textSize="20dip"
+						 android:background="@drawable/rect_shape"
+						 android:layout_marginRight="6dip"></Button>
+  			  <Button android:id="@+id/add_sx_cancel"
+  			  			 android:layout_width="fill_parent"
+  			  			 android:layout_height="50dip"
+  			  			 android:layout_gravity="center_vertical"
+  			  			 android:layout_weight="1"
+  			  			 android:onClick="onCancel"
+  			  			 android:text="Cancel"
+  			  			 android:textColor="#ffffff"
+  			  			 android:textSize="20dip"
+			  			 android:background="@drawable/rect_shape"
+			  			 android:layout_marginLeft="6dip"></Button>
+	</LinearLayout>
+</LinearLayout>
+</ScrollView>
+</LinearLayout>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Home</title>
+<style type="text/css">
+.underline{
+	text-decoration: underline;
+}
+</style>
+</head>
+<body>
+	<div>
+		Welcome to Smart Consultant<br/><br/>
+		<b>Why sign up?</b><br/>
+For security of your data, please enable sync by going to <a href="http://www.smarthumanoid.com">www.smarthumanoid.com</a> and registering this app. Registering will also enable you to enter payments and analyze your data. You may be eligible for a free trial of the pro version as per the applicable promos.<br/><br/>
+
+<span class='underline'>For new patients</span> whose record has never been created before, click on Add IPD /Add OPD/ Add Sx screens. If you wish to create a voice record for now and create the record later, click on the record buttons to the right.<br/><br/>
+
+<span class='underline'>For existing patients</span> please be sure to search the home screen with the patient id or patient name so that all the previously entered values will be prepopulated when you enter the IPD/OPD/Sx details.<br/><br/>
+
+<span class='underline'>Expense Screen</span> can be used to record any business expenses along with the image of the receipt.<br/><br/>
+
+<span class='underline'>Payment Screen</span> should be used  to enter any payments you receive from the hospital. Reconciliation can be done only on the website after you login.<br/><br/>
+
+	</div>
+</body>
+</html>

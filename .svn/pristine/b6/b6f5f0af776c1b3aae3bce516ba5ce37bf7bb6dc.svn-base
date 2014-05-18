@@ -1,0 +1,44 @@
+package com.netdoers.com.dto;
+
+
+public class ExpenseDetailsDTO {
+	
+	String _id;
+	String name;
+	String exp_id;
+	String url;
+	public ExpenseDetailsDTO(String id, String name, String expId, String url) {
+		super();
+		_id = id;
+		this.name = name;
+		exp_id = expId;
+		this.url = url;
+	}
+	public ExpenseDetailsDTO() {
+		// TODO Auto-generated constructor stub
+	}
+	public String get_id() {
+		return _id;
+	}
+	public void set_id(String id) {
+		_id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getExp_id() {
+		return exp_id;
+	}
+	public void setExp_id(String expId) {
+		exp_id = expId;
+	}
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
+}

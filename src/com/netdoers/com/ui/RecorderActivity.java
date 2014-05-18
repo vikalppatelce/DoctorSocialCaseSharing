@@ -1,0 +1,226 @@
+/*HISTORY
+* CATEGORY				 :- CAMERA
+* DEVELOPER				 :- VIKALP PATEL
+* AIM 					 :- CAPTURE IMAGE
+* DESCRIPTION 			 :- TAKING PICTURE WITH THE ACTIVITY
+* 
+* S - START E- END C- COMMENTED U -EDITED A -ADDED
+* --------------------------------------------------------------------------------------------------------------------
+* INDEX 		DEVELOPER 			DATE 			FUNCTION		DESCRIPTION
+* --------------------------------------------------------------------------------------------------------------------
+* 10001 	  VIKALP PATEL		 07/01/2014							ADD FULLSCREEN THEME TO APPLICATION THROUGH PREFERENCES
+* --------------------------------------------------------------------------------------------------------------------
+*/
+
+
+
+
+package com.netdoers.com.ui;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.SystemClock;
+import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.View.OnClickListener;
+import android.widget.Chronometer;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.smarthumanoid.com.R;
+import com.netdoers.com.SmartConsultant;
+import com.netdoers.com.dto.DBConstant;
+
+public class RecorderActivity extends Activity {
+	
+	AndroidRecorder recorder;
+	TextView  timerText;
+	View  recordings_row;
+	ImageView playButton, deleteIcon;
+	long mStartTime = 0L;
+	final Handler mHandler = new Handler();
+	String timerString = "00:00";
+	boolean isTimerOn = false;
+	Chronometer chronometer;
+	String title;
+    String location;
+    String type;
+    SharedPreferences pref;//ADDED 10001
+    
+    ContentValues contentValues;
+    @Override
+	public void onCreate(Bundle savedInstanceState) {
+    	
+        super.onCreate(savedInstanceState);
+      //SA 10001
+      		pref = PreferenceManager.getDefaultSharedPreferences(SmartConsultant.getApplication());
+      		if(pref.getBoolean("prefIsFullScreen", false))
+      		{
+      			//setTheme(R.style.FullScreen);
+      			requestWindowFeature(Window.FEATURE_NO_TITLE);
+    	        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+      		}
+      		//EA 10001
+        setContentView(R.layout.recorder);
+        title = getIntent().getStringExtra("title");
+        location = getIntent().getStringExtra("loc");
+        type = getIntent().getStringExtra("type");
+
+        TextView txt = (TextView) findViewById(R.id.record_text);
+        txt.setText(title);
+        final ImageView recordButton = (ImageView)findViewById(R.id.recordButton);
+        final ImageView stopButton = (ImageView)findViewById(R.id.recordStopButton);
+        stopButton.setEnabled(false);
+
+        final ImageView recordingImage = (ImageView)findViewById(R.id.recordIndicator);
+        chronometer = (Chronometer)findViewById(R.id.timer);
+        timerText = (TextView)findViewById(R.id.timer);
+        
+        recordButton.setBackgroundResource(R.drawable.record_big);
+		stopButton.setBackgroundResource(R.drawable.stop_big_nonfocused);
+		
+		
+        recordButton.setOnClickListener(new OnClickListener() {
+			
+        	@Override
+			public void onClick(View v) {
+        		contentValues = new ContentValues();
+        		contentValues.put(DBConstant.Recoding_Columns.COLUMN_DATE, getDateString());
+        		contentValues.put(DBConstant.Recoding_Columns.COLUMN_LOCATION, location);
+        		contentValues.put(DBConstant.Recoding_Columns.COLUMN_TYPE, type);
+        		contentValues.put(DBConstant.Recoding_Columns.COLUMN_SYNCKEDSTATUS, "0");
+        		String state = Environment.getExternalStorageState();
+        		if (!Environment.MEDIA_MOUNTED.equals(state)) 
+    			{
+    				showDialog(SD_CARD_DIALOG);
+    			}
+        		else
+        		{
+        			try {
+        				chronometer.setBase(SystemClock.elapsedRealtime());
+        				chronometer.start();
+        				recordingImage.setImageResource(R.drawable.recording_dark);
+        				recorder = new AndroidRecorder(getApplicationContext());
+        				Date date = new Date();
+        				String fileName = date.getTime() + "";
+        				recorder.startRecording(fileName);
+        				stopButton.setEnabled(true);
+        				recordButton.setBackgroundResource(R.drawable.record_big_nonforcussed);
+        				recordButton.setEnabled(false);
+        				stopButton.setBackgroundResource(R.drawable.stop_big);
+
+        			} catch (IOException ioe) {
+        				ioe.printStackTrace();
+        			}
+
+        		}
+        		
+			}
+		});
+        
+        stopButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				contentValues.put(DBConstant.Recoding_Columns.COLUMN_URL, recorder.getRecordingPath());
+				recorder.stopRecording();
+				recordingImage.setImageResource(R.drawable.recording_light);
+				chronometer.stop();
+				chronometer.refreshDrawableState();
+				chronometer.setBase(SystemClock.elapsedRealtime());
+				stopButton.setEnabled(false);
+				//stopButton.setBackgroundResource(R.drawable.ic_stop_disable);
+				recordButton.setEnabled(true);
+				recordButton.setBackgroundResource(R.drawable.record_big);	
+				
+				stopButton.setBackgroundResource(R.drawable.stop_big_nonfocused);
+				
+				getContentResolver().insert(DBConstant.Recoding_Columns.CONTENT_URI, contentValues);
+				
+				Toast.makeText(RecorderActivity.this, "Recorded message saved", Toast.LENGTH_LONG).show();
+			}
+		});
+    }
+    
+    public String getDateString()
+    {
+    	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		String date = sdf.format(new Date(System.currentTimeMillis()));
+		if(date.contains("/"))
+		{
+			date = date.replace("/", "-");
+		}
+		return date;
+    }
+    public static File getRecordedFilePath(String fileName){
+		File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/SmartConsultant"+fileName);
+		return file;
+	}
+    
+	final int SD_CARD_DIALOG = 100;
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		// TODO Auto-generated method stub
+		switch (id) {
+		case SD_CARD_DIALOG:
+			AlertDialog.Builder dlgBldr = new AlertDialog.Builder(RecorderActivity.this);
+    		dlgBldr.setIcon(android.R.drawable.ic_dialog_alert);
+    		dlgBldr.setTitle("Alert");
+    		dlgBldr.setMessage("No sd card present");
+    		dlgBldr.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					removeDialog(SD_CARD_DIALOG);
+				}
+			});
+    		return dlgBldr.create();
+		}
+		return super.onCreateDialog(id);
+	}
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+     
+    /**
+     * Event Handling for Individual menu item selected
+     * Identify single menu item by it's id
+     * */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+         
+        switch (item.getItemId())
+        {
+        case R.id.mnuHelp:
+        	Intent i = new Intent(this, HelpActivity.class);
+        	i.putExtra("caller", "record");
+        	startActivity(i);
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }   
+}

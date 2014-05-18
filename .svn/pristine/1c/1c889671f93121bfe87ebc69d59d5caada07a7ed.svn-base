@@ -1,0 +1,460 @@
+/*
+* Category :- Application Context
+* Developer:- Vikalp Patel
+* Aim :- Getting Application context.
+* Description :- Getting Function which are required in overall Application
+* S - START E- END C- COMMENTED U -EDITED A -ADDED
+* --------------------------------------------------------------------------------------------------------------------
+* INDEX 	DEVELOPER 		DATE 		DESCRIPTION
+* --------------------------------------------------------------------------------------------------------------------
+* 10001    VIKALP PATEL 09/01/2014 	  
+* 10002    VIKALP PATEL 10/01/2014		SHARED PREFERENCES	
+*/
+package com.netdoers.com;
+
+import java.util.ArrayList;
+
+import android.app.Application;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
+import android.util.Log;
+
+import com.netdoers.com.dto.DBConstant;
+import com.netdoers.com.dto.Preferences;
+import com.netdoers.com.service.DataController;
+import com.smarthumanoid.com.R;
+
+public class SmartConsultant extends Application{
+
+	static SmartConsultant smartConsultant;
+	static DataController dataController;
+	static SharedPreferences sharedPreferences;
+	static Preferences preferences;
+
+	@Override
+	public void onCreate() {
+		// TODO Auto-generated method stub
+		super.onCreate();
+		smartConsultant = this;
+		dataController = new DataController();
+		preferences = new Preferences(this);
+		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);//ADDED 
+		
+		/*if(!preferences.getIsLOVInserted())
+		{
+			if(isNetworkAvailable())
+			{
+				
+			}
+			else
+			{
+				checkForInitialValues();
+			}
+		}
+		*/
+		/*if(preferences.getUserLoginDTO().getSign_id() == null && preferences.getUserLoginDTO().getUserName() == null)
+		{
+			Intent i = new Intent(this, LoginScreen.class);
+			startActivity(i);
+		}
+		else
+		{
+			Intent i = new Intent(this, HomeActivity.class);
+			startActivity(i);
+		}*/
+	}
+	@Override
+	public void onTerminate() {
+		// TODO Auto-generated method stub
+		super.onTerminate();
+	}
+	public static SmartConsultant getApplication()
+	{
+		return smartConsultant;
+	}
+
+	public static DataController getDataController() {
+		return dataController;
+	}
+	
+	public static Preferences getPreferences() {
+		return preferences;
+	}
+	
+	public static SharedPreferences getSharedPreferences()
+	{
+		return sharedPreferences;
+	}
+	public void checkForInitialValues()
+	{
+		/*Cursor c = getContentResolver().query(DBConstant.Location_Columns.CONTENT_URI, null, null, null, null);
+		if(c == null || c.getCount() == 0)
+		{
+			String[] data = new String[]{"loc", "loc", "loc"};//getResources().getStringArray(R.array.default_level);
+			for(int i = 0; i < data.length; i++)
+			{
+				ContentValues contentValues = new ContentValues();
+				contentValues.put(DBConstant.Location_Columns.COLUMN_NAME, data[i]);
+				contentValues.put(DBConstant.Location_Columns.COLUMN_SYNC_STATUS, "0");
+				getContentResolver().insert(DBConstant.Location_Columns.CONTENT_URI, contentValues);
+			}
+		}
+		if( c!= null)
+		{
+			c.close();
+			c = null;
+		}*/
+		
+		Cursor c = getContentResolver().query(DBConstant.Level_Columns.CONTENT_URI, null, null, null, null);
+		if(c == null || c.getCount() == 0)
+		{
+			String[] data = getResources().getStringArray(R.array.default_level);
+			for(int i = 0; i < data.length; i++)
+			{
+				ContentValues contentValues = new ContentValues();
+				contentValues.put(DBConstant.Level_Columns.COLUMN_NAME, data[i]);
+				contentValues.put(DBConstant.Level_Columns.COLUMN_SYNC_STATUS, "0");
+				getContentResolver().insert(DBConstant.Level_Columns.CONTENT_URI, contentValues);
+			}
+		}
+		if( c!= null)
+		{
+			c.close();
+			c = null;
+		}
+		c = getContentResolver().query(DBConstant.Types_Columns.CONTENT_URI, null, null, null, null);
+		if(c == null || c.getCount() == 0)
+		{
+			String[] data = getResources().getStringArray(R.array.default_patienttype);
+			for(int i = 0; i < data.length; i++)
+			{
+				ContentValues contentValues = new ContentValues();
+				contentValues.put(DBConstant.Types_Columns.COLUMN_NAME, data[i]);
+				contentValues.put(DBConstant.Types_Columns.COLUMN_SYNC_STATUS, "0");
+				getContentResolver().insert(DBConstant.Types_Columns.CONTENT_URI, contentValues);
+			}
+		}
+		if( c!= null)
+		{
+			c.close();
+			c = null;
+		}
+		
+		c = getContentResolver().query(DBConstant.Ward_Columns.CONTENT_URI, null, null, null, null);
+		if(c == null || c.getCount() == 0)
+		{
+			String[] data = getResources().getStringArray(R.array.default_ward);
+			for(int i = 0; i < data.length; i++)
+			{
+				ContentValues contentValues = new ContentValues();
+				contentValues.put(DBConstant.Ward_Columns.COLUMN_NAME, data[i]);
+				contentValues.put(DBConstant.Ward_Columns.COLUMN_SYNC_STATUS, "0");
+				getContentResolver().insert(DBConstant.Ward_Columns.CONTENT_URI, contentValues);
+			}
+		}
+		if( c!= null)
+		{
+			c.close();
+			c = null;
+		}
+		
+		
+		c = getContentResolver().query(DBConstant.ModeOfPayment_Columns.CONTENT_URI, null, null, null, null);
+		if(c == null || c.getCount() == 0)
+		{
+			String[] data = getResources().getStringArray(R.array.default_modeofpayment);
+			for(int i = 0; i < data.length; i++)
+			{
+				ContentValues contentValues = new ContentValues();
+				contentValues.put(DBConstant.ModeOfPayment_Columns.COLUMN_NAME, data[i]);
+				contentValues.put(DBConstant.ModeOfPayment_Columns.COLUMN_SYNC_STATUS, "0");
+				getContentResolver().insert(DBConstant.ModeOfPayment_Columns.CONTENT_URI, contentValues);
+			}
+		}
+		if( c!= null)
+		{
+			c.close();
+			c = null;
+		}
+		
+		
+		c = getContentResolver().query(DBConstant.StartTime_Columns.CONTENT_URI, null, null, null, null);
+		if(c == null || c.getCount() == 0)
+		{
+			String[] data = getResources().getStringArray(R.array.default_starttime);
+			for(int i = 0; i < data.length; i++)
+			{
+				ContentValues contentValues = new ContentValues();
+				contentValues.put(DBConstant.StartTime_Columns.COLUMN_NAME, data[i]);
+				contentValues.put(DBConstant.StartTime_Columns.COLUMN_SYNC_STATUS, "0");
+				getContentResolver().insert(DBConstant.StartTime_Columns.CONTENT_URI, contentValues);
+			}
+		}
+		if( c!= null)
+		{
+			c.close();
+			c = null;
+		}
+		
+		
+		c = getContentResolver().query(DBConstant.Bank_Columns.CONTENT_URI, null, null, null, null);
+		if(c == null || c.getCount() == 0)
+		{
+			String[] data = getResources().getStringArray(R.array.default_expcat);
+			for(int i = 0; i < data.length; i++)
+			{
+				String s = data[i];
+				if(s.contains("\\"))
+				{
+					s = s.replace("\\", "");
+				}
+				ContentValues contentValues = new ContentValues();
+				contentValues.put(DBConstant.Bank_Columns.COLUMN_NAME, s);
+				contentValues.put(DBConstant.Bank_Columns.COLUMN_SYNC_STATUS, "0");
+				getContentResolver().insert(DBConstant.Bank_Columns.CONTENT_URI, contentValues);
+			}
+		}
+		if( c!= null)
+		{
+			c.close();
+			c = null;
+		}
+		//SA 10001
+		c = getContentResolver().query(DBConstant.Deposited_Bank_Columns.CONTENT_URI, null, null, null, null);
+		if(c == null || c.getCount() == 0)
+		{
+			String[] data = getResources().getStringArray(R.array.default_deposited_bank);
+			for(int i = 0; i < data.length; i++)
+			{
+				String s = data[i];
+				if(s.contains("\\"))
+				{
+					s = s.replace("\\", "");
+				}
+				ContentValues contentValues = new ContentValues();
+				contentValues.put(DBConstant.Deposited_Bank_Columns.COLUMN_NAME, s);
+				contentValues.put(DBConstant.Deposited_Bank_Columns.COLUMN_SYNC_STATUS, "0");
+				getContentResolver().insert(DBConstant.Deposited_Bank_Columns.CONTENT_URI, contentValues);
+			}
+		}
+		if( c!= null)
+		{
+			c.close();
+			c = null;
+		}
+		//EA 10001
+		preferences.setIsLOVInserted(true);
+	}
+	
+	public ArrayList<String> loadLocation()
+	{
+		ArrayList<String> strLocation = new ArrayList<String>();
+		Cursor c = getContentResolver().query(DBConstant.Location_Columns.CONTENT_URI, null, null, null, null);
+
+		if(c != null && c.getCount() > 0)
+		{
+			strLocation = new ArrayList<String>();
+			while(c.moveToNext())
+			{
+				String nm = c.getString(c.getColumnIndex(DBConstant.Location_Columns.COLUMN_NAME));
+				strLocation.add(nm);
+			}
+			Log.e("HEMANT : location : ", strLocation.toString());
+			c.close();
+		}
+		return strLocation;
+	}
+	public ArrayList<String> loadProcedure()
+	{
+		Cursor c = getContentResolver().query(DBConstant.Procedure_Columns.CONTENT_URI, null, null, null, null);
+		ArrayList<String> strProcedure = new ArrayList<String>();
+		if(c != null && c.getCount() > 0)
+		{
+			strProcedure = new ArrayList<String>();
+			while(c.moveToNext())
+			{
+				String nm = c.getString(c.getColumnIndex(DBConstant.Procedure_Columns.COLUMN_NAME));
+				strProcedure.add(nm);
+			}
+			c.close();
+			Log.e("HEMANT : procedure : ", strProcedure.toString());
+		}
+		return strProcedure;
+
+	}
+	public ArrayList<String> loadWard()
+	{
+		Cursor c = getContentResolver().query(DBConstant.Ward_Columns.CONTENT_URI, null, null, null, null);
+		ArrayList<String> strWard = new ArrayList<String>();
+		if(c != null && c.getCount() > 0)
+		{
+			strWard = new ArrayList<String>();
+			while(c.moveToNext())
+			{
+				String nm = c.getString(c.getColumnIndex(DBConstant.Ward_Columns.COLUMN_NAME));
+				strWard.add(nm);
+			}
+			c.close();
+			Log.e("HEMANT : loadWard : ", strWard.toString());
+		}
+		return strWard;
+	}
+
+	public ArrayList<String> loadTeamMember()
+	{
+		Cursor c = getContentResolver().query(DBConstant.TMEMBER_Columns.CONTENT_URI, null, null, null, null);
+		ArrayList<String> strTeamMember = new ArrayList<String>();
+		if(c != null && c.getCount() > 0)
+		{
+			strTeamMember = new ArrayList<String>();
+			while(c.moveToNext())
+			{
+
+				String nm = c.getString(c.getColumnIndex(DBConstant.TMEMBER_Columns.COLUMN_NAME));
+				strTeamMember.add(nm);
+			}
+			c.close();
+			Log.e("HEMANT : teamMember : ", strTeamMember.toString());
+		}
+		return strTeamMember;
+	}
+	public ArrayList<String> loadType()
+	{
+		Cursor c = getContentResolver().query(DBConstant.Types_Columns.CONTENT_URI, null, null, null, null);
+		ArrayList<String> strType = new ArrayList<String>();
+		if(c != null && c.getCount() > 0)
+		{
+			strType = new ArrayList<String>();
+			while(c.moveToNext())
+			{
+				String nm = c.getString(c.getColumnIndex(DBConstant.Types_Columns.COLUMN_NAME));
+				strType.add(nm);
+			}
+			c.close();
+			Log.e("HEMANT : type: ", strType.toString());
+		}
+		return strType;
+	}
+
+	public ArrayList<String> loadRef()
+	{
+		Cursor c = getContentResolver().query(DBConstant.Ref_Columns.CONTENT_URI, null, null, null, null);
+		ArrayList<String> strRef = new ArrayList<String>();
+		if(c != null && c.getCount() > 0)
+		{
+			strRef = new ArrayList<String>();
+			while(c.moveToNext())
+			{
+				String nm = c.getString(c.getColumnIndex(DBConstant.Ref_Columns.COLUMN_NAME));
+				strRef.add(nm);
+			}
+			c.close();
+			Log.e("HEMANT : ref : ", strRef.toString());
+		}
+		return strRef;
+	}
+	public ArrayList<String> loadStartTime()
+	{
+		Cursor c = getContentResolver().query(DBConstant.StartTime_Columns.CONTENT_URI, null, null, null, null);
+		ArrayList<String> strStartTime = new ArrayList<String>();
+		if(c != null && c.getCount() > 0)
+		{
+			strStartTime = new ArrayList<String>();
+			while(c.moveToNext())
+			{
+				String nm = c.getString(c.getColumnIndex(DBConstant.StartTime_Columns.COLUMN_NAME));
+				strStartTime.add(nm);
+			}
+			c.close();
+			Log.e("HEMANT : startTime : ", strStartTime.toString());
+		}
+		return strStartTime;
+	}
+
+	public ArrayList<String> loadLevel()
+	{
+		Cursor c = getContentResolver().query(DBConstant.Level_Columns.CONTENT_URI, null, null, null, null);
+		ArrayList<String> strLevel = new ArrayList<String>();
+		if(c != null && c.getCount() > 0)
+		{
+			strLevel = new ArrayList<String>();
+			while(c.moveToNext())
+			{
+				String nm = c.getString(c.getColumnIndex(DBConstant.Level_Columns.COLUMN_NAME));
+				strLevel.add(nm);
+			}
+			c.close();
+			Log.e("HEMANT : level: ", strLevel.toString());
+		}
+		return strLevel;
+	}
+
+	public ArrayList<String> loadModeOfPayment()
+	{
+		Cursor c = getContentResolver().query(DBConstant.ModeOfPayment_Columns.CONTENT_URI, null, null, null, null);
+		ArrayList<String> strModeOfPayment = new ArrayList<String>();
+		if(c != null && c.getCount() > 0)
+		{
+			strModeOfPayment = new ArrayList<String>();
+			while(c.moveToNext())
+			{
+				String nm = c.getString(c.getColumnIndex(DBConstant.ModeOfPayment_Columns.COLUMN_NAME));
+				strModeOfPayment.add(nm);
+			}
+			c.close();
+			Log.e("HEMANT : modeOfPayment : ", strModeOfPayment.toString());
+		}
+		return strModeOfPayment;
+	}
+
+	public ArrayList<String> loadBank()
+	{
+		Cursor c = getContentResolver().query(DBConstant.Bank_Columns.CONTENT_URI, null, null, null, null);
+		ArrayList<String> strBank = new ArrayList<String>();
+		if(c != null && c.getCount() > 0)
+		{
+			strBank = new ArrayList<String>();
+			while(c.moveToNext())
+			{
+				String nm = c.getString(c.getColumnIndex(DBConstant.Bank_Columns.COLUMN_NAME));
+				strBank.add(nm);
+			}
+			c.close();
+			Log.e("HEMANT : bank : ", strBank.toString());
+		}
+		return strBank;
+	}
+	
+	//SA 10001
+	public ArrayList<String> loadDepositedBank()
+	{
+		Cursor c = getContentResolver().query(DBConstant.Deposited_Bank_Columns.CONTENT_URI, null, null, null, null);
+		ArrayList<String> strBank = new ArrayList<String>();
+		if(c != null && c.getCount() > 0)
+		{
+			strBank = new ArrayList<String>();
+			while(c.moveToNext())
+			{
+				String nm = c.getString(c.getColumnIndex(DBConstant.Deposited_Bank_Columns.COLUMN_NAME));
+				strBank.add(nm);
+			}
+			c.close();
+			Log.e("HEMANT : Deposited Bank : ", strBank.toString());
+		}
+		return strBank;
+	}
+	//EA 10001
+	
+	
+	public boolean isNetworkAvailable() {
+	    ConnectivityManager connectivityManager 
+	          = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+	    return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+	}
+}
